@@ -1,4 +1,5 @@
 <script setup>
+import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
 
 defineProps({
@@ -6,6 +7,7 @@ defineProps({
 });
 
 const nftIndex = ref(4);
+const uStore = useUserStore();
 
 function nftHover(index) {
   nftIndex.value = index;
@@ -17,12 +19,13 @@ function nftHover(index) {
   <div class="nft-con box-md">
     <div class="nft-list">
       <img
-        src="/src/assets/collection/lock-nft.svg"
+        :src="'/src/assets/collection/nft/' + nft + '.svg'"
         alt="lock"
         v-for="(nft, index) in nftData.nft"
         :key="index"
         :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }"
         @mouseenter="nftHover(index)"
+        @click="uStore.changeNft(nft)"
       />
     </div>
     <div></div>
@@ -53,5 +56,6 @@ img {
   top: 0px;
   cursor: pointer;
   transition: all 0.5s ease-in-out;
+  z-index: 1;
 }
 </style>

@@ -23,10 +23,11 @@ import UserInfo from "@/components/collection/UserInfo.vue";
 }
 .category {
   position: absolute;
-  top: -40px;
+  top: -50px;
   font-size: 30px;
 }
 .content {
+  padding-top: 20px;
   width: 80vw;
   height: 70vh;
 
