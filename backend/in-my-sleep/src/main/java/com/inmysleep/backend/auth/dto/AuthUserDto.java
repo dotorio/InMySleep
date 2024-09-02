@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AuthRegisterDto {
+public class AuthUserDto {
     @NotNull
     private String email;
 
