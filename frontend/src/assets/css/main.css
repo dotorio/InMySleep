@@ -9,6 +9,17 @@
   align-items: center;
 }
 
+.box-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.box-md {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .bit-t {
   font-family: "DNFBitBitv2";
 }
