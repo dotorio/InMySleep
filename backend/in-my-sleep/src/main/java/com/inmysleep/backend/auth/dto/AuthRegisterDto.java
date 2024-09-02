@@ -1,7 +1,6 @@
-package com.inmysleep.backend.user.dto;
+package com.inmysleep.backend.auth.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRegisterDto {
+public class AuthRegisterDto {
     @NotNull
     private String email;
 
