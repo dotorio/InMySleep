@@ -3,6 +3,7 @@ package com.inmysleep.backend.user.controller;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.user.dto.UserRegisterDto;
 import com.inmysleep.backend.user.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody UserRegisterDto userRegisterDto) {
+        return null;
+    }
+
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> signup(@RequestBody UserRegisterDto dto) {
+    public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody UserRegisterDto dto) {
         ApiResponse<Void> apiResponse = new ApiResponse<>();
 
         if (userService.isEmailAlreadyInUse(dto.getEmail())) {
