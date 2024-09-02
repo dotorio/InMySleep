@@ -1,4 +1,8 @@
 <script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
 defineProps({
   info: Object,
 });
@@ -17,10 +21,14 @@ function imgUrl(info) {
       return "/src/assets/home/link/img1.png";
   }
 }
+
+function goLink(linkName) {
+  router.push({ name: linkName });
+}
 </script>
 
 <template>
-  <div class="link-con">
+  <div class="link-con" @click="goLink(info.linkName)">
     <div class="header flex-align">
       <div class="title bit-t">
         {{ info.header }}
