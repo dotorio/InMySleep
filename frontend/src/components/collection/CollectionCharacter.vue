@@ -4,10 +4,10 @@ import CollectionNft from "@/components/collection/CollectionNft.vue";
 
 const choice = ref("bear");
 const bear = {
-  nft: [1, 2, 3],
+  nft: ["lock", "lock", "lock", "lock", 1],
 };
 const rabbit = {
-  nft: [4, 5, 6],
+  nft: ["lock", "lock", "lock", "lock", "lock"],
 };
 
 function choiceCharacter(character) {

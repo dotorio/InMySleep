@@ -1,19 +1,57 @@
 <script setup>
+import { ref } from "vue";
+
 defineProps({
   nftData: Object,
 });
+
+const nftIndex = ref(4);
+
+function nftHover(index) {
+  nftIndex.value = index;
+  console.log(nftIndex.value);
+}
 </script>
 
 <template>
-  <div class="nft-con">
-    {{ nftData.nft }}
+  <div class="nft-con box-md">
+    <div class="nft-list">
+      <img
+        src="/src/assets/collection/lock-nft.svg"
+        alt="lock"
+        v-for="(nft, index) in nftData.nft"
+        :key="index"
+        :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }"
+        @mouseenter="nftHover(index)"
+      />
+    </div>
+    <div></div>
   </div>
 </template>
 
 <style scoped>
 .nft-con {
-  width: 100%;
+  width: 90%;
   height: 80%;
-  background-color: blue;
+  margin-top: 20px;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.24);
+}
+.nft-list {
+  position: relative;
+  /* background-color: blue; */
+  width: 90%;
+  height: 80%;
+  overflow: hidden;
+  /* background-color: blue; */
+}
+
+img {
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
 }
 </style>
