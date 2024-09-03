@@ -1,11 +1,12 @@
 package com.inmysleep.backend.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,13 +22,14 @@ public class User {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
-    private Timestamp lastLogin;
+    private LocalDateTime lastLogin;
 
     @Column(name = "is_active", columnDefinition = "TINYINT(1)")
     private Boolean isActive;

@@ -8,7 +8,7 @@ import com.inmysleep.backend.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(dto.getEmail());
         user.setUsername(dto.getUsername());
         user.setPassword(dto.getPassword());
-        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        user.setCreatedAt(LocalDateTime.now());
         user.setIsActive(true);
         userRepository.save(user);
     }
