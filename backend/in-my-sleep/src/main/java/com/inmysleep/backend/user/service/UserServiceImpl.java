@@ -6,8 +6,6 @@ import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
