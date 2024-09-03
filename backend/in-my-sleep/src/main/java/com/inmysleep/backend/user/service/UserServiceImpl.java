@@ -1,7 +1,12 @@
 package com.inmysleep.backend.user.service;
 
+import com.inmysleep.backend.api.exception.NotFoundElementException;
+import com.inmysleep.backend.user.dto.UserInfo;
+import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,4 +26,17 @@ public class UserServiceImpl implements UserService {
     public boolean isUsernameAlreadyInUse(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    @Override
+    public UserInfo getUserInfo(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundElementException("User not found"));
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(user.getUsername());
+        userInfo.setEmail(user.getEmail());
+
+        return userInfo;
+    }
+
 }

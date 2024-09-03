@@ -1,8 +1,8 @@
 package com.inmysleep.backend.user.controller;
 
 import com.inmysleep.backend.api.response.ApiResponse;
+import com.inmysleep.backend.user.dto.UserInfo;
 import com.inmysleep.backend.user.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +42,15 @@ public class UserController {
         }
 
         apiResponse.setResponseTrue(null, "사용 가능한 닉네임입니다.");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserInfo>> getUser(@PathVariable Integer id) {
+        ApiResponse<UserInfo> apiResponse = new ApiResponse<>();
+        UserInfo userInfo = userService.getUserInfo(id);
+
+        apiResponse.setResponseTrue(userInfo, "유저 정보 조회");
         return ResponseEntity.ok(apiResponse);
     }
 }

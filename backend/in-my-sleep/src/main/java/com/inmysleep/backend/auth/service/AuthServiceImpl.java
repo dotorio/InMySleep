@@ -1,9 +1,11 @@
 package com.inmysleep.backend.auth.service;
 
+import com.inmysleep.backend.api.exception.InvalidDataException;
 import com.inmysleep.backend.api.exception.NotFoundElementException;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final HttpSession session;
 
-    public AuthServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, HttpSession session) {
         this.userRepository = userRepository;
+        this.session = session;
     }
 
     @Override
@@ -32,15 +36,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void loginUser(AuthUserDto dto) {
         Optional<User> user = userRepository.findByEmail(dto.getEmail());
-        if (user.isEmpty()) {
-            throw new NotFoundElementException("이메일의 사용자를 찾을 수 없습니다");
-        } else {
-            System.out.println("사용자 : " + user);
-            if (dto.getPassword().equals(user.get().getPassword())) {
-                // 로그인 성공
-            } else {
-                throw new IllegalArgumentException("잘못된 패스워드 입니다.");
-            }
+
+        if (user.isEmpty() || !user.get().getPassword().equals(dto.getPassword())) {
+            throw new NotFoundElementException("이메일 또는 비밀번호가 잘못되었습니다.");
         }
+
+        if (!user.get().getIsActive()) {
+            throw new InvalidDataException("비활성화된 사용자 입니다.");
+        }
+
+        session.setAttribute("user", user.get());
+        System.out.println("사용자 : " + user);
     }
 }

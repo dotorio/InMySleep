@@ -4,6 +4,7 @@ import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.auth.service.AuthService;
 import com.inmysleep.backend.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,20 @@ public class AuthController {
         ApiResponse<Void> apiResponse = new ApiResponse<>();
         authService.loginUser(userRegisterDto);
         apiResponse.setResponseTrue(null, "로그인 성공");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(HttpSession session) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        if (session != null) {
+            session.invalidate();
+            apiResponse.setResponseTrue(null, "로그아웃 성공");
+        } else {
+            apiResponse.setResponseFalse(null, "세션이 존재하지 않습니다.");
+        }
+        
         return ResponseEntity.ok(apiResponse);
     }
 
