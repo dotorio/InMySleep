@@ -21,7 +21,7 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    @GetMapping("/friend-list")
+    @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<FriendDto>>> getFriendList(@RequestParam int userId) {
         ApiResponse<List<FriendDto>> apiResponse = new ApiResponse<>();
 
@@ -31,7 +31,7 @@ public class FriendController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/friend-request")
+    @PostMapping("/request")
     public ResponseEntity<ApiResponse<Void>> requestFriend(@RequestBody FriendRequestDto dto) {
         ApiResponse<Void> apiResponse = new ApiResponse<>();
 
