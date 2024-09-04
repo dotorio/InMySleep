@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundElementException("User not found"));
 
         UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(user.getUserId());
         userInfo.setUsername(user.getUsername());
         userInfo.setEmail(user.getEmail());
         userInfo.setLastStage(user.getLastStage());

@@ -3,6 +3,7 @@ package com.inmysleep.backend.auth.controller;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.auth.service.AuthService;
+import com.inmysleep.backend.user.dto.UserInfo;
 import com.inmysleep.backend.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -25,10 +26,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody AuthUserDto userRegisterDto) {
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-        authService.loginUser(userRegisterDto);
-        apiResponse.setResponseTrue(null, "로그인 성공");
+    public ResponseEntity<ApiResponse<UserInfo>> login(@RequestBody AuthUserDto userDto) {
+        ApiResponse<UserInfo> apiResponse = new ApiResponse<>();
+        UserInfo userInfo = authService.loginUser(userDto);
+        apiResponse.setResponseTrue(userInfo, "로그인 성공");
         return ResponseEntity.ok(apiResponse);
     }
 
