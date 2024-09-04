@@ -41,14 +41,17 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public void requestFriend(FriendRequestDto requestDto) {
         // 유효성 검사: 중복된 요청이 있는지 확인
-        Optional<FriendRequest> existingRequest = friendRequestRepository
-                .findByRequestUserIdAndReceiveUserIdAndIsActive(requestDto.getRequestUserId(), requestDto.getReceiveUserId(), true);
-
-        if (existingRequest.isPresent()) {
+        if (friendRequestRepository.existsByRequestUserIdAndReceiveUserIdAndIsActive(requestDto.getRequestUserId(), requestDto.getReceiveUserId(), true)) {
             throw new IllegalArgumentException("이미 친구 요청을 보냈습니다.");
         }
 
-        // TODO: 이미 친구 관계인지 확인
+        // 유효성 검사: 존재하는 유저인지 확인 및 친구 여부 확인
+        User receiveUser = userRepository.findById(requestDto.getReceiveUserId())
+                .orElseThrow(() -> new NotFoundElementException("User not found for receive user."));
+
+        if (friendRepository.existsByUserIdAndFriendUserAndIsActive(requestDto.getRequestUserId(), receiveUser, true)) {
+            throw new IllegalArgumentException("친구 목록에 있는 유저입니다.");
+        }
 
         // 새로운 FriendRequest 엔티티 생성 및 값 설정
         FriendRequest friendRequest = new FriendRequest();

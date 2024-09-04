@@ -16,4 +16,8 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("SELECT new com.inmysleep.backend.Friend.dto.FriendDto(f.friendUser.userId, f.friendUser.username, f.friendUser.email) " +
             "FROM Friend f WHERE f.userId = :userId AND f.isActive = true")
     List<FriendDto> findAllFriendsByUserId(@Param("userId") int userId);
+
+    Friend findByUserIdAndFriendUserAndIsActive(int userId, User friendUser, Boolean isActive);
+
+    boolean existsByUserIdAndFriendUserAndIsActive(int requestUserId, User receiveUser, boolean b);
 }
