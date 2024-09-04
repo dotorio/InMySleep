@@ -25,6 +25,9 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column(name = "last_stage", columnDefinition = "TINYINT")
+    private int lastStage;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

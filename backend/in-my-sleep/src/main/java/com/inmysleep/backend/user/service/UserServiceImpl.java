@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo = new UserInfo();
         userInfo.setUsername(user.getUsername());
         userInfo.setEmail(user.getEmail());
+        userInfo.setLastStage(user.getLastStage());
 
         return userInfo;
     }

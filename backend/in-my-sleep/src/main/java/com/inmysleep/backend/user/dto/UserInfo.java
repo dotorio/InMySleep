@@ -7,4 +7,5 @@ public class UserInfo {
     private int userId;
     private String username;
     private String email;
+    private int lastStage;
 }
