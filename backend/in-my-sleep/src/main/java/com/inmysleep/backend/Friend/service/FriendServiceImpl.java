@@ -135,4 +135,20 @@ public class FriendServiceImpl implements FriendService {
         friend.setActive(false);
         friend2.setActive(false);
     }
+
+    @Override
+    @Transactional
+    public void refuseFriend(FriendRequestDto dto) {
+        Optional<List<FriendRequest>> req = friendRequestRepository.findByRequestUserIdAndReceiveUserIdAndIsActive(
+                        dto.getRequestUserId(), dto.getReceiveUserId(), true);
+
+        if(req.get().isEmpty()) {
+            throw new NotFoundElementException("요청을 찾을 수 없습니다.");
+        }
+
+        System.out.println("요청??" + req);
+        for(FriendRequest fr : req.get()) {
+            fr.setIsActive(false);
+        }
+    }
 }

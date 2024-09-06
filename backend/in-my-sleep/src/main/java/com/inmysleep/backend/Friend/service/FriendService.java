@@ -14,4 +14,5 @@ public interface FriendService {
     void acceptFriend(FriendRequestDto requestDto);
     void closeRequest(FriendRequestDto requestDto);
     void deleteFriend(FriendRequestDto requestDto);
+    void refuseFriend(FriendRequestDto dto);
 }

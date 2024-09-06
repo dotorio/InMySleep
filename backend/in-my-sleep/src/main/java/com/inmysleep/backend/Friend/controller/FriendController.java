@@ -78,4 +78,13 @@ public class FriendController {
         apiResponse.setResponseTrue(null, "친구 삭제 완료");
         return ResponseEntity.ok(apiResponse);
     }
+
+    @PutMapping("/refuse")
+    public ResponseEntity<ApiResponse<Void>> refuseFriend(@RequestBody FriendRequestDto dto) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        friendService.refuseFriend(dto);
+        apiResponse.setResponseTrue(null, "친구 요청 거절");
+        return ResponseEntity.ok(apiResponse);
+    }
 }
