@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    private float health = 100f;  // º¸½º Ã¼·Â
-    private float moveSpeed = 2f;  // ÀÌµ¿ ¼Óµµ
-    public GameObject player;  // ÇÃ·¹ÀÌ¾î ÂüÁ¶
-    public Transform attackPoint;  // ±ÙÁ¢ °ø°İ ÁöÁ¡
-    private float attackRange = 10f;  // ±ÙÁ¢ °ø°İ ¹üÀ§
-    private int meleeDamage = 10;  // ±ÙÁ¢ °ø°İ µ¥¹ÌÁö
-    public GameObject projectilePrefab;  // ¿ø°Å¸® °ø°İ ±¸Ã¼
-    public Transform firePoint;  // ¿ø°Å¸® °ø°İ ¹ß»ç ÁöÁ¡
-    private float projectileSpeed = 10f;  // ÃÊ±â ¹ß»ç ¼Óµµ
-    private float projectileCooldown = 1f;  // ¿ø°Å¸® °ø°İ ÄğÅ¸ÀÓ
-    private float lastProjectileTime = 0f;  // ¸¶Áö¸· ¿ø°Å¸® °ø°İ ½Ã°£
-    private float projectileLifetime = 5f;  // ¹ß»çÃ¼ÀÇ »ı¸íÁÖ±â (ÃÊ)
+    private float health = 100f;  // ë³´ìŠ¤ ì²´ë ¥
+    private float moveSpeed = 2f;  // ì´ë™ ì†ë„
+    public GameObject player;  // í”Œë ˆì´ì–´ ì°¸ì¡°
+    public Transform attackPoint;  // ê·¼ì ‘ ê³µê²© ì§€ì 
+    private float attackRange = 10f;  // ê·¼ì ‘ ê³µê²© ë²”ìœ„
+    private int meleeDamage = 10;  // ê·¼ì ‘ ê³µê²© ë°ë¯¸ì§€
+    public GameObject projectilePrefab;  // ì›ê±°ë¦¬ ê³µê²© êµ¬ì²´
+    public Transform firePoint;  // ì›ê±°ë¦¬ ê³µê²© ë°œì‚¬ ì§€ì 
+    private float projectileSpeed = 10f;  // ì´ˆê¸° ë°œì‚¬ ì†ë„
+    private float projectileCooldown = 1f;  // ì›ê±°ë¦¬ ê³µê²© ì¿¨íƒ€ì„
+    private float lastProjectileTime = 0f;  // ë§ˆì§€ë§‰ ì›ê±°ë¦¬ ê³µê²© ì‹œê°„
+    private float projectileLifetime = 5f;  // ë°œì‚¬ì²´ì˜ ìƒëª…ì£¼ê¸° (ì´ˆ)
 
     private void Update()
     {
@@ -26,23 +26,23 @@ public class BossController : MonoBehaviour
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-        // »çÁ¤°Å¸®¿¡ µû¶ó ´Ù¸¥ ÆĞÅÏ »ç¿ë
+        // ì‚¬ì •ê±°ë¦¬ì— ë”°ë¼ ë‹¤ë¥¸ íŒ¨í„´ ì‚¬ìš©
         if (distanceToPlayer <= attackRange)
         {
-            // ±ÙÁ¢ °ø°İ
+            // ê·¼ì ‘ ê³µê²©
             MeleeAttack();
         }
         else
         {
-            // ¿ø°Å¸® °ø°İ
+            // ì›ê±°ë¦¬ ê³µê²©
             RangedAttack();
         }
     }
 
     void MeleeAttack()
     {
-        Debug.Log("º¸½º°¡ ±ÙÁ¢ °ø°İÀ» ½ÃµµÇÕ´Ï´Ù!");
-        // ±ÙÁ¢ °ø°İ ·ÎÁ÷ ±¸Çö (¿¹: ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö ÀÔÈ÷±â)
+        Debug.Log("ë³´ìŠ¤ê°€ ê·¼ì ‘ ê³µê²©ì„ ì‹œë„í•©ë‹ˆë‹¤!");
+        // ê·¼ì ‘ ê³µê²© ë¡œì§ êµ¬í˜„ (ì˜ˆ: í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€ ì…íˆê¸°)
     }
 
     void RangedAttack()
@@ -51,23 +51,23 @@ public class BossController : MonoBehaviour
         {
             lastProjectileTime = Time.time;
 
-            Debug.Log("º¸½º°¡ Æ÷¹°¼± ¿ø°Å¸® °ø°İÀ» ½ÃµµÇÕ´Ï´Ù!");
+            Debug.Log("ë³´ìŠ¤ê°€ í¬ë¬¼ì„  ì›ê±°ë¦¬ ê³µê²©ì„ ì‹œë„í•©ë‹ˆë‹¤!");
             LaunchProjectile();
         }
     }
 
     void LaunchProjectile()
     {
-        // ¹ß»çÃ¼ »ı¼º
+        // ë°œì‚¬ì²´ ìƒì„±
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
-        // ¹ß»ç ¹æÇâ °è»ê
+        // ë°œì‚¬ ë°©í–¥ ê³„ì‚°
         //Vector3 launchDirection = CalculateLaunchDirection();
         Vector3 launchDirection = CalculateLaunchDirection(firePoint.position, player.transform.position, 30f);
         rb.velocity = launchDirection;
 
-        // ¹ß»çÃ¼¸¦ 5ÃÊ ÈÄ¿¡ Á¦°Å
+        // ë°œì‚¬ì²´ë¥¼ 5ì´ˆ í›„ì— ì œê±°
         Destroy(projectile, projectileLifetime);
     }
 
@@ -79,23 +79,23 @@ public class BossController : MonoBehaviour
     //    float horizontalDistance = new Vector3(direction.x, 0, direction.z).magnitude;
     //    float verticalDistance = direction.y;
 
-    //    // ¹ß»ç°¢À» 45µµ·Î ¼³Á¤ (È¤Àº ¿øÇÏ´Â °¢µµ·Î Á¶Á¤)
+    //    // ë°œì‚¬ê°ì„ 45ë„ë¡œ ì„¤ì • (í˜¹ì€ ì›í•˜ëŠ” ê°ë„ë¡œ ì¡°ì •)
     //    float angleInRadians = 30 * Mathf.Deg2Rad;
 
-    //    // XZ Æò¸é¿¡¼­ÀÇ ¹ß»ç ¼Óµµ °è»ê
+    //    // XZ í‰ë©´ì—ì„œì˜ ë°œì‚¬ ì†ë„ ê³„ì‚°
     //    float velocityXZ = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * horizontalDistance) / Mathf.Abs((2 * Mathf.Sin(angleInRadians) * Mathf.Cos(angleInRadians))));
 
-    //    // NaNÀÌ ¹ß»ıÇÒ ¼ö ÀÖ´Â °æ¿ì¸¦ ´ëºñÇØ ¼Óµµ°¡ ¾ç¼öÀÎÁö È®ÀÎ
+    //    // NaNì´ ë°œìƒí•  ìˆ˜ ìˆëŠ” ê²½ìš°ë¥¼ ëŒ€ë¹„í•´ ì†ë„ê°€ ì–‘ìˆ˜ì¸ì§€ í™•ì¸
     //    if (float.IsNaN(velocityXZ))
     //    {
-    //        Debug.Log("Á¦´ë·Î ¾ÈµÇ°í ÀÖ¾î");
-    //        velocityXZ = projectileSpeed; // ±âº» ¼Óµµ·Î ´ëÃ¼
+    //        Debug.Log("ì œëŒ€ë¡œ ì•ˆë˜ê³  ìˆì–´");
+    //        velocityXZ = projectileSpeed; // ê¸°ë³¸ ì†ë„ë¡œ ëŒ€ì²´
     //    }
 
-    //    // ¼öÁ÷ ¹æÇâ ¼Óµµ °è»ê
+    //    // ìˆ˜ì§ ë°©í–¥ ì†ë„ ê³„ì‚°
     //    float velocityY = velocityXZ * Mathf.Sin(angleInRadians);
 
-    //    // ÃÖÁ¾ ¹ß»ç ¹æÇâ º¤ÅÍ °è»ê
+    //    // ìµœì¢… ë°œì‚¬ ë°©í–¥ ë²¡í„° ê³„ì‚°
     //    Vector3 directionXZ = new Vector3(direction.x, 0, direction.z).normalized;
     //    Vector3 launchVelocity = directionXZ * velocityXZ + Vector3.up * velocityY;
 
@@ -138,7 +138,7 @@ public class BossController : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("º¸½º°¡ »ç¸ÁÇß½À´Ï´Ù!");
-        Destroy(gameObject);  // º¸½º ¿ÀºêÁ§Æ® Á¦°Å
+        Debug.Log("ë³´ìŠ¤ê°€ ì‚¬ë§í–ˆìŠµë‹ˆë‹¤!");
+        Destroy(gameObject);  // ë³´ìŠ¤ ì˜¤ë¸Œì íŠ¸ ì œê±°
     }
 }
