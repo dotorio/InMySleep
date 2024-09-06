@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/kysLobbyTest.unity
+    guid: b10c2d84380128d4b93ae70beb64e548
+  - enabled: 1
+    path: Assets/Scenes/kysTest.unity
+    guid: 5bdb146609009034ea6bd9117163e30d
   m_configObjects: {}
