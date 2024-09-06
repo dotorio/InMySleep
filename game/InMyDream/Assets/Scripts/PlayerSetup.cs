@@ -10,8 +10,6 @@ public class PlayerSetup : MonoBehaviourPun
     public CinemachineBrain cinemachineBrain;  // Cinemachine 브레인
     public CinemachineVirtualCamera[] virtualCameras;  // 3개의 Cinemachine 가상 카메라 배열
 
-    public Transform playerCameraRoot;  // 플레이어의 카메라 루트 (카메라가 따라갈 대상)
-
     private void Start()
     {
         if (photonView.IsMine)
@@ -20,7 +18,6 @@ public class PlayerSetup : MonoBehaviourPun
             playerCamera.enabled = true;  // 메인 카메라 활성화
             cinemachineBrain.enabled = true;  // Cinemachine 브레인 활성화
 
-            // 모든 가상 카메라를 비활성화
             foreach (var camera in virtualCameras)
             {
                 camera.Priority = 1;

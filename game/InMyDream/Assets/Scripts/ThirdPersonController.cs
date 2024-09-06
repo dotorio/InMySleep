@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Photon.Pun;
 
@@ -18,6 +19,8 @@ public class ThirdPersonController : MonoBehaviourPun
     private Vector3 velocity;
     private bool isGrounded;
 
+    public Animator animator;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -35,6 +38,7 @@ public class ThirdPersonController : MonoBehaviourPun
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f; // 작은 값으로 설정하여 땅에 붙어있게 함
+            animator.SetInteger("animation", 1);
         }
 
         // 입력 처리
@@ -44,7 +48,22 @@ public class ThirdPersonController : MonoBehaviourPun
 
         // 스프린트 처리
         bool isSprinting = Input.GetKey(KeyCode.LeftShift); // 스프린트 키를 눌렀는지 확인
-        float currentMoveSpeed = isSprinting ? moveSpeed * sprintSpeedMultiplier : moveSpeed;
+        float currentMoveSpeed = moveSpeed;
+
+        if ((horizontal != 0f || vertical != 0f) && isGrounded)
+        {
+            animator.SetInteger("animation", 18);
+        }
+        if (isSprinting)
+        {
+            currentMoveSpeed = moveSpeed * sprintSpeedMultiplier;
+
+            if ((horizontal != 0f || vertical != 0f) && isGrounded)
+            {
+                animator.SetInteger("animation", 15);
+            }
+        }
+        
 
         if (direction.magnitude >= 0.1f)
         {
@@ -64,6 +83,7 @@ public class ThirdPersonController : MonoBehaviourPun
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            animator.SetInteger("animation", 9);
         }
 
         // 중력 적용
