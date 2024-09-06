@@ -1,7 +1,7 @@
 package com.inmysleep.backend.user.controller;
 
 import com.inmysleep.backend.api.response.ApiResponse;
-import com.inmysleep.backend.user.dto.UserInfo;
+import com.inmysleep.backend.user.dto.UserInfoDto;
 import com.inmysleep.backend.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,9 +46,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserInfo>> getUser(@PathVariable Integer id) {
-        ApiResponse<UserInfo> apiResponse = new ApiResponse<>();
-        UserInfo userInfo = userService.getUserInfo(id);
+    public ResponseEntity<ApiResponse<UserInfoDto>> getUser(@PathVariable Integer id) {
+        ApiResponse<UserInfoDto> apiResponse = new ApiResponse<>();
+        UserInfoDto userInfo = userService.getUserInfo(id);
 
         apiResponse.setResponseTrue(userInfo, "유저 정보 조회");
         return ResponseEntity.ok(apiResponse);

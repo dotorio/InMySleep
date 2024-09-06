@@ -3,7 +3,7 @@ package com.inmysleep.backend.auth.service;
 import com.inmysleep.backend.api.exception.InvalidDataException;
 import com.inmysleep.backend.api.exception.NotFoundElementException;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
-import com.inmysleep.backend.user.dto.UserInfo;
+import com.inmysleep.backend.user.dto.UserInfoDto;
 import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserInfo loginUser(AuthUserDto dto) {
+    public UserInfoDto loginUser(AuthUserDto dto) {
         Optional<User> user = userRepository.findByEmail(dto.getEmail());
 
         if (user.isEmpty() || !user.get().getPassword().equals(dto.getPassword())) {
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         session.setAttribute("user", user.get());
         System.out.println("사용자 : " + user);
 
-        UserInfo userInfo = new UserInfo();
+        UserInfoDto userInfo = new UserInfoDto();
         userInfo.setUserId(user.get().getUserId());
         userInfo.setUsername(user.get().getUsername());
         userInfo.setEmail(user.get().getEmail());

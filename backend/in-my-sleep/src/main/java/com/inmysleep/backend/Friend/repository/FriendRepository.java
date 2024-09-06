@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
     List<Friend> findAllByUserId(int userId);
@@ -20,4 +19,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     Friend findByUserIdAndFriendUserAndIsActive(int userId, User friendUser, Boolean isActive);
 
     boolean existsByUserIdAndFriendUserAndIsActive(int requestUserId, User receiveUser, boolean b);
+
+
+    @Query("SELECT f FROM Friend f WHERE (f.userId = :userId AND f.friendUser.userId = :friendUserId) " +
+            "OR (f.userId = :friendUserId AND f.friendUser.userId = :userId)")
+    List<Friend> findByUserIdAndFriendUserBothWays(@Param("userId") int userId, @Param("friendUserId") int friendUserId);
 }

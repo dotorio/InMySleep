@@ -1,7 +1,7 @@
 package com.inmysleep.backend.user.service;
 
 import com.inmysleep.backend.api.exception.NotFoundElementException;
-import com.inmysleep.backend.user.dto.UserInfo;
+import com.inmysleep.backend.user.dto.UserInfoDto;
 import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo getUserInfo(int id) {
+    public UserInfoDto getUserInfo(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundElementException("User not found"));
 
-        UserInfo userInfo = new UserInfo();
+        UserInfoDto userInfo = new UserInfoDto();
         userInfo.setUserId(user.getUserId());
         userInfo.setUsername(user.getUsername());
         userInfo.setEmail(user.getEmail());

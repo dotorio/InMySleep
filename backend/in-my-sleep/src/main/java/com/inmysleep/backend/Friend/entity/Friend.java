@@ -29,4 +29,16 @@ public class Friend {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    // 엔티티가 처음 저장되기 전에 호출되는 메서드
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // 엔티티가 업데이트되기 전에 호출되는 메서드
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
