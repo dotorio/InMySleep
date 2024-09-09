@@ -2,6 +2,9 @@
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
+# JAR 파일에 실행 권한을 부여
+RUN chmod +x ./app.jar
+
 # Spring Boot 애플리케이션을 실행
 ENTRYPOINT ["java", "-jar", "./app.jar"]
 
