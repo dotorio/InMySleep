@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;  // ÀÌµ¿ ¼Óµµ
-    public float jumpForce = 5f;  // Á¡ÇÁ Èû
-    public float health = 1000f;  // ÇÃ·¹ÀÌ¾î Ã¼·Â
-    public Transform groundCheck;  // ¹Ù´Ú Ã¼Å© ÁöÁ¡
-    public LayerMask groundLayer;  // ¹Ù´ÚÀ¸·Î ÀÎ½ÄÇÒ ·¹ÀÌ¾î
-    private bool isGrounded;  // ¹Ù´Ú¿¡ ÀÖ´ÂÁö ¿©ºÎ
+    public float moveSpeed = 10f;   // ì´ë™ ì†ë„
+    public float jumpForce = 10f;   // ì í”„ í˜
+    private bool isJumping = false; // ì í”„ ì¤‘ì¸ì§€ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
+
     private Rigidbody rb;
 
-    private void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    void Update()
     {
         Move();
         Jump();
@@ -25,36 +23,30 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        // ÁÂ¿ì ¹× »óÇÏ ÀÌµ¿
-        float moveInputX = Input.GetAxis("Horizontal");
-        float moveInputZ = Input.GetAxis("Vertical");
-        Vector3 moveVelocity = new Vector3(moveInputX * moveSpeed, rb.velocity.y, moveInputZ * moveSpeed);
-        rb.velocity = moveVelocity;
+        // WASD í‚¤ë¡œ ì´ë™
+        float moveX = Input.GetAxis("Horizontal") * moveSpeed;
+        float moveZ = Input.GetAxis("Vertical") * moveSpeed;
+
+        Vector3 movement = new Vector3(moveX, 0, moveZ);
+        rb.MovePosition(transform.position + movement * Time.deltaTime);
     }
 
     void Jump()
     {
-        // ¹Ù´Ú¿¡ ÀÖÀ» ¶§¸¸ Á¡ÇÁ °¡´É
-        isGrounded = Physics.CheckSphere(groundCheck.position, 0.1f, groundLayer);
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        // ìŠ¤í˜ì´ìŠ¤ë°”ë¡œ ì í”„, ì í”„ ì¤‘ì¼ ë•ŒëŠ” ë‹¤ì‹œ ì í”„ ë¶ˆê°€
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isJumping = true;
         }
     }
 
-    public void TakeDamage(float amount)
+    private void OnCollisionEnter(Collision collision)
     {
-        health -= amount;
-        if (health <= 0)
+        // ë•…ì— ë‹¿ìœ¼ë©´ ë‹¤ì‹œ ì í”„ ê°€ëŠ¥
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            Die();
+            isJumping = false;
         }
-    }
-
-    void Die()
-    {
-        Debug.Log("ÇÃ·¹ÀÌ¾î°¡ »ç¸ÁÇß½À´Ï´Ù!");
-        // »ç¸Á Ã³¸® (¿¹: °ÔÀÓ ¿À¹ö È­¸é ¶ç¿ì±â)
     }
 }
-
