@@ -22,7 +22,7 @@ public class CatController : MonoBehaviour
     {
         // Animator 컴포넌트 가져오기
         animator = GetComponent<Animator>();
-        animator.SetBool("Move", true);
+        //animator.SetBool("Move", true);
     }
 
     // Update는 매 프레임마다 호출됩니다.
