@@ -12,13 +12,13 @@ function imgUrl(info) {
 
   switch (id) {
     case 1:
-      return "/src/assets/home/link/img1.png";
+      return new URL("@/assets/home/link/img1.png", import.meta.url).href;
     case 2:
-      return "/src/assets/home/link/img2.jpg";
+      return new URL("@/assets/home/link/img2.jpg", import.meta.url).href;
     case 3:
-      return "/src/assets/home/link/img3.png";
+      return new URL("@/assets/home/link/img3.png", import.meta.url).href;
     default:
-      return "/src/assets/home/link/img1.png";
+      return new URL("@/assets/home/link/img1.png", import.meta.url).href;
   }
 }
 
