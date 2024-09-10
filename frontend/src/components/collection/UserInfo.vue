@@ -2,13 +2,17 @@
 import { useUserStore } from "@/stores/user";
 
 const uStore = useUserStore();
+
+function getNftSrc(nft) {
+  return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
+}
 </script>
 
 <template>
   <div class="user-con box-col">
     <div class="nickname bit-t">{{ uStore.userInfo.nickname }}</div>
     <img
-      :src="'/src/assets/collection/nft/' + uStore.userInfo.nft + '.svg'"
+      :src="getNftSrc(uStore.userInfo.nft)"
       alt="락"
     />
   </div>
