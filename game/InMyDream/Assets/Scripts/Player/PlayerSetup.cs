@@ -184,15 +184,34 @@ public class PlayerSetup : MonoBehaviourPun
 
     void BreakObject(GameObject obj)
     {
-        animator.SetInteger("animation", 20);
+        animator.SetInteger("animation", 20); // 파괴 애니메이션
         GetComponent<ThirdPersonController>().isInteracting = true;
 
+        // 모든 플레이어에게 오브젝트 파괴와 이펙트 출현을 알림
+        PhotonView objectPhotonView = obj.GetComponent<PhotonView>();
+        if (objectPhotonView != null && objectPhotonView.IsMine)
+        {
+            // RPC를 통해 파괴와 이펙트 생성 동기화
+            photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID, obj.transform.position);
+        }
+    }
+
+    [PunRPC]
+    void DestroyObjectWithEffectRPC(int viewID, Vector3 position)
+    {
+        // 해당 오브젝트 찾기
+        PhotonView objPhotonView = PhotonView.Find(viewID);
+
+        // 이펙트 생성
         if (breakEffectPrefab != null)
         {
-            Instantiate(breakEffectPrefab, obj.transform.position, Quaternion.identity);
+            Instantiate(breakEffectPrefab, position, Quaternion.identity);
         }
 
-        Destroy(obj);
-        Debug.Log("Object broken: " + obj.name);
+        // 오브젝트 제거
+        if (objPhotonView != null)
+        {
+            Destroy(objPhotonView.gameObject);
+        }
     }
 }
