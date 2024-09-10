@@ -1,5 +1,6 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
+import Footer from "@/components/Footer.vue";
 import { emailCheck, usernameCheck, signUp } from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -193,6 +194,7 @@ function usernameInput() {
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
