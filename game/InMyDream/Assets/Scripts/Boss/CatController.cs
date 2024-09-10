@@ -10,12 +10,15 @@ public class CatController : MonoBehaviour
     //private float timer = 0.0f;  // 시간 측정용 타이머
     private Animator animator;  // 애니메이터
     public GameObject bomb; // 캐릭터 팔에 연결된 공
+    public GameObject cube; // 캐릭터 팔에 연결된 공
     public Transform hand;  // 캐릭터의 손 위치
+    public Transform hand2;  // 캐릭터의 손 위치
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     private float projectileCooldown = 1f;  // 원거리 공격 쿨타임
     private float lastProjectileTime = 0f;  // 마지막 원거리 공격 시간
     private float cnt = 0;
+    private float cnt2 = 0;
 
     // Start는 첫 프레임 업데이트 전에 호출됩니다.
     void Start()
@@ -62,7 +65,7 @@ public class CatController : MonoBehaviour
 
     void BallThrow()
     {
-        animator.SetBool("isATK", true);
+        //animator.SetBool("isATK", true);
 
         // 발사체 생성
         GameObject projectile = Instantiate(bomb, hand.position, hand.rotation);
@@ -85,6 +88,33 @@ public class CatController : MonoBehaviour
 
         // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
         bombController.StartDestroyCountdown(4f);
+    }
+
+    void CubeThrow()
+    {
+        //animator.SetBool("isATK", true);
+
+        // 발사체 생성
+        GameObject projectile = Instantiate(cube, hand2.position, hand2.rotation);
+        //BombController bombController = projectile.GetComponent<BombController>();
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+        // 발사 방향 계산
+        if (cnt2 % 2 == 1)
+        {
+            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player2.transform.position, 5f);
+            rb.velocity = launchDirection;
+        }
+        else
+        {
+            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player1.transform.position, 10f);
+            rb.velocity = launchDirection;
+        }
+
+        cnt2++;
+
+        // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+        //bombController.StartDestroyCountdown(4f);
     }
 
 
