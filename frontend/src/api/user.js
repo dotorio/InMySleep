@@ -11,6 +11,21 @@ export function signUp(data) {
   });
 }
 
+export function login(data) {
+  return axios({
+    url: `auth/login`,
+    method: "post",
+    data,
+  });
+}
+
+export function logout() {
+  return axios({
+    url: `auth/logout`,
+    method: "post",
+  });
+}
+
 export function emailCheck(email) {
   return axios({
     url: `${baseURL}/check-email`,
