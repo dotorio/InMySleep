@@ -46,6 +46,22 @@ function signUpFun() {
 }
 
 function emailCheckFun() {
+  if (email.value === "") {
+    Swal.fire({
+      icon: "error",
+      text: "이메일을 입력해주세요.",
+    });
+    return;
+  }
+
+  if (email.value.indexOf("@") === -1) {
+    Swal.fire({
+      icon: "error",
+      text: "올바른 이메일 형식을 입력해주세요.",
+    });
+    return;
+  }
+
   emailCheck(email.value)
     .then((res) => {
       emailCheckVal.value = true;
@@ -53,12 +69,19 @@ function emailCheckFun() {
     .catch((err) => {
       Swal.fire({
         icon: "error",
-        title: "이미 사용중인 이메일입니다.",
+        text: "이미 사용중인 이메일입니다.",
       });
     });
 }
 
 function usernameCheckFun() {
+  if (username.value === "") {
+    Swal.fire({
+      icon: "error",
+      text: "닉네임을 입력해주세요.",
+    });
+    return;
+  }
   usernameCheck(username.value)
     .then((res) => {
       usernameCheckVal.value = true;
@@ -66,7 +89,7 @@ function usernameCheckFun() {
     .catch((err) => {
       Swal.fire({
         icon: "error",
-        title: "이미 사용중인 닉네임입니다.",
+        text: "이미 사용중인 닉네임입니다.",
       });
     });
 }
