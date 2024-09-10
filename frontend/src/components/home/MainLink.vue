@@ -35,7 +35,7 @@ function goLink(linkName) {
       </div>
     </div>
     <div class="link-img">
-      <img :src="imgUrl(info)" alt="이미지" class="img" />
+      <img src="/src/assets/home/link/img1.png" alt="이미지" class="img" />
     </div>
     <div class="content bit-t">
       {{ info.content }}
