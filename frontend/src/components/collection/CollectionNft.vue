@@ -13,13 +13,18 @@ function nftHover(index) {
   nftIndex.value = index;
   console.log(nftIndex.value);
 }
+
+function imgUrl(nft) {
+  const url = "/src/assets/collection/nft/" + nft + ".svg";
+  return new URL(url, import.meta.url).href;
+}
 </script>
 
 <template>
   <div class="nft-con box-md">
     <div class="nft-list">
       <img
-        :src="'/src/assets/collection/nft/' + nft + '.svg'"
+        :src="imgUrl(nft)"
         alt="lock"
         v-for="(nft, index) in nftData.nft"
         :key="index"
