@@ -21,7 +21,12 @@ function logoutFun() {
 <template>
   <div class="nav-con flex-align">
     <div class="left-side">
-      <img src="/src/assets/home/logo.gif" alt="logo" class="logo" />
+      <img
+        src="/src/assets/home/logo.gif"
+        alt="logo"
+        class="logo"
+        @click="router.push({ name: 'home' })"
+      />
     </div>
 
     <div class="right-side">
@@ -49,6 +54,8 @@ function logoutFun() {
 .logo {
   width: 100px;
   margin-left: 10px;
+
+  cursor: pointer;
 }
 .account {
   font-size: 25px;
