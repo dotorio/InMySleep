@@ -1,5 +1,6 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
+import Footer from "@/components/Footer.vue";
 import { login } from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -71,6 +72,7 @@ function loginFun() {
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 

@@ -1,5 +1,6 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
+import Footer from "@/components/Footer.vue";
 import { emailCheck, usernameCheck, signUp } from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -38,6 +39,10 @@ function signUpFun() {
   })
     .then((res) => {
       console.log(res.data);
+      Swal.fire({
+        icon: "success",
+        title: "회원가입 완료!",
+      });
       router.replace({ name: "login" });
     })
     .catch((err) => {
@@ -193,6 +198,7 @@ function usernameInput() {
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
