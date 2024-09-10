@@ -8,6 +8,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const email = ref("");
 const username = ref("");
+const emailConfirm = ref("");
+const usernameConfirm = ref("");
 const password = ref("");
 const passwordConfirm = ref("");
 
@@ -70,6 +72,7 @@ function emailCheckFun() {
   emailCheck(email.value)
     .then((res) => {
       emailCheckVal.value = true;
+      emailConfirm.value = "사용 가능한 이메일입니다.";
     })
     .catch((err) => {
       Swal.fire({
@@ -90,6 +93,7 @@ function usernameCheckFun() {
   usernameCheck(username.value)
     .then((res) => {
       usernameCheckVal.value = true;
+      usernameConfirm.value = "사용 가능한 닉네임입니다.";
     })
     .catch((err) => {
       Swal.fire({
@@ -113,10 +117,12 @@ function passwordCheck() {
 
 function emailInput() {
   emailCheckVal.value = false;
+  emailConfirm.value = "";
 }
 
 function usernameInput() {
   usernameCheckVal.value = false;
+  usernameConfirm.value = "";
 }
 </script>
 
@@ -131,13 +137,18 @@ function usernameInput() {
           <div class="email box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="email" class="bit-t">이메일</label>
-              <button
-                class="check-btn bit-t"
-                :class="{ check: emailCheckVal }"
-                @click="emailCheckFun"
-              >
-                중복확인
-              </button>
+              <div class="flex-align">
+                <div class="email-confirm bit-t">
+                  {{ emailConfirm }}
+                </div>
+                <button
+                  class="check-btn bit-t"
+                  :class="{ check: emailCheckVal }"
+                  @click="emailCheckFun"
+                >
+                  중복확인
+                </button>
+              </div>
             </div>
             <input
               id="email"
@@ -151,13 +162,18 @@ function usernameInput() {
           <div class="username box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="username" class="bit-t">닉네임</label>
-              <button
-                class="check-btn bit-t"
-                :class="{ check: usernameCheckVal }"
-                @click="usernameCheckFun"
-              >
-                중복확인
-              </button>
+              <div class="flex-align">
+                <div class="username-confirm bit-t">
+                  {{ usernameConfirm }}
+                </div>
+                <button
+                  class="check-btn bit-t"
+                  :class="{ check: usernameCheckVal }"
+                  @click="usernameCheckFun"
+                >
+                  중복확인
+                </button>
+              </div>
             </div>
             <input
               id="username"
@@ -267,7 +283,11 @@ button {
   background-color: grey;
   border-color: grey;
 }
-
+.email-confirm,
+.username-confirm {
+  color: rgb(48, 164, 48);
+  margin-right: 20px;
+}
 .agreement {
   color: green;
 }
