@@ -15,8 +15,7 @@ function nftHover(index) {
 }
 
 function imgUrl(nft) {
-  const url = "/src/assets/collection/nft/" + nft + ".svg";
-  return new URL(url, import.meta.url).href;
+  return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
 }
 </script>
 
