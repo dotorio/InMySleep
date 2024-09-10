@@ -11,10 +11,19 @@ export function signUp(data) {
   });
 }
 
-export function emailCheck(params) {
+export function emailCheck(email) {
   return axios({
     url: `${baseURL}/check-email`,
     method: "get",
-    params: params,
+    params: { email },
+  });
+}
+
+export function usernameCheck(username) {
+  console.log(11);
+  return axios({
+    url: `${baseURL}/check-username`,
+    method: "get",
+    params: { username },
   });
 }

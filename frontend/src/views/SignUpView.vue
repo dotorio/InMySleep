@@ -1,8 +1,10 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
-import { emailCheck } from "@/api/user";
+import { emailCheck, usernameCheck, signUp } from "@/api/user";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const email = ref("");
 const username = ref("");
 const password = ref("");
@@ -10,24 +12,83 @@ const passwordConfirm = ref("");
 
 const emailCheckVal = ref(false);
 const usernameCheckVal = ref(false);
+const passwordConfirmVal = ref(false);
 
-function signUp() {
-  console.log(email.value);
-  console.log(username.value);
-  console.log(password.value);
-  console.log(passwordConfirm.value);
-}
+function signUpFun() {
+  if (!emailCheckVal.value || !usernameCheckVal.value) {
+    Swal.fire({
+      icon: "error",
+      title: "중복확인을 진행해주세요!",
+    });
+    return;
+  }
 
-function emailCheckFun() {
-  emailCheck({
+  if (!passwordConfirmVal.value) {
+    Swal.fire({
+      icon: "error",
+      title: "비밀번호가 다릅니다",
+    });
+    return;
+  }
+
+  signUp({
     email: email.value,
+    username: username.value,
+    password: password.value,
   })
     .then((res) => {
       console.log(res.data);
+      router.replace({ name: "login" });
     })
     .catch((err) => {
       console.log(err);
     });
+}
+
+function emailCheckFun() {
+  emailCheck(email.value)
+    .then((res) => {
+      emailCheckVal.value = true;
+    })
+    .catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "이미 사용중인 이메일입니다.",
+      });
+    });
+}
+
+function usernameCheckFun() {
+  usernameCheck(username.value)
+    .then((res) => {
+      usernameCheckVal.value = true;
+    })
+    .catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "이미 사용중인 닉네임입니다.",
+      });
+    });
+}
+
+function passwordCheck() {
+  if (password.value === "") {
+    return "";
+  } else if (password.value === passwordConfirm.value) {
+    passwordConfirmVal.value = true;
+    return "비밀번호와 일치합니다!";
+  } else {
+    passwordConfirmVal.value = false;
+    return "비밀번호와 다릅니다.";
+  }
+}
+
+function emailInput() {
+  emailCheckVal.value = false;
+}
+
+function usernameInput() {
+  usernameCheckVal.value = false;
 }
 </script>
 
@@ -42,7 +103,11 @@ function emailCheckFun() {
           <div class="email box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="email" class="bit-t">이메일</label>
-              <button class="check-btn bit-t" @click="emailCheckFun">
+              <button
+                class="check-btn bit-t"
+                :class="{ check: emailCheckVal }"
+                @click="emailCheckFun"
+              >
                 중복확인
               </button>
             </div>
@@ -52,12 +117,19 @@ function emailCheckFun() {
               type="text"
               placeholder="이메일을 입력해주세요."
               v-model="email"
+              @input="emailInput"
             />
           </div>
           <div class="username box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="username" class="bit-t">닉네임</label>
-              <button class="check-btn bit-t">중복확인</button>
+              <button
+                class="check-btn bit-t"
+                :class="{ check: usernameCheckVal }"
+                @click="usernameCheckFun"
+              >
+                중복확인
+              </button>
             </div>
             <input
               id="username"
@@ -65,6 +137,7 @@ function emailCheckFun() {
               type="text"
               placeholder="닉네임을 입력해주세요."
               v-model="username"
+              @input="usernameInput"
             />
           </div>
           <div class="password box-col">
@@ -75,7 +148,17 @@ function emailCheckFun() {
               type="password"
               v-model="password"
             />
-            <label for="password-confirm" class="bit-t">비밀번호 확인</label>
+            <div class="flex-align" style="justify-content: space-between">
+              <label for="password-confirm" class="bit-t">비밀번호 확인</label>
+              <span
+                class="bit-t"
+                :class="{
+                  agreement: passwordConfirmVal,
+                  disagreement: !passwordConfirmVal,
+                }"
+                >{{ passwordCheck() }}</span
+              >
+            </div>
             <input
               id="password-confirm"
               class="bit-t"
@@ -83,7 +166,7 @@ function emailCheckFun() {
               v-model="passwordConfirm"
             />
           </div>
-          <button class="btn bit-t" @click="signUp">회원가입</button>
+          <button class="btn bit-t" @click="signUpFun">회원가입</button>
         </div>
       </div>
     </div>
@@ -149,5 +232,17 @@ label {
 
 button {
   cursor: pointer;
+}
+
+.check {
+  background-color: grey;
+  border-color: grey;
+}
+
+.agreement {
+  color: green;
+}
+.disagreement {
+  color: grey;
 }
 </style>
