@@ -12,13 +12,13 @@ function imgUrl(info) {
 
   switch (id) {
     case 1:
-      return "/src/assets/home/link/img1.png";
+      return new URL("@/assets/home/link/img1.png", import.meta.url).href;
     case 2:
-      return "/src/assets/home/link/img2.jpg";
+      return new URL("@/assets/home/link/img2.jpg", import.meta.url).href;
     case 3:
-      return "/src/assets/home/link/img3.png";
+      return new URL("@/assets/home/link/img3.png", import.meta.url).href;
     default:
-      return "/src/assets/home/link/img1.png";
+      return new URL("@/assets/home/link/img1.png", import.meta.url).href;
   }
 }
 
@@ -35,7 +35,7 @@ function goLink(linkName) {
       </div>
     </div>
     <div class="link-img">
-      <img src="/src/assets/home/link/img1.png" alt="이미지" class="img" />
+      <img :src="imgUrl(info)" alt="이미지" class="img" />
     </div>
     <div class="content bit-t">
       {{ info.content }}
