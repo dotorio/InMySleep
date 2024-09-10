@@ -1,6 +1,34 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
+import { emailCheck } from "@/api/user";
 import { ref } from "vue";
+
+const email = ref("");
+const username = ref("");
+const password = ref("");
+const passwordConfirm = ref("");
+
+const emailCheckVal = ref(false);
+const usernameCheckVal = ref(false);
+
+function signUp() {
+  console.log(email.value);
+  console.log(username.value);
+  console.log(password.value);
+  console.log(passwordConfirm.value);
+}
+
+function emailCheckFun() {
+  emailCheck({
+    email: email.value,
+  })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 </script>
 
 <template>
@@ -14,13 +42,16 @@ import { ref } from "vue";
           <div class="email box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="email" class="bit-t">이메일</label>
-              <button class="check-btn bit-t">중복확인</button>
+              <button class="check-btn bit-t" @click="emailCheckFun">
+                중복확인
+              </button>
             </div>
             <input
               id="email"
               class="bit-t"
               type="text"
               placeholder="이메일을 입력해주세요."
+              v-model="email"
             />
           </div>
           <div class="username box-col">
@@ -33,15 +64,26 @@ import { ref } from "vue";
               class="bit-t"
               type="text"
               placeholder="닉네임을 입력해주세요."
+              v-model="username"
             />
           </div>
           <div class="password box-col">
             <label for="password" class="bit-t">비밀번호</label>
-            <input id="password" class="bit-t" type="password" />
+            <input
+              id="password"
+              class="bit-t"
+              type="password"
+              v-model="password"
+            />
             <label for="password-confirm" class="bit-t">비밀번호 확인</label>
-            <input id="password-confirm" class="bit-t" type="password" />
+            <input
+              id="password-confirm"
+              class="bit-t"
+              type="password"
+              v-model="passwordConfirm"
+            />
           </div>
-          <button class="btn bit-t">회원가입</button>
+          <button class="btn bit-t" @click="signUp">회원가입</button>
         </div>
       </div>
     </div>
