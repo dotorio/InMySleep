@@ -39,6 +39,10 @@ function signUpFun() {
   })
     .then((res) => {
       console.log(res.data);
+      Swal.fire({
+        icon: "success",
+        title: "회원가입 완료!",
+      });
       router.replace({ name: "login" });
     })
     .catch((err) => {
