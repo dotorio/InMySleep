@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CatController : MonoBehaviour
 {
-    public float speed = 2.0f;  // 고양이의 이동 속도
-    private bool isMovingForward = true;  // 앞으로 이동 중인지 확인하는 변수
-    private float moveTime = 1.0f;  // 1초 동안 이동
-    private float timer = 0.0f;  // 시간 측정용 타이머
+    //public float speed = 2.0f;  // 고양이의 이동 속도
+    //private bool isMovingForward = true;  // 앞으로 이동 중인지 확인하는 변수
+    //private float moveTime = 1.0f;  // 1초 동안 이동
+    //private float timer = 0.0f;  // 시간 측정용 타이머
     private Animator animator;  // 애니메이터
     public GameObject bomb; // 캐릭터 팔에 연결된 공
     public Transform hand;  // 캐릭터의 손 위치
@@ -30,25 +30,25 @@ public class CatController : MonoBehaviour
     void Update()
     {
         // 타이머 업데이트
-        timer += Time.deltaTime;
+        //timer += Time.deltaTime;
 
-        // 1초가 지났을 때 방향을 바꿈
-        if (timer >= moveTime)
-        {
-            isMovingForward = !isMovingForward;  // 방향 반전
-            timer = 0.0f;  // 타이머 리셋
-        }
+        //// 1초가 지났을 때 방향을 바꿈
+        //if (timer >= moveTime)
+        //{
+        //    isMovingForward = !isMovingForward;  // 방향 반전
+        //    timer = 0.0f;  // 타이머 리셋
+        //}
 
-        //고양이의 이동 처리
-        if (isMovingForward)
-        {
-            transform.position += (new Vector3(5, 0, 0) * speed * Time.deltaTime);  // 왼쪽으로 이동
+        ////고양이의 이동 처리
+        //if (isMovingForward)
+        //{
+        //    transform.position += (new Vector3(5, 0, 0) * speed * Time.deltaTime);  // 왼쪽으로 이동
 
-        }
-        else
-        {
-            transform.position += (new Vector3(-5, 0, 0) * speed * Time.deltaTime);  // 오른쪽으로 이동
-        }
+        //}
+        //else
+        //{
+        //    transform.position += (new Vector3(-5, 0, 0) * speed * Time.deltaTime);  // 오른쪽으로 이동
+        //}
         //if (Time.time - lastProjectileTime >= projectileCooldown)
         //{
         //    lastProjectileTime = Time.time;
