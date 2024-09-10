@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+function goSignUp() {
+  router.push({ name: "signup" });
+}
+</script>
 
 <template>
   <div class="nav-con flex-align">
@@ -8,14 +16,14 @@
 
     <div class="right-side">
       <span class="bit-t account">로그인</span>
-      <span class="bit-t account">회원가입</span>
+      <span class="bit-t account" @click="goSignUp">회원가입</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 .nav-con {
-  height: 100px;
+  height: 15vh;
   justify-content: space-between;
   background-color: #1f1a59;
 }
