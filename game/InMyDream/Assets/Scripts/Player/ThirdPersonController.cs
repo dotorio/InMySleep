@@ -20,6 +20,7 @@ public class ThirdPersonController : MonoBehaviourPun
     private bool isGrounded;
 
     public Animator animator;
+    public bool isInteracting = false; // 상호작용 중인지 여부 확인
 
     void Start()
     {
@@ -28,9 +29,9 @@ public class ThirdPersonController : MonoBehaviourPun
 
     void Update()
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || isInteracting) // 원격 플레이어나 상호작용 중일 때는 업데이트 중단
         {
-            return; // 원격 플레이어는 업데이트를 처리하지 않음
+            return;
         }
 
         // 땅에 있는지 확인
@@ -38,7 +39,7 @@ public class ThirdPersonController : MonoBehaviourPun
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f; // 작은 값으로 설정하여 땅에 붙어있게 함
-            animator.SetInteger("animation", 1);
+            animator.SetInteger("animation", 1); // Idle 모션
         }
 
         // 입력 처리
@@ -52,7 +53,7 @@ public class ThirdPersonController : MonoBehaviourPun
 
         if ((horizontal != 0f || vertical != 0f) && isGrounded)
         {
-            animator.SetInteger("animation", 18);
+            animator.SetInteger("animation", 18); // 걷기 모션
         }
         if (isSprinting)
         {
@@ -60,10 +61,9 @@ public class ThirdPersonController : MonoBehaviourPun
 
             if ((horizontal != 0f || vertical != 0f) && isGrounded)
             {
-                animator.SetInteger("animation", 15);
+                animator.SetInteger("animation", 15); // 달리기 모션
             }
         }
-        
 
         if (direction.magnitude >= 0.1f)
         {
@@ -83,7 +83,7 @@ public class ThirdPersonController : MonoBehaviourPun
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            animator.SetInteger("animation", 9);
+            animator.SetInteger("animation", 9); // 점프 모션
         }
 
         // 중력 적용
@@ -97,3 +97,4 @@ public class ThirdPersonController : MonoBehaviourPun
         followCamera = activeCameraTransform;
     }
 }
+
