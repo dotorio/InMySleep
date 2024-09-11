@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/kysTest.unity
     guid: 5bdb146609009034ea6bd9117163e30d
   - enabled: 0
-    path: Assets/Scenes/FirstScene 1.unity
+    path: Assets/Scenes/2s_Scene.unity
     guid: 8e00c4382393df84faf5bdc8439e4485
   - enabled: 0
     path: Assets/Scenes/3s_Scene.unity
