@@ -7,11 +7,11 @@ public class ButtonSceneMain : MonoBehaviour
     public UILoginBtn LoginBtn;
     void Start()
     {
-        this.LoginBtn.uiPopupLogin.onClickLogin = (id, password) =>
-        {
-            // ¼­¹ö Àü¼Û or ÀúÀå
-            Debug.LogFormat("<color=yellow>id: {0}, password: {1}</color>", id, password);
-        };
+        //this.LoginBtn.uiPopupLogin.onClickLogin = (id, password) =>
+        //{
+        //    // ì„œë²„ ì „ì†¡ or ì €ìž¥
+        //    Debug.LogFormat("<color=yellow>id: {0}, password: {1}</color>", id, password);
+        //};
         this.LoginBtn.Init();
     }
 
