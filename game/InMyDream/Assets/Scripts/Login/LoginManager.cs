@@ -3,13 +3,12 @@ using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
 {
     public TMP_InputField inputEmail; // 사용자 이메일 입력 필드
     public TMP_InputField inputPassword; // 비밀번호 입력 필드
-    //public InputField emailInputField;  
-    //public InputField passwordInputField;  
     public Text errorMessageText;          // 오류 메시지 표시 텍스트
     public GameObject loginPanel;          // 로그인 팝업창 패널
 
@@ -59,12 +58,25 @@ public class LoginManager : MonoBehaviour
 
             if (response.success)
             {
-                Debug.Log("로그인 성공! 사용자 ID: " + response.userId);
 
-                // 로그인 성공 시 토큰 저장 등 처리 (PlayerPrefs 사용)
-                PlayerPrefs.SetString("token", response.token);
-                PlayerPrefs.SetInt("userId", response.userId);
-                PlayerPrefs.Save();
+                Debug.Log("로그인 성공");
+                Debug.Log("username: " + response.data.username);
+                Debug.Log("userId: " + response.data.userId);
+                Debug.Log("email: " + response.data.email);
+                Debug.Log("lastStage: " + response.data.lastStage);
+                UserData.instance.email = response.data.email;
+                UserData.instance.userName = response.data.username;
+                UserData.instance.userId = response.data.userId;
+                UserData.instance.lastStage = response.data.lastStage;
+
+                SceneManager.LoadScene("Test");
+
+                //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
+                //PlayerPrefs.SetInt("userId", response.data.userId);
+                //PlayerPrefs.SetString("username", response.data.username);
+                //PlayerPrefs.SetString("email", response.data.email);
+                //PlayerPrefs.SetInt("lastStage", response.data.lastStage);
+                //PlayerPrefs.Save();
 
                 // 로그인 성공 시 팝업창 닫기 또는 다른 씬으로 전환
                 loginPanel.SetActive(false);
@@ -96,8 +108,16 @@ public class LoginData
 [System.Serializable]
 public class ServerResponse
 {
-    public bool success;     // 로그인 성공 여부
-    public string token;     // 인증 토큰
-    public int userId;       // 사용자 ID
-    public string message;   // 오류 메시지
+    public bool success;    // 로그인 성공 여부
+    public UserInfo data;    // 유저 정보가 포함된 "data" 필드
+    public string message;   // 서버에서 반환된 메시지
+}
+
+[System.Serializable]
+public class UserInfo
+{
+    public int userId;         // 유저 ID
+    public string username;    // 유저 이름
+    public string email;       // 유저 이메일
+    public int lastStage;      // 마지막 스테이지
 }
