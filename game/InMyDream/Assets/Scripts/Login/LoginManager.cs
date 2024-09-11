@@ -7,12 +7,24 @@ using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
 {
-    public TMP_InputField inputEmail; // 사용자 이메일 입력 필드
-    public TMP_InputField inputPassword; // 비밀번호 입력 필드
-    public Text errorMessageText;          // 오류 메시지 표시 텍스트
-    public GameObject loginPanel;          // 로그인 팝업창 패널
-
+    public TMP_InputField inputEmail;         // 사용자 이메일 입력 필드
+    public TMP_InputField inputPassword;      // 비밀번호 입력 필드
+    public Text errorMessageText;             // 오류 메시지 표시 텍스트
+    public GameObject loginPanel;             // 로그인 팝업창 패널
+    public GameObject loginFailPopupPanel;    // 로그인 실패 팝업창 패널
+    public Button retryButton;                // 다시 시도 버튼
+    public Button closeBtn; 
     private string loginUrl = "https://j11e107.p.ssafy.io:8000/api/v1/auth/login";  // 서버의 로그인 API URL
+
+    void Start()
+    {
+        // 처음에 로그인 실패 팝업창을 비활성화
+        loginFailPopupPanel.SetActive(false);
+        // 다시 시도 버튼에 대한 클릭 이벤트 등록
+        retryButton.onClick.AddListener(CloseLoginFailPopup);
+        closeBtn.onClick.AddListener(CloseLoginFailPopup);
+    }
+
 
     // 로그인 버튼 클릭 시 호출
     public void OnLoginButtonClicked()
@@ -44,9 +56,13 @@ public class LoginManager : MonoBehaviour
         // 요청 결과 처리
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
+            // 로그인 실패 시 오류 메시지 표시
+            //errorMessageText.text = "로그인 실패: " + response.message;
+            ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
+
             // 에러 발생 시 처리
             Debug.LogError("Error: " + request.error);
-            errorMessageText.text = "서버 연결 오류: " + request.error;
+            //errorMessageText.text = "서버 연결 오류: " + request.error;
         }
         else
         {
@@ -85,10 +101,22 @@ public class LoginManager : MonoBehaviour
             {
                 // 로그인 실패 시 오류 메시지 표시
                 errorMessageText.text = "로그인 실패: " + response.message;
+                ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
             }
         }
     }
+    void ShowLoginFailPopup()
+    {
+        loginFailPopupPanel.SetActive(true);  // 팝업창을 활성화
+    }
+
+    void CloseLoginFailPopup()
+    {
+        loginFailPopupPanel.SetActive(false);  // 팝업창을 비활성화
+    }
 }
+
+
 
 // 로그인 요청 데이터를 나타내는 클래스
 [System.Serializable]
