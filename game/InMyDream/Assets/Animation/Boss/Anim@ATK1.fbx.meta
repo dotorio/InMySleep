@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b879d93f6ad2e3d4681e180c8716daf1
+guid: d22194b13cd19b544a2c9a52927cde53
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -668,7 +668,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.24752475
+        functionName: BallThrow
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: cdd2898f30110e542a9910d44128e89c, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
