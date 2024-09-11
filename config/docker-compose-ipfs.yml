@@ -32,6 +32,7 @@ services:
       - ./compose/ipfs-cluster1:/data/ipfs-cluster
     networks:
       - ipfs-network
+    restart: always
 
   ipfs-node2:
     image: ipfs/kubo:latest
@@ -59,6 +60,7 @@ services:
       - ./compose/ipfs-cluster2:/data/ipfs-cluster
     networks:
       - ipfs-network
+    restart: always
 
   ipfs-node3:
     image: ipfs/kubo:latest
@@ -86,6 +88,7 @@ services:
       - ./compose/ipfs-cluster3:/data/ipfs-cluster
     networks:
       - ipfs-network
+    restart: always
 
 networks:
   ipfs-network:
