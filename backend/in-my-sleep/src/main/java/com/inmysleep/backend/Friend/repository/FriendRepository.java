@@ -24,4 +24,8 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("SELECT f FROM Friend f WHERE (f.userId = :userId AND f.friendUser.userId = :friendUserId) " +
             "OR (f.userId = :friendUserId AND f.friendUser.userId = :userId)")
     List<Friend> findByUserIdAndFriendUserBothWays(@Param("userId") int userId, @Param("friendUserId") int friendUserId);
+
+    // 친구 관계 확인을 위한 쿼리
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Friend f WHERE f.userId = :userId AND f.friendUser.userId = :friendUserId")
+    boolean existsFriendRelation(@Param("userId") int userId, @Param("friendUserId") int friendUserId);
 }
