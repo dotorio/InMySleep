@@ -1,7 +1,8 @@
 # blockchain solidity
-solidity-contracts/build/
+contracts/
 
 # blockchain ipfs
+ipfs-*/
 
 # blockchain backend
 node_modules
