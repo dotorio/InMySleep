@@ -1,0 +1,11 @@
+{
+    "name": "KYS NFT #5",
+    "description": "This is NFT #5",
+    "image": "ipfs://QmQLv1mHxMTrgw9tZnCKLZNdpdP1yZYPYtaGgteJy9npFH",
+    "attributes": [
+        {
+            "trait_type": "Background",
+            "value": "Blue"
+        }
+    ]
+}
