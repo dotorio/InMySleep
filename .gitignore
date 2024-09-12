@@ -1,2 +1,9 @@
+# blockchain solidity
+contracts/
+
+# blockchain ipfs
+ipfs-*/
+
+# blockchain backend
 node_modules
-solidity-contracts/build/
+.env
