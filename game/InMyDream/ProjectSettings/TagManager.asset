@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Interactable
   - Breakable
+  - Ground
+  - PlayerBody
   layers:
   - Default
   - TransparentFX
