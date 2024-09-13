@@ -40,6 +40,7 @@ export const burnNFT = async (tokenId: number, privateKey: string) => {
         const gasPrice = await web3.eth.getGasPrice();
 
         const txData = {
+            from: account.address,
             to: contractAddress,
             data: tx.encodeABI(),
             gas,

@@ -20,7 +20,7 @@ export const burn = async (req: Request, res: Response) => {
   const { tokenId, privateKey } = req.body;
   try {
     const receipt = await burnNFT(tokenId, privateKey);
-    res.status(200).json(receipt);
+    res.status(200).json(jsonBigIntStringify(receipt));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
