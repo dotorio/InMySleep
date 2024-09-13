@@ -1,5 +1,5 @@
 # blockchain solidity
-contracts/
+blockchain/solidity-contracts/build/contracts/
 
 # blockchain ipfs
 ipfs-*/
