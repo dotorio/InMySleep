@@ -11,6 +11,8 @@ public class UserData : MonoBehaviour
     public string userName;
     public string email;
     public int lastStage;
+    public int stage;
+    public int roomId;
 
     void Awake()
     {
