@@ -18,7 +18,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     // testing variable
     private int userId = 1;
-    private string userName = "KYS";
+    private string userName = "user1";
 
     private void Awake()
     {
@@ -32,6 +32,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
             "1.0",
             new Photon.Chat.AuthenticationValues(userName));
+        
     }
 
     void Update()
@@ -124,6 +125,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     void IChatClientListener.OnConnected()
     {
         Debug.Log("Connected to Photon Chat");
+        //Debug.Log(chatClient);
     }
 
     public void OnDisconnected()
