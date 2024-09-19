@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { logout } from "@/api/user";
@@ -21,6 +21,11 @@ function logoutFun() {
 
 async function connectWallet() {
 
+  if (uStore.user.token) {
+    console.log("Already connected");
+    return;
+  }
+
   if (typeof window.ethereum !== "undefined") {
     console.log("MetaMask is installed!");
     window.ethereum.on("chainChanged", () => {
@@ -40,16 +45,18 @@ async function connectWallet() {
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
-    const signature = await signMessage(accounts[0], "Connect with MetaMask");
+    const message = "Connect with MetaMask";
+    const signature = await signMessage(accounts[0], message);
 
-    const response = await walletAuth({
-      address: accounts[0],
-      signature: signature,
-    });
+    const response = await walletAuth(
+      accounts[0],
+      signature,
+      message,
+    );
 
-    const token = response.data.token;
-    localStorage.setItem("token", token);
-
+    if (response.data.token) {
+      uStore.user['token'] = response.data.token;
+    }
 
     console.log("Connected", accounts);
 
@@ -84,7 +91,8 @@ async function signMessage(account, message) {
         <span class="bit-t account" @click="router.push({ name: 'signup' })">회원가입</span>
       </div>
       <div v-else>
-        <span class="bit-t account" @click="connectWallet">지갑 연동</span>
+        <span v-if="uStore.user.token" class="bit-t account">지갑 연동 완료</span>
+        <span v-else class="bit-t account" @click="connectWallet">지갑 연동</span>
         <span class="bit-t account" @click="logoutFun">로그아웃</span>
       </div>
     </div>
