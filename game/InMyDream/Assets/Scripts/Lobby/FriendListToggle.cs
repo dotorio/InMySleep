@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class FriendListToggle : MonoBehaviour
 {
     public RectTransform friendListPanel;  // 친구 목록 패널의 RectTransfor
+    public RectTransform friendSearchListPanel;  // 친구 검색 목록 패널의 RectTransfor
     public Button toggleButton;
+    public Button searchToggleButton;
+
     public GameObject friendList;
     public float slideSpeed = 500f;        // 슬라이드 속도
     private bool isPanelVisible = false;   // 패널이 보이는지 여부
