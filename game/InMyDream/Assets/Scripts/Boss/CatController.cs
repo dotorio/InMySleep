@@ -170,4 +170,21 @@ public class CatController : MonoBehaviour
 
         return finalVelocity;
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Shelf")
+        {
+            Lie();
+        }
+    }
+
+    // 눕는다는 함수
+    void Lie()
+    {
+        // 애니메이션이나 다른 행동을 정의
+        Debug.Log("눕는다는 함수 실행");
+        animator.SetBool("isDie", true);  // isDie 파라미터를 true로 설정
+    }
+
 }
