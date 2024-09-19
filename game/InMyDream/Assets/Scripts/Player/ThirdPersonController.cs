@@ -19,6 +19,11 @@ public class ThirdPersonController : MonoBehaviourPun
     private Vector3 velocity;
     private bool isGrounded;
 
+    private bool isDowned = false;
+    public StageManager stageManager;
+    public float respawnDelay = 3f; // 리스폰 시간 설정
+    public CanvasGroup screenDarkness; // 화면 어둡게 하기위한 canvas
+
     public Animator animator;
     public bool isInteracting = false; // 상호작용 중인지 여부 확인
 
@@ -29,7 +34,7 @@ public class ThirdPersonController : MonoBehaviourPun
 
     void Update()
     {
-        if (!photonView.IsMine || isInteracting) // 원격 플레이어나 상호작용 중일 때는 업데이트 중단
+        if (!photonView.IsMine || isInteracting || isDowned) // 원격 플레이어나 상호작용 중일 때는 업데이트 중단
         {
             return;
         }
@@ -95,6 +100,53 @@ public class ThirdPersonController : MonoBehaviourPun
     public void SetActiveCamera(Transform activeCameraTransform)
     {
         followCamera = activeCameraTransform;
+    }
+
+    public void SetCharacterDowned()
+    {
+        if(!isDowned)
+        {
+            isDowned = true;
+            animator.SetInteger("animation", 6); // 쓰러지는 애니메이션
+            StartCoroutine(HandleRespawn()); // 리스폰 처리
+        }
+    }
+
+    // 리스폰 메소드
+    IEnumerator HandleRespawn()
+    {
+        if(screenDarkness != null)
+        {
+            float fadeDuration = 1f;
+            float elapsed = 0f;
+            while (elapsed < fadeDuration)
+            {
+                screenDarkness.alpha = Mathf.Lerp(0, 1, elapsed / fadeDuration);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        yield return new WaitForSeconds(respawnDelay);
+
+        Transform spawnPoint = stageManager.getSpawnPoint();
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
+
+        if(screenDarkness != null)
+        {
+            float fadeDuration = 1f;
+            float elapsed = 0f;
+            while (elapsed < fadeDuration)
+            {
+                screenDarkness.alpha = Mathf.Lerp(1, 0, elapsed / fadeDuration);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        isDowned = false;
+        Debug.Log("플레이어가 리스폰되었습니다.");
     }
 }
 
