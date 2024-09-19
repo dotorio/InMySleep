@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import { dbHost, dbUser, dbPassword, dbName } from './config';
+import { dbHost, dbUser, dbPassword, dbName } from '../config';
 
 let connection: mysql.Connection | null = null;
 
