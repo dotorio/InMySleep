@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import KYSNFT from '../KYSNFT.json';
-import { saveMintedNFTToDB, saveBurnedNFTToDB, saveMetadataToDB } from '../db/dbConnection';
+import { saveMintedNFTToDB, saveBurnedNFTToDB, saveMetadataToDB } from '../db/nftRepository';
 import { contractAddress } from '../config';
 
 const web3 = new Web3('http://localhost:7545');

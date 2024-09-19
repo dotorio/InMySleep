@@ -1,4 +1,4 @@
-import { getMetadataFromDB } from '../db/dbConnection';
+import { getMetadataFromDB } from '../db/nftRepository';
 
 export const getNFTMetadata = async (tokenId: number): Promise<string> => {
     try {
