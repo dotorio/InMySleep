@@ -141,23 +141,13 @@ function usernameInput() {
                 <div class="email-confirm bit-t">
                   {{ emailConfirm }}
                 </div>
-                <button
-                  class="check-btn bit-t"
-                  :class="{ check: emailCheckVal }"
-                  @click="emailCheckFun"
-                >
+                <button class="check-btn bit-t" :class="{ check: emailCheckVal }" @click="emailCheckFun">
                   중복확인
                 </button>
               </div>
             </div>
-            <input
-              id="email"
-              class="bit-t"
-              type="text"
-              placeholder="이메일을 입력해주세요."
-              v-model="email"
-              @input="emailInput"
-            />
+            <input id="email" class="bit-t" type="text" placeholder="이메일을 입력해주세요." v-model="email"
+              @input="emailInput" />
           </div>
           <div class="username box-col">
             <div class="flex-align" style="justify-content: space-between">
@@ -166,49 +156,25 @@ function usernameInput() {
                 <div class="username-confirm bit-t">
                   {{ usernameConfirm }}
                 </div>
-                <button
-                  class="check-btn bit-t"
-                  :class="{ check: usernameCheckVal }"
-                  @click="usernameCheckFun"
-                >
+                <button class="check-btn bit-t" :class="{ check: usernameCheckVal }" @click="usernameCheckFun">
                   중복확인
                 </button>
               </div>
             </div>
-            <input
-              id="username"
-              class="bit-t"
-              type="text"
-              placeholder="닉네임을 입력해주세요."
-              v-model="username"
-              @input="usernameInput"
-            />
+            <input id="username" class="bit-t" type="text" placeholder="닉네임을 입력해주세요." v-model="username"
+              @input="usernameInput" />
           </div>
           <div class="password box-col">
             <label for="password" class="bit-t">비밀번호</label>
-            <input
-              id="password"
-              class="bit-t"
-              type="password"
-              v-model="password"
-            />
+            <input id="password" class="bit-t" type="password" v-model="password" />
             <div class="flex-align" style="justify-content: space-between">
               <label for="password-confirm" class="bit-t">비밀번호 확인</label>
-              <span
-                class="bit-t"
-                :class="{
-                  agreement: passwordConfirmVal,
-                  disagreement: !passwordConfirmVal,
-                }"
-                >{{ passwordCheck() }}</span
-              >
+              <span class="bit-t" :class="{
+                agreement: passwordConfirmVal,
+                disagreement: !passwordConfirmVal,
+              }">{{ passwordCheck() }}</span>
             </div>
-            <input
-              id="password-confirm"
-              class="bit-t"
-              type="password"
-              v-model="passwordConfirm"
-            />
+            <input id="password-confirm" class="bit-t" type="password" v-model="passwordConfirm" />
           </div>
           <button class="btn bit-t" @click="signUpFun">회원가입</button>
         </div>
@@ -223,12 +189,14 @@ function usernameInput() {
   height: 85vh;
   background-color: aqua;
 }
+
 .signup-con {
   width: 650px;
   height: 550px;
   align-items: center;
   /* background-color: blue; */
 }
+
 .input-con {
   width: 100%;
   height: 90%;
@@ -239,6 +207,7 @@ function usernameInput() {
   border-radius: 20px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
+
 .big-text {
   font-size: 35px;
 }
@@ -246,6 +215,7 @@ function usernameInput() {
 label {
   font-size: 20px;
 }
+
 .input-con input {
   padding-left: 20px;
   font-size: 20px;
@@ -283,14 +253,17 @@ button {
   background-color: grey;
   border-color: grey;
 }
+
 .email-confirm,
 .username-confirm {
   color: rgb(48, 164, 48);
   margin-right: 20px;
 }
+
 .agreement {
   color: green;
 }
+
 .disagreement {
   color: grey;
 }

@@ -13,12 +13,13 @@ const password = ref("");
 
 function loginFun() {
   login({
-    email: email.value,
+    // email: email.value,
+    userId: email.value,
     password: password.value,
   })
     .then((res) => {
       // console.log(res.data);
-      uStore.userLogin(res.data.data);
+      uStore.userLogin(res.data[0]);
       router.replace({ name: "home" });
     })
     .catch((err) => {
@@ -41,32 +42,15 @@ function loginFun() {
         <div class="input-con box-col">
           <div class="email box-col">
             <label for="email" class="bit-t">이메일</label>
-            <input
-              id="email"
-              class="bit-t"
-              type="text"
-              placeholder="이메일을 입력해주세요."
-              v-model="email"
-            />
+            <input id="email" class="bit-t" type="text" placeholder="이메일을 입력해주세요." v-model="email" />
           </div>
           <div class="password box-col">
             <label for="password" class="bit-t">비밀번호</label>
-            <input
-              id="password"
-              class="bit-t"
-              type="password"
-              placeholder="비밀번호를 입력해주세요."
-              v-model="password"
-            />
-            <a href="#" class="bit-t password-link"
-              >비밀번호를 잊어버리셨나요?</a
-            >
+            <input id="password" class="bit-t" type="password" placeholder="비밀번호를 입력해주세요." v-model="password" />
+            <a href="#" class="bit-t password-link">비밀번호를 잊어버리셨나요?</a>
           </div>
           <button class="login-btn bit-t" @click="loginFun">로그인</button>
-          <button
-            class="signup-btn bit-t"
-            @click="router.push({ name: 'signup' })"
-          >
+          <button class="signup-btn bit-t" @click="router.push({ name: 'signup' })">
             회원가입
           </button>
         </div>
@@ -81,6 +65,7 @@ function loginFun() {
   height: 85vh;
   background-color: aqua;
 }
+
 .login-con {
   width: 650px;
   height: 480px;
@@ -106,16 +91,19 @@ function loginFun() {
 label {
   font-size: 20px;
 }
+
 .input-con input {
   padding-left: 20px;
   font-size: 20px;
   margin: 10px 0;
   height: 40px;
 }
+
 .password-link {
   text-decoration: none;
   margin-top: 10px;
 }
+
 .password-link:hover {
   color: rgb(74, 74, 247);
 }
@@ -127,11 +115,13 @@ button {
   border-width: 5px;
   font-size: 20px;
 }
+
 .login-btn {
   border-color: #211d54;
   background-color: #1f1a59;
   color: white;
 }
+
 .signup-btn {
   color: #1f1a59;
   border-color: #1f1a59;

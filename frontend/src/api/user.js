@@ -13,7 +13,7 @@ export function signUp(data) {
 
 export function login(data) {
   return axios({
-    url: `auth/login`,
+    url: `wallet/auth/login`,
     method: "post",
     data,
   });
