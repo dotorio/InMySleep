@@ -1,7 +1,17 @@
 import { ethers } from 'ethers';
 import jwt from 'jsonwebtoken';
-import { saveWalletToDB } from '../db/userRepository';
+import { saveWalletToDB, tmpLogin } from '../db/userRepository';
 import { jwtSecret } from '../config';
+
+export const tmpUserLogin = async (userId: string, password: string): Promise<any> => {
+    try {
+        const account = await tmpLogin(userId, password);
+        return account
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+}
 
 export const verifyMetaMaskSignature = async (address: string, signature: string, message: string): Promise<boolean> => {
     try {

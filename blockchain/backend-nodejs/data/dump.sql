@@ -1,8 +1,8 @@
-INSERT INTO users (user_id, wallet_address)
+INSERT INTO users (user_id, password, wallet_address)
 VALUES 
-('user_1', '0xFbE4946eB5d9f194C256A45a8BAc8faDa5Daa338'),
-('user_2', '0x0F00caaCb2AEBB3A7bf44543192CC1F2919774b7'),
-('user_3', '0xfc48396440e49bF9BbbcfBc1Bf402e9B15c06F75');
+('user_1', '1', '0xFbE4946eB5d9f194C256A45a8BAc8faDa5Daa338'),
+('user_2', '1', '0x0F00caaCb2AEBB3A7bf44543192CC1F2919774b7'),
+('user_3', '1', '0xfc48396440e49bF9BbbcfBc1Bf402e9B15c06F75');
 
 INSERT INTO metadata (metadata_uri, image_url, description, attributes)
 VALUES

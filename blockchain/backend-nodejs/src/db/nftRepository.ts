@@ -1,4 +1,3 @@
-
 import { connectDB } from './dbConnection';
 import { FieldPacket } from 'mysql2';
 import web3 from 'web3';
@@ -30,8 +29,9 @@ export const saveMintedNFTToDB = async (receipt: any, to: string, tokenURI: stri
   export const getMetadataFromDB = async (tokenId: number): Promise<string> => {
     try {
       const conn = await connectDB();
-      const [rows]: [any[], FieldPacket[]] = await conn.query('SELECT metadata_uri FROM metadata WHERE id = (SELECT metadata_id FROM nfts WHERE token_id = ?)', [tokenId]);
-      return rows[0].metadata_uri;
+      // const [rows]: [any[], FieldPacket[]] = await conn.query('SELECT metadata_uri FROM metadata WHERE id = (SELECT metadata_id FROM nfts WHERE token_id = ?)', [tokenId]);
+      // return rows[0].metadata_uri;
+      return ''
     } catch (error) {
       console.error('Error getting metadata from DB:', error);
       throw error;
@@ -49,3 +49,15 @@ export const saveMintedNFTToDB = async (receipt: any, to: string, tokenURI: stri
       throw error;
     }
   }
+
+  // export const getNFTsFromDB = async (address: string): Promise<string[]> => {
+  //   try {
+  //     const conn = await connectDB();
+  //     const [rows]: [any[], FieldPacket[]] = await conn.query('SELECT metadata_uri FROM metadata WHERE id IN (SELECT metadata_id FROM nfts WHERE owner_address = ?)', [address]);
+  //     console.log('NFTs:', rows);
+  //     return rows.map(row => row.metadata_uri);
+  //   } catch (error) {
+  //     console.error('Error getting NFTs from DB:', error);
+  //     throw error;
+  //   }
+  // }
