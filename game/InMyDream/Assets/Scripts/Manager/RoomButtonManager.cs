@@ -7,6 +7,8 @@ using Photon.Realtime;
 public class RoomButtonManager : MonoBehaviourPunCallbacks
 {
     public PhotonManager photonManager;
+    public FriendManager friendManager;
+    public GameObject friendList;
 
     public void Select1()
     {
@@ -16,6 +18,21 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
     {
         photonManager.SelectCharacter("Player2", "04");
     }
+
+    public void GetFriendList ()
+    {
+        friendList.SetActive(true);
+        //if (friendManager != null)
+        //{
+        //    StartCoroutine(DisplayFriendList());
+        //}
+        //else
+        //{
+        //    Debug.LogError("FriendManager가 할당되지 않았습니다.");
+        //}
+
+    }
+
     // 게임 시작 버튼
     public void StartGame()
     {
@@ -40,6 +57,29 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
 
             // 씬 로드
             PhotonNetwork.LoadLevel("kysLobbyTest");
+        }
+    }
+
+    IEnumerator DisplayFriendList()
+    {
+        // FriendManager의 코루틴을 호출하여 친구 목록 로드
+        yield return StartCoroutine(friendManager.LoadFriendList());
+
+        // 친구 목록 로드가 완료된 후, 친구 목록 출력
+        List<FriendDto> friends = friendManager.friendList;
+
+        if (friends != null && friends.Count > 0)
+        {
+            Debug.Log("친구 목록 출력:");
+
+            foreach (FriendDto friend in friends)
+            {
+                Debug.Log($"ID: {friend.userId}, Username: {friend.username}, Email: {friend.email}");
+            }
+        }
+        else
+        {
+            Debug.Log("친구 목록이 비어 있습니다.");
         }
     }
 }

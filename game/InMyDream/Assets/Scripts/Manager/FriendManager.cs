@@ -9,13 +9,13 @@ public class FriendManager : MonoBehaviourPunCallbacks
 {
     private int myUserId = UserData.instance.userId;
     public PhotonManager photonManager;
-    private List<FriendDto> friendList = new List<FriendDto>();
-    private List<UserInfo> requestFriends = new List<UserInfo>();
-    private List<UserInfo> receiveFriends = new List<UserInfo>();
+    public List<FriendDto> friendList = new List<FriendDto>();
+    public List<UserInfo> requestFriends = new List<UserInfo>();
+    public List<UserInfo> receiveFriends = new List<UserInfo>();
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/friend/";
 
     // 친구 목록 확인
-    IEnumerator LoadFriendList()
+    public IEnumerator LoadFriendList()
     {
         UnityWebRequest request = new UnityWebRequest(url+"list?userId="+myUserId, "GET");
         request.downloadHandler = new DownloadHandlerBuffer();
