@@ -4,15 +4,21 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Networking;
+using static UnityEngine.Rendering.DebugUI;
+using TMPro;
 
 public class FriendManager : MonoBehaviourPunCallbacks
 {
-    private int myUserId = UserData.instance.userId;
+    //private int myUserId = UserData.instance.userId;
+    int myUserId = 1;
     public PhotonManager photonManager;
+    public GameObject inviteNoti;
     public List<FriendDto> friendList = new List<FriendDto>();
     public List<UserInfo> requestFriends = new List<UserInfo>();
     public List<UserInfo> receiveFriends = new List<UserInfo>();
+    public string roomNameText;
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/friend/";
+
 
     // 친구 목록 확인
     public IEnumerator LoadFriendList()
@@ -256,11 +262,12 @@ public class FriendManager : MonoBehaviourPunCallbacks
 
     public void SendInvite(string friendName)
     {
-        string userName = UserData.instance.userName;
+        //string userName = UserData.instance.userName;
+        string userName = "user1";
 
         photonManager.SendInvite(friendName, userName);
         
-        Debug.Log($"Invite sent to {friendName} for room: {userName}");
+        //Debug.Log($"Invite sent to {friendName} for room: {userName}");
     }
 
     // 초대 팝업 띄우기
@@ -271,12 +278,20 @@ public class FriendManager : MonoBehaviourPunCallbacks
         //{
         //    AcceptInvite(roomName);
         //}
+        //Debug.Log(inviteNoti.transform.Find("Popup").transform.Find("Text_Info").name);
+        inviteNoti.transform.Find("Popup").transform.Find("Text_Info").GetComponent<TextMeshProUGUI>().text = roomName + "님이\n초대하였습니다.";
+        inviteNoti.SetActive(true);
+        roomNameText = roomName;
+        Debug.Log("초대 왔음!");
+
     }
 
     // 친구 초대를 수락하고 해당 방에 참여
     public void AcceptInvite(string roomName)
     {
         // 초대를 수락하면 해당 방으로 이동
+
+        PhotonNetwork.LeaveRoom();
         PhotonNetwork.JoinRoom(roomName);
         Debug.Log($"Accepted invitation and joining room: {roomName}");
     }
