@@ -1,4 +1,4 @@
-import { getMetadataFromDB } from '../db';
+import { getMetadataFromDB } from '../db/dbConnection';
 
 export const getNFTMetadata = async (tokenId: number): Promise<string> => {
     try {
