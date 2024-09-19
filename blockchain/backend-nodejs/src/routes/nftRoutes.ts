@@ -1,8 +1,8 @@
-// import { Router } from 'express';
-// import { getNFTs } from '../controllers/nftController';
+import { Router } from 'express';
+import { getMetadata } from '../controllers/nftController';
 
-// const router = Router();
+const router = Router();
 
-// router.get('/', getNFTs);
+router.get('/:tokenId', getMetadata);
 
-// export default router;
+export default router;

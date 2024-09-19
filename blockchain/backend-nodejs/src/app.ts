@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import contractRoutes from './routes/contractRoutes';
 // // import ipfsRoutes from './routes/ipfsRoutes';
-// import nftRoutes from './routes/nftRoutes';
-import userRoutes from './routes/userRoutes';
+import nftRoutes from './routes/nftRoutes';
+import walletRoutes from './routes/walletRoutes';
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(cors(corsOptions));
 const BASE_URL = '/api/v1';
 app.use(`${BASE_URL}/contracts`, contractRoutes);
 // app.use('/ipfs', ipfsRoutes);
-// app.use('/nfts', nftRoutes);
-app.use(`${BASE_URL}/wallet`, userRoutes);
+app.use(`${BASE_URL}/nfts`, nftRoutes);
+app.use(`${BASE_URL}/wallet`, walletRoutes);
 
 export default app;
