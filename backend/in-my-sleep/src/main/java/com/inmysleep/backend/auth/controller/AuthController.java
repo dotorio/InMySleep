@@ -3,14 +3,17 @@ package com.inmysleep.backend.auth.controller;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.auth.service.AuthService;
-import com.inmysleep.backend.user.dto.UserInfoDto;
+import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,9 +29,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UserInfoDto>> login(@RequestBody AuthUserDto userDto) {
-        ApiResponse<UserInfoDto> apiResponse = new ApiResponse<>();
-        UserInfoDto userInfo = authService.loginUser(userDto);
+    public ResponseEntity<ApiResponse<UserLoginDto>> login(@RequestBody AuthUserDto userDto) {
+        ApiResponse<UserLoginDto> apiResponse = new ApiResponse<>();
+        UserLoginDto userInfo = authService.loginUser(userDto);
         apiResponse.setResponseTrue(userInfo, "로그인 성공");
         return ResponseEntity.ok(apiResponse);
     }
