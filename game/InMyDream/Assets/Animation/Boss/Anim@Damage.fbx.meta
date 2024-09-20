@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4893c416038c0494eaccd4b37b729ef6
+guid: f1ac4393be19d734fa34204fbab4296c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -605,7 +605,7 @@ ModelImporter:
     second: Tail_root
   - first:
       74: 7400000
-    second: ATK2
+    second: Damage
   - first:
       95: 9500000
     second: //RootNode
@@ -628,10 +628,10 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Anim@ATK2' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Knee_R' has translation animation that
-      will be discarded.\n\t'Elbow_L' has translation animation that will be discarded.\n"
+    animationImportWarnings: "\nClip 'Anim@Damage' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'Elbow_L' has translation animation that
+      will be discarded.\n\t'Knee_L' has translation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -645,18 +645,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: ATK2
-      takeName: Anim@ATK2
+      name: Damage
+      takeName: Anim@Damage
       internalID: 0
-      firstFrame: 91
-      lastFrame: 110
+      firstFrame: 201
+      lastFrame: 220
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
@@ -668,14 +668,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events:
-      - time: 0.32882994
-        functionName: CubeThrow
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: cdd2898f30110e542a9910d44128e89c, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
+      events: []
       transformMask:
       - path: 
         weight: 1
@@ -845,7 +838,7 @@ ModelImporter:
         weight: 1
       maskType: 1
       maskSource: {fileID: 31900000, guid: 0e7965fc97e8e904685a2c9b943f242d, type: 2}
-      additiveReferencePoseFrame: 90.96
+      additiveReferencePoseFrame: 200.88
     isReadable: 1
   meshes:
     lODScreenPercentages: []

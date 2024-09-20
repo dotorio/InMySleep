@@ -18,9 +18,17 @@ public class BombController : MonoBehaviour
     {
         if (!hasExploded) // 이미 폭발하지 않았을 경우에만 실행
         {
-            Explode();
+            if (CompareTag("Bomb") && other.CompareTag("Player"))
+            {
+                Explode();
+            }
+            else if (CompareTag("Stone") && other.CompareTag("Boss"))
+            {
+                Explode();
+            }
         }
     }
+
 
     // 일정 시간 후에 발사체를 제거하고 폭발 효과 생성
     IEnumerator DestroyAndExplode(float delay)
