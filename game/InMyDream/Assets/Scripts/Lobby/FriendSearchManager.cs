@@ -12,6 +12,7 @@ public class FriendSearchManager : MonoBehaviour
     public Button searchButton;                // 검색 버튼
     public Transform contentPanel;             // Scroll View의 Content 부분
     public GameObject friendItemPrefab;        // 친구 항목 프리팹
+    public FriendManager friendManager;
 
     private string apiUrl = "https://j11e107.p.ssafy.io:8000/api/v1/user/search";  // 서버 API URL
     public int page = 0;
@@ -101,8 +102,18 @@ public class FriendSearchManager : MonoBehaviour
         // 새로운 친구 항목을 동적으로 생성
         foreach (FriendSearchDto friend in friendList)
         {
-            GameObject newFriendItem = Instantiate(friendItemPrefab, contentPanel);  // 프리팹 생성
-            newFriendItem.transform.Find("UsernameText").GetComponent<TextMeshProUGUI>().text = friend.username;  // 친구 이름 설정
+            if (!friend.friend)
+            {
+                GameObject newFriendItem = Instantiate(friendItemPrefab, contentPanel);  // 프리팹 생성
+                newFriendItem.transform.Find("UsernameText").GetComponent<TextMeshProUGUI>().text = friend.username;  // 친구 이름 설정
+                Button requestBtn = newFriendItem.transform.Find("RequestBtn").GetComponent<Button>();
+                requestBtn.onClick.AddListener(() => requestFriend(friend.userId));
+            }
         }
+    }
+
+    void requestFriend (int userId)
+    {
+        StartCoroutine(friendManager.AddFriend(userId));
     }
 }

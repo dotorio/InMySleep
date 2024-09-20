@@ -10,7 +10,7 @@ using TMPro;
 public class FriendManager : MonoBehaviourPunCallbacks
 {
     //private int myUserId = UserData.instance.userId;
-    int myUserId = 1;
+    int myUserId = 39;
     public PhotonManager photonManager;
     public GameObject inviteNoti;
     public List<FriendDto> friendList = new List<FriendDto>();
@@ -38,12 +38,12 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse2 response = JsonUtility.FromJson<FriendResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
                 Debug.Log("친구 목록 요청 성공");
-                friendList = JsonUtility.FromJson<List<FriendDto>>(response.data);
+                friendList = response.data;
             }
             else
             {
@@ -70,12 +70,12 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse1 response = JsonUtility.FromJson<FriendResponse1>(request.downloadHandler.text);
 
             if (response.success)
             {
                 Debug.Log("보낸 친구 요청 목록 성공");
-                requestFriends = JsonUtility.FromJson<List<UserInfo>>(response.data);
+                requestFriends = response.data;
             }
             else
             {
@@ -85,7 +85,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
     }
 
     // 받은 친구 요청 목록 확인
-    IEnumerator LoadReceiveFriendList()
+    public IEnumerator LoadReceiveFriendList()
     {
         UnityWebRequest request = new UnityWebRequest(url + "receive-list?userId=" + myUserId, "GET");
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -102,12 +102,14 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse1 response = JsonUtility.FromJson<FriendResponse1>(request.downloadHandler.text);
 
             if (response.success)
             {
                 Debug.Log("받츤 친구 요청 목록 성공");
-                receiveFriends = JsonUtility.FromJson<List<UserInfo>>(response.data);
+                Debug.Log(response.data[0].username);
+                receiveFriends = response.data;
+                Debug.Log(receiveFriends);
             }
             else
             {
@@ -117,11 +119,12 @@ public class FriendManager : MonoBehaviourPunCallbacks
     }
 
     // 친구 추가
-    IEnumerator AddFriend(int userId)
+    public IEnumerator AddFriend(int userId)
     {
+        Debug.Log(userId);
         FriendRequestDto friendRequest = new FriendRequestDto(myUserId, userId);
         string jsonData = JsonUtility.ToJson(friendRequest);
-
+        Debug.Log(jsonData);
         UnityWebRequest request = new UnityWebRequest(url + "request", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -139,7 +142,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse2 response = JsonUtility.FromJson<FriendResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -153,7 +156,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
     }
 
     // 친구 수락
-    IEnumerator AcceptFriendRequest(int userId)
+    public IEnumerator AcceptFriendRequest(int userId)
     {
         FriendRequestDto friendRequest = new FriendRequestDto(myUserId, userId);
         string jsonData = JsonUtility.ToJson(friendRequest);
@@ -175,7 +178,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse2 response = JsonUtility.FromJson<FriendResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -189,11 +192,11 @@ public class FriendManager : MonoBehaviourPunCallbacks
     }
 
     // 친구 거절
-    IEnumerator RefuseFriendRequest(int userId)
+    public IEnumerator RefuseFriendRequest(int userId)
     {
-        FriendRequestDto friendRequest = new FriendRequestDto(myUserId, userId);
+        FriendRequestDto friendRequest = new FriendRequestDto(userId, myUserId);
         string jsonData = JsonUtility.ToJson(friendRequest);
-
+        Debug.Log(jsonData);
         UnityWebRequest request = new UnityWebRequest(url + "refuse", "PUT");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -211,7 +214,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse2 response = JsonUtility.FromJson<FriendResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -247,7 +250,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            FriendResponse2 response = JsonUtility.FromJson<FriendResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -291,8 +294,11 @@ public class FriendManager : MonoBehaviourPunCallbacks
     {
         // 초대를 수락하면 해당 방으로 이동
 
+        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+        playerProps["roomName"] = roomName;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+
         PhotonNetwork.LeaveRoom();
-        PhotonNetwork.JoinRoom(roomName);
         Debug.Log($"Accepted invitation and joining room: {roomName}");
     }
 }
@@ -328,9 +334,17 @@ public class FriendDto
 }
 
 [System.Serializable]
-public class FriendResponse
+public class FriendResponse1
 {
     public bool success;
-    public string data;
+    public List<UserInfo> data;
+    public string message;
+}
+
+[System.Serializable]
+public class FriendResponse2
+{
+    public bool success;
+    public List<FriendDto> data;
     public string message;
 }
