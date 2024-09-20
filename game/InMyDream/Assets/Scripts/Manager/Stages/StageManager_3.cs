@@ -4,13 +4,16 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class StageManager_1_2 : MonoBehaviourPun, StageManager
+public class StageManager_3 : MonoBehaviourPun, StageManager
 {
     // 스폰 위치
-    public GameObject Master_1;
-    public GameObject Client_1;
-    public GameObject Master_2;
-    public GameObject Client_2;
+    public GameObject Master;
+    public GameObject Client;
+    private List<Transform> spawnPoints = new List<Transform>();
+
+    // 동적인 스폰 포인트 배정을 위한 변수
+    public GameObject robotVaccum;
+    public float minDistance = 1f;
 
     void Start()
     {
@@ -26,27 +29,13 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         int stage = UserData.instance.stage;
         Transform point;
 
-        if(stage == 1)
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            {
-                point = Master_1.transform;
-            }
-            else
-            {
-                point = Client_1.transform;
-            }
+            point = Master.transform;
         }
         else
         {
-            if (PhotonNetwork.LocalPlayer.IsMasterClient)
-            {
-                point = Master_2.transform;
-            }
-            else
-            {
-                point = Client_2.transform;
-            }
+            point = Client.transform;
         }
 
         // 선택된 캐릭터 프리팹을 인스턴스화합니다.
@@ -63,7 +52,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             // controller에 stage manager 설정
             ThirdPersonController controller = instantiatedCharacter.GetComponent<ThirdPersonController>();
 
-            if(controller != null)
+            if (controller != null)
             {
                 controller.SetStageManager(this);
             }
@@ -79,17 +68,85 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         }
     }
 
+    void update()
+    {
+        CheckGameOver();
+    }
+
+    // 모든 유저가 쓰러져 있는 상태면 게임 오버되고 3스테이지 다시 시작
+    private void CheckGameOver()
+    {
+        bool allDowned = true;
+
+        foreach(var player in PhotonNetwork.CurrentRoom.Players)
+        {
+            if(!player.Value.CustomProperties.ContainsKey("isDowned") || !(bool)player.Value.CustomProperties["isDowned"])
+            {
+                allDowned = false;
+                break;
+            }
+        }
+        
+        if(allDowned)
+        {
+            ShowGameOverMessage();
+            ResetScene();
+        }
+    }
+
+    private void ShowGameOverMessage()
+    {
+        // 스테이지 실패 UI 보여줄 필요 있음
+
+        // 1초 대기
+        StartCoroutine(WaitForSeconds(1f));
+        Debug.Log("모든 플레이어가 쓰러졌습니다. 게임 실패!");
+    }
+
+    IEnumerator WaitForSeconds(float time)
+    {
+        // time 대기 코드
+        yield return new WaitForSeconds(time);
+    }
+
+    // 3스테이지 씬 다시 시작
+    private void ResetScene()
+    {
+        // 3 스테이지 씬 이름에 따라 변경 필요
+        PhotonNetwork.LoadLevel("3_stage");
+    }
+
+    // 동적으로 스폰 포인트 추가
+    public void AddSpawnPoint(Transform newSpawnPoint)
+    {
+        spawnPoints.Add(newSpawnPoint);
+    }
+
     // 스폰 포인트 반환
     public Transform getSpawnPoint()
     {
-        int stage = UserData.instance.stage;
-        Transform point = stage == 1 ?
-            PhotonNetwork.LocalPlayer.IsMasterClient ?
-                Master_1.transform : Client_1.transform :
-            PhotonNetwork.LocalPlayer.IsMasterClient ?
-                Master_2.transform : Client_2.transform;
+        Transform closestSpawnPoint = null;
+        float closestDistance = Mathf.Infinity;
+        Vector3 robotPosition = robotVaccum.transform.position;
 
-        return point;
+        // 스폰 불가능한 스폰 포인트를 리스트에서 제거
+        // 로봇 청소기에 너무 가깝거나 로봇 청소기가 지나간 위치
+        spawnPoints.RemoveAll(spawnPoint => spawnPoint.position.z <= robotPosition.z + minDistance);
+
+        foreach(Transform spawnPoint in spawnPoints)
+        {
+            // z 축 방향 거리 계산
+            float distance = spawnPoint.position.z - robotPosition.z;
+
+            // 일정 거리 이상인 경우만 체크
+            if(distance > minDistance && distance <closestDistance)
+            {
+                closestDistance = distance;
+                closestSpawnPoint = spawnPoint;
+            }
+        }
+
+        return closestSpawnPoint;
     }
 
     // 스킨 변경 메소드
