@@ -15,6 +15,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const BASE_URL = '/api/v1';
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        console.log(`${req.method} ${req.originalUrl} ${req.url} ${res.statusCode}`);
+    });
+    next();
+});
 app.use(`${BASE_URL}/contracts`, contractRoutes);
 // app.use('/ipfs', ipfsRoutes);
 app.use(`${BASE_URL}/nfts`, nftRoutes);
