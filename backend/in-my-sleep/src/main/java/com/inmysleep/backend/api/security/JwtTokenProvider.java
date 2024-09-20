@@ -23,7 +23,7 @@ public class JwtTokenProvider {
     // JWT 생성
     public String createToken(String email) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + 3600000); // 1시간 유효
+        Date validity = new Date(now.getTime() + 21600000); // ms
 
         return Jwts.builder()
                 .setSubject(email)
