@@ -2,11 +2,11 @@
 import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
 
+const { VITE_VUE_IPFS_URL } = import.meta.env;
+
 defineProps({
   nftData: Object,
 });
-
-const BASE_URL = "http://localhost:8080/ipfs/";
 
 const nftIndex = ref(4);
 const uStore = useUserStore();
@@ -21,7 +21,7 @@ function nftHover(index) {
 // }
 function imgUrl(nft) {
   const hash = nft.imageUrl.split("ipfs://")[1];
-  return new URL(`${BASE_URL}${hash}`, import.meta.url).href;
+  return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
 }
 </script>
 
