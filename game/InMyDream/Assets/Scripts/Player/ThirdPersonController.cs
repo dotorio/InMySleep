@@ -20,7 +20,7 @@ public class ThirdPersonController : MonoBehaviourPun
     private bool isGrounded;
 
     private bool isDowned = false;
-    public StageManager stageManager;
+    private StageManager stageManager;
     public float respawnDelay = 3f; // 리스폰 시간 설정
     public CanvasGroup screenDarkness; // 화면 어둡게 하기위한 canvas
 
@@ -102,12 +102,22 @@ public class ThirdPersonController : MonoBehaviourPun
         followCamera = activeCameraTransform;
     }
 
+    // stage manager 설정 메소드
+    public void SetStageManager(StageManager stage)
+    {
+        stageManager = stage;
+    }
+
+    // 캐릭터 쓰러짐 -> 리스폰 동작 수행하는 메소드
     public void SetCharacterDowned()
     {
         if(!isDowned)
         {
             isDowned = true;
             animator.SetInteger("animation", 6); // 쓰러지는 애니메이션
+            ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+            playerProps["isDowned"] = true;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
             StartCoroutine(HandleRespawn()); // 리스폰 처리
         }
     }
@@ -146,6 +156,9 @@ public class ThirdPersonController : MonoBehaviourPun
         }
 
         isDowned = false;
+        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+        playerProps["isDowned"] = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
         Debug.Log("플레이어가 리스폰되었습니다.");
     }
 }
