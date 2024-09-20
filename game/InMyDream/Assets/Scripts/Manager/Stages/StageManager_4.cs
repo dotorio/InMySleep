@@ -4,13 +4,15 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class StageManager_1_2 : MonoBehaviourPun, StageManager
+public class StageManager_4 : MonoBehaviourPun, StageManager
 {
     // 스폰 위치
     public GameObject Master_1;
     public GameObject Client_1;
     public GameObject Master_2;
     public GameObject Client_2;
+    public GameObject Master_3;
+    public GameObject Client_3;
 
     void Start()
     {
@@ -26,9 +28,9 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         int stage = UserData.instance.stage;
         Transform point;
 
-        if(stage == 1)
+        if (stage == 4)
         {
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_1.transform;
             }
@@ -63,7 +65,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             // controller에 stage manager 설정
             ThirdPersonController controller = instantiatedCharacter.GetComponent<ThirdPersonController>();
 
-            if(controller != null)
+            if (controller != null)
             {
                 controller.SetStageManager(this);
             }
@@ -83,11 +85,14 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public Transform getSpawnPoint()
     {
         int stage = UserData.instance.stage;
-        Transform point = stage == 1 ?
+        Transform point = stage == 4 ?
             PhotonNetwork.LocalPlayer.IsMasterClient ?
                 Master_1.transform : Client_1.transform :
-            PhotonNetwork.LocalPlayer.IsMasterClient ?
-                Master_2.transform : Client_2.transform;
+            stage == 5 ?
+                PhotonNetwork.LocalPlayer.IsMasterClient ?
+                    Master_2.transform : Client_2.transform :
+                PhotonNetwork.LocalPlayer.IsMasterClient ?
+                    Master_3.transform : Client_3.transform;
 
         return point;
     }
