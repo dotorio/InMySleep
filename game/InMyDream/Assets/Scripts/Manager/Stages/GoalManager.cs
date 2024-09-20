@@ -10,7 +10,7 @@ public class GoalManager : MonoBehaviour
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
-    private string[] nextScene = {"", "1_2stage", "2_3stage", "3_4stage", "4_5stage", "5_endstage" };
+    private string[] nextScene = {"", "1_2stage", "2_3stage", "3_4stage", "4_4_1stage", "", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
 
@@ -49,10 +49,14 @@ public class GoalManager : MonoBehaviour
             if(PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 int roomId = UserData.instance.roomId;
-                StartCoroutine(UpdateClear(roomId, stage+1));
-
-                if(stage == 5)
+                if (stage < 4)
                 {
+                    StartCoroutine(UpdateClear(roomId, stage + 1));
+                }
+
+                if(stage == 6)
+                {
+                    StartCoroutine(UpdateClear(roomId, 4));
                     StartCoroutine(GameClear(roomId));
                 }
             }
@@ -70,7 +74,7 @@ public class GoalManager : MonoBehaviour
         string jsonData = JsonUtility.ToJson(clearData);
 
         // UnityWebRequest로 HTTP POST 요청을 준비
-        UnityWebRequest request = new UnityWebRequest(url+"/game-info/clear-stage", "POST");
+        UnityWebRequest request = new UnityWebRequest(url+"game-info/clear-stage", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -93,7 +97,7 @@ public class GoalManager : MonoBehaviour
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            ClearResponse1 response = JsonUtility.FromJson<ClearResponse1>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -114,7 +118,7 @@ public class GoalManager : MonoBehaviour
         string jsonData = JsonUtility.ToJson(clearRoom);
 
         // UnityWebRequest로 HTTP POST 요청을 준비
-        UnityWebRequest request = new UnityWebRequest(url + "/room/clear", "PUT");
+        UnityWebRequest request = new UnityWebRequest(url + "room/clear", "PUT");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -137,7 +141,7 @@ public class GoalManager : MonoBehaviour
             Debug.Log("Response: " + request.downloadHandler.text);
 
             // 서버로부터 받은 JSON 응답을 파싱
-            FriendResponse response = JsonUtility.FromJson<FriendResponse>(request.downloadHandler.text);
+            ClearResponse2 response = JsonUtility.FromJson<ClearResponse2>(request.downloadHandler.text);
 
             if (response.success)
             {
@@ -173,4 +177,47 @@ public class ClearRoom
     {
         this.roomId = roomId;
     }
+}
+
+[System.Serializable]
+public class UserPerfect
+{
+    public int userId;
+    public string email;
+    public string username;
+    public int lastStage;
+    public string createdAt;
+    public string updatedAt;
+    public string lastLogin;
+    public bool isActive;
+}
+
+[System.Serializable]
+public class RoomData
+{
+    public int roomId;
+    public UserPerfect hostId;
+    public UserPerfect participantId;
+    public int characterHost;
+    public int characterParticipant;
+    public bool isCleared;
+    public string startDate;
+    public string clearDate;
+    public string createdAt;
+}
+
+[System.Serializable]
+public class ClearResponse1
+{
+    public bool success;
+    public string data;
+    public string message;
+}
+
+[System.Serializable]
+public class ClearResponse2
+{
+    public bool success;
+    public RoomData data;
+    public string message;
 }
