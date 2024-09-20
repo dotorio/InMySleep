@@ -6,6 +6,8 @@ defineProps({
   nftData: Object,
 });
 
+const BASE_URL = "http://localhost:8080/ipfs/";
+
 const nftIndex = ref(4);
 const uStore = useUserStore();
 
@@ -14,23 +16,21 @@ function nftHover(index) {
   console.log(nftIndex.value);
 }
 
+// function imgUrl(nft) {
+//   return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
+// }
 function imgUrl(nft) {
-  return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
+  const hash = nft.imageUrl.split("ipfs://")[1];
+  return new URL(`${BASE_URL}${hash}`, import.meta.url).href;
 }
 </script>
 
 <template>
   <div class="nft-con box-md">
     <div class="nft-list">
-      <img
-        :src="imgUrl(nft)"
-        alt="lock"
-        v-for="(nft, index) in nftData.nft"
-        :key="index"
-        :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }"
-        @mouseenter="nftHover(index)"
-        @click="uStore.changeNft(nft)"
-      />
+      <img :src="imgUrl(nft)" alt="lock" v-for="(nft, index) in nftData.nft" :key="index"
+        :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }" @mouseenter="nftHover(index)"
+        @click="uStore.changeNft(nft)" />
     </div>
     <div></div>
   </div>
@@ -45,6 +45,7 @@ function imgUrl(nft) {
   background-color: white;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.24);
 }
+
 .nft-list {
   position: relative;
   /* background-color: blue; */
