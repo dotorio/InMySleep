@@ -3,30 +3,27 @@ package com.inmysleep.backend.auth.controller;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.auth.service.AuthService;
+import com.inmysleep.backend.email.config.CustomEmail;
+import com.inmysleep.backend.email.service.MailAuthService;
+import com.inmysleep.backend.email.service.MailService;
 import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-
-    @Autowired
-    public AuthController(AuthService authService, UserService userService) {
-        this.authService = authService;
-        this.userService = userService;
-    }
+    private final MailService mailService;
+    private final MailAuthService mailAuthService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UserLoginDto>> login(@RequestBody AuthUserDto userDto) {
@@ -67,6 +64,31 @@ public class AuthController {
         authService.registerUser(dto);
         apiResponse.setResponseTrue(null, "회원가입이 성공적으로 완료되었습니다.");
 
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/email/verification-request")
+    public ResponseEntity<ApiResponse<Void>> sendMessage(@RequestParam("email") @Valid @CustomEmail String email) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        mailAuthService.sendCodeToEmail(email);
+
+        apiResponse.setResponseTrue(null, "이메일 전송");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity<ApiResponse<Void>> verificationEmail(@RequestParam("email") @Valid @CustomEmail String email,
+                                                               @RequestParam("code") String authCode) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        boolean response = mailAuthService.verifiedCode(email, authCode);
+
+        if (response) {
+            apiResponse.setResponseTrue(null, "인증 성공");
+        } else {
+            apiResponse.setResponseFalse(null, "인증 실패");
+        }
         return ResponseEntity.ok(apiResponse);
     }
 }

@@ -46,7 +46,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/user/check-email",
-                                "/user/check-username").permitAll()
+                                "/user/check-username",
+                                "/auth/email/verification-request",
+                                "/auth/emails/verifications").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
