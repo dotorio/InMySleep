@@ -9,6 +9,10 @@ TagManager:
   - Ground
   - PlayerBody
   - Shelf
+  - Boss
+  - Stone
+  - Bomb
+  - Grabable
   layers:
   - Default
   - TransparentFX
