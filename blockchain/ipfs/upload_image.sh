@@ -2,7 +2,11 @@
 
 directory="./images"
 
-files=($(find "$directory" -type f))
+files=()
+
+while IFS= read -r -d '' file; do
+	files+=("$file")
+done < <(find "$directory" -type f -print0)
 
 url="http://localhost:9094/add"
 
