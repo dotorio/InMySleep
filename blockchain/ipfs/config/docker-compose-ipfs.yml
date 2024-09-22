@@ -7,7 +7,7 @@ services:
     environment:
       IPFS_PROFILE: server
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
   ipfs-cluster1:
@@ -27,7 +27,7 @@ services:
     volumes:
       - /home/ubuntu/volumes/ipfs-cluster1:/data/ipfs-cluster
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
   ipfs-node2:
@@ -38,7 +38,7 @@ services:
     environment:
       IPFS_PROFILE: server
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
   ipfs-cluster2:
@@ -55,7 +55,7 @@ services:
     volumes:
       - /home/ubuntu/volumes/ipfs-cluster2:/data/ipfs-cluster
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
   ipfs-node3:
@@ -66,7 +66,7 @@ services:
     environment:
       IPFS_PROFILE: server
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
   ipfs-cluster3:
@@ -83,9 +83,9 @@ services:
     volumes:
       - /home/ubuntu/volumes/ipfs-cluster3:/data/ipfs-cluster
     networks:
-      - ipfs-network
+      - ubuntu_default
     restart: always
 
 networks:
-  ipfs-network:
-    driver: bridge
+  ubuntu_default:
+    external: true
