@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class RoomManager : MonoBehaviourPun
 {
     private GameObject player;
     public Transform[] spawnPoints;
-
+    public GameObject arrowPositionMaster; // 1번 위치의 화살표
+    public GameObject arrowPositionGuest; // 2번 위치의 화살표
     // 캐릭터 생성
     public void CreatePlayer()
     {
@@ -33,6 +35,22 @@ public class RoomManager : MonoBehaviourPun
         else
         {
             Debug.Log("캐릭터가 성공적으로 인스턴스화되었습니다.");
+            // Master Client 여부에 따라 화살표 활성화 위치 결정
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                // Master Client일 경우 1번 위치의 화살표 활성화
+                arrowPositionMaster.SetActive(true);
+                arrowPositionGuest.SetActive(false); // 2번 위치의 화살표 비활성화
+                Debug.Log("1번 위치 화살표 활성화");
+            }
+            else
+            {
+                // Master Client가 아닐 경우 2번 위치의 화살표 활성화
+                arrowPositionMaster.SetActive(false); // 1번 위치의 화살표 비활성화
+                arrowPositionGuest.SetActive(true);
+                Debug.Log("2번 위치 화살표 활성화");
+            }
+            
         }
     }
 

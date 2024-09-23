@@ -16,15 +16,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     public RoomManager roomManager;
     public FriendManager friendManager;
 
+    
     // testing variable
-    private int userId = 42;
-    private string userName = "ttest";
+    private int userId = 41;
+    private string userName = "user2";
 
     private void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = version;
         PhotonNetwork.NickName = userName;
+        //PhotonNetwork.LocalPlayer.IsMasterClient = true;
 
         PhotonNetwork.ConnectUsingSettings();
 
@@ -36,8 +38,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
             "1.0",
             new Photon.Chat.AuthenticationValues(userName));
-        
+
+
     }
+
 
     void Update()
     {
@@ -152,7 +156,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         string roomName = message.ToString().Replace("Invitation: ", "");
         Debug.Log($"Received invitation to room: {roomName} from {sender}");
 
-        if (sender != "ttest")
+        if (sender != userName)
         {
             // 초대 수락 여부를 묻는 UI 호출 (예시: 팝업)
             friendManager.ShowInvitationPopup(roomName);

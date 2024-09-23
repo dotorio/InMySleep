@@ -10,7 +10,7 @@ using TMPro;
 public class FriendManager : MonoBehaviourPunCallbacks
 {
     //private int myUserId = UserData.instance.userId;
-    int myUserId = 42;
+    int myUserId = 41;
     public PhotonManager photonManager;
     public GameObject inviteNoti;
     public List<FriendDto> friendList = new List<FriendDto>();
