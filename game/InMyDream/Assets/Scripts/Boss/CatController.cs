@@ -21,7 +21,7 @@ public class CatController : MonoBehaviour
     private float projectileCooldown = 1f;  // 원거리 공격 쿨타임
     private float lastProjectileTime = 0f;  // 마지막 원거리 공격 시간
     private float cnt = 0f;
-    public float phase = 1f;
+    public int phase = 1;
     private int randomNumber; // 랜덤 숫자
     private bool isDying = false; // Die1 애니메이션 실행 중 여부
     private Rigidbody rb2;
@@ -38,8 +38,17 @@ public class CatController : MonoBehaviour
         Debug.Log(originalSpeed);
         rb2 = GetComponent<Rigidbody>();
         StartCoroutine(PlayRandomAnimation());
+        SetAnimationSpeed();
         //animator.SetBool("Move", true);
         Debug.Log("시작a");
+    }
+    void Update()
+    {
+        // 현재 애니메이션 상태 정보를 가져옴
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // 현재 애니메이션 속도를 콘솔에 출력
+        Debug.Log("현재 애니메이션 속도: " + stateInfo.speed);
     }
 
     private IEnumerator PlayRandomAnimation()
@@ -85,11 +94,11 @@ public class CatController : MonoBehaviour
                 Debug.Log(originalSpeed);
                 break;
             case 2: // 페이즈 2
-                animator.speed = originalSpeed * 2f; // 속도를 1.3배로 증가
+                animator.speed = originalSpeed * 1.3f; // 속도를 1.3배로 증가
                 Debug.Log(originalSpeed);
                 break;
             case 3: // 페이즈 3
-                animator.speed = originalSpeed * 3f; // 속도를 1.6배로 증가
+                animator.speed = originalSpeed * 1.6f; // 속도를 1.6배로 증가
                 Debug.Log(originalSpeed);
                 break;
             default:
