@@ -40,6 +40,12 @@ public class ThirdPersonController : MonoBehaviourPun
     {
         controller = GetComponent<CharacterController>();
 
+        // 시작 시 화면이 투명하게 설정
+        if (screenDarkness != null)
+        {
+            screenDarkness.alpha = 0; // 처음에 화면을 투명하게 설정
+        }
+
         // 게임 시작 시 조준점을 비활성화
         if (crosshair != null)
         {
@@ -73,6 +79,10 @@ public class ThirdPersonController : MonoBehaviourPun
             {
                 Debug.Log("이 물건은 다른 유저가 소유하고 있습니다."); // 뺏기 시도 시 메시지
             }
+        }
+        else if(other.CompareTag("Bomb"))
+        {
+            SetCharacterDowned();
         }
     }
 
@@ -258,6 +268,8 @@ public class ThirdPersonController : MonoBehaviourPun
     // 리스폰 메소드
     IEnumerator HandleRespawn()
     {
+        yield return new WaitForSeconds(1.5f);
+
         if (screenDarkness != null)
         {
             float fadeDuration = 1f;
