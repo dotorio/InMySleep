@@ -26,4 +26,8 @@ app.use(`${BASE_URL}/contracts`, contractRoutes);
 app.use(`${BASE_URL}/nfts`, nftRoutes);
 app.use(`${BASE_URL}/wallet`, walletRoutes);
 
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
 export default app;
