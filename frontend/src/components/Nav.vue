@@ -101,13 +101,14 @@ async function signMessage(account, message) {
 
 <style scoped>
 .nav-con {
-  height: 15vh;
+  height: 8vh;
   justify-content: space-between;
   background-color: #1f1a59;
 }
 
 .logo {
-  width: 100px;
+  /* width: 100px; */
+  height: 8vh;
   margin-left: 10px;
 
   cursor: pointer;
