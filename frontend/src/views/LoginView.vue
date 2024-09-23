@@ -13,13 +13,12 @@ const password = ref("");
 
 function loginFun() {
   login({
-    // email: email.value,
-    userId: email.value,
+    email: email.value,
     password: password.value,
   })
     .then((res) => {
-      // console.log(res.data);
-      uStore.userLogin(res.data[0]);
+      console.log(res.data);
+      uStore.userLogin(res.data);
       router.replace({ name: "home" });
     })
     .catch((err) => {
