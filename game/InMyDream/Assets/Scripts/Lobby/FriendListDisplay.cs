@@ -47,7 +47,7 @@ public class FriendListDisplay : MonoBehaviour
                 GameObject newFriendItem = Instantiate(friendItemPrefab, contentPanel);
                 // 생성된 친구 항목의 초대 버튼 가져오기
                 Button inviteBtn = newFriendItem.transform.Find("InviteBtn").GetComponent<Button>();
-                Debug.Log(inviteBtn);
+                Debug.Log(friend.username);
                 // 생성된 친구 항목의 텍스트를 설정
                 newFriendItem.transform.Find("UsernameText").GetComponent<TextMeshProUGUI>().text = friend.username;
                 inviteBtn.onClick.AddListener(() => friendManager.SendInvite(friend.username));

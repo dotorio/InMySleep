@@ -17,8 +17,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     public FriendManager friendManager;
 
     // testing variable
-    private int userId = 1;
-    private string userName = "user1";
+    private int userId = 42;
+    private string userName = "ttest";
 
     private void Awake()
     {
@@ -152,8 +152,18 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         string roomName = message.ToString().Replace("Invitation: ", "");
         Debug.Log($"Received invitation to room: {roomName} from {sender}");
 
-        // 초대 수락 여부를 묻는 UI 호출 (예시: 팝업)
-        friendManager.ShowInvitationPopup(roomName);
+        if (sender != "ttest")
+        {
+            // 초대 수락 여부를 묻는 UI 호출 (예시: 팝업)
+            friendManager.ShowInvitationPopup(roomName);
+        }
+
+        // 초대를 받은 사람이 자신일 경우에만 팝업을 띄움
+        //if (sender != UserData.instance.userName) // 초대 메시지를 보낸 사람이 본인이 아닌 경우
+        //{
+        //    ShowInvitationPopup(roomName); // 팝업 띄우기
+        //}
+
     }
 
     // 초대 보내는 함수
