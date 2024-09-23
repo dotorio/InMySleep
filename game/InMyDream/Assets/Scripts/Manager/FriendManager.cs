@@ -10,12 +10,13 @@ using TMPro;
 public class FriendManager : MonoBehaviourPunCallbacks
 {
     //private int myUserId = UserData.instance.userId;
-    int myUserId = 39;
+    int myUserId = 42;
     public PhotonManager photonManager;
     public GameObject inviteNoti;
     public List<FriendDto> friendList = new List<FriendDto>();
     public List<UserInfo> requestFriends = new List<UserInfo>();
     public List<UserInfo> receiveFriends = new List<UserInfo>();
+    public InvitePopup invitePopup;
     public string roomNameText;
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/friend/";
 
@@ -107,7 +108,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             if (response.success)
             {
                 Debug.Log("받츤 친구 요청 목록 성공");
-                Debug.Log(response.data[0].username);
+                //Debug.Log(response.data[0].username);
                 receiveFriends = response.data;
                 Debug.Log(receiveFriends);
             }
@@ -266,11 +267,11 @@ public class FriendManager : MonoBehaviourPunCallbacks
     public void SendInvite(string friendName)
     {
         //string userName = UserData.instance.userName;
-        string userName = "user1";
+        string userName = "ttest";
 
         photonManager.SendInvite(friendName, userName);
         
-        //Debug.Log($"Invite sent to {friendName} for room: {userName}");
+        Debug.Log($"Invite sent to {friendName} for room: {userName}");
     }
 
     // 초대 팝업 띄우기
@@ -293,13 +294,15 @@ public class FriendManager : MonoBehaviourPunCallbacks
     public void AcceptInvite(string roomName)
     {
         // 초대를 수락하면 해당 방으로 이동
-
+        invitePopup.Close();   
         ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
         playerProps["roomName"] = roomName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
 
         PhotonNetwork.LeaveRoom();
         Debug.Log($"Accepted invitation and joining room: {roomName}");
+
+
     }
 }
 
