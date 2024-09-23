@@ -182,7 +182,43 @@ public class PlayerSetup : MonoBehaviourPun
         GetComponent<ThirdPersonController>().isInteracting = false;
     }
 
-    void BreakObject(GameObject obj)
+
+
+    // void BreakObject(GameObject obj)
+    // {
+    //     animator.SetInteger("animation", 20); // 파괴 애니메이션
+    //     GetComponent<ThirdPersonController>().isInteracting = true;
+
+    //     // 모든 플레이어에게 오브젝트 파괴와 이펙트 출현을 알림
+    //     PhotonView objectPhotonView = obj.GetComponent<PhotonView>();
+    //     if (objectPhotonView != null && objectPhotonView.IsMine)
+    //     {
+    //         // RPC를 통해 파괴와 이펙트 생성 동기화
+    //         photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID, obj.transform.position);
+            
+    //     }
+    // }
+
+    // [PunRPC]
+    // void DestroyObjectWithEffectRPC(int viewID, Vector3 position)
+    // {
+    //     // 해당 오브젝트 찾기
+    //     PhotonView objPhotonView = PhotonView.Find(viewID);
+
+    //     // 이펙트 생성
+    //     if (breakEffectPrefab != null)
+    //     {
+    //         Instantiate(breakEffectPrefab, position, Quaternion.identity);
+    //     }
+
+    //     // 오브젝트 제거
+    //     if (objPhotonView != null)
+    //     {
+    //         Destroy(objPhotonView.gameObject);
+    //     }
+    // }
+
+        void BreakObject(GameObject obj)
     {
         animator.SetInteger("animation", 20); // 파괴 애니메이션
         GetComponent<ThirdPersonController>().isInteracting = true;
@@ -191,16 +227,14 @@ public class PlayerSetup : MonoBehaviourPun
         PhotonView objectPhotonView = obj.GetComponent<PhotonView>();
         if (objectPhotonView != null && objectPhotonView.IsMine)
         {
-            // RPC를 통해 파괴와 이펙트 생성 동기화
-            photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID, obj.transform.position);
+            // 직접 파괴와 이펙트 생성 처리
+            DestroyObjectWithEffect(obj);
         }
     }
 
-    [PunRPC]
-    void DestroyObjectWithEffectRPC(int viewID, Vector3 position)
+    void DestroyObjectWithEffect(GameObject obj)
     {
-        // 해당 오브젝트 찾기
-        PhotonView objPhotonView = PhotonView.Find(viewID);
+        Vector3 position = obj.transform.position;
 
         // 이펙트 생성
         if (breakEffectPrefab != null)
@@ -209,9 +243,7 @@ public class PlayerSetup : MonoBehaviourPun
         }
 
         // 오브젝트 제거
-        if (objPhotonView != null)
-        {
-            Destroy(objPhotonView.gameObject);
-        }
+        Destroy(obj);
     }
+
 }
