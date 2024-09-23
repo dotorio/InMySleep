@@ -85,7 +85,7 @@ public class LoginManager : MonoBehaviour
                 UserData.instance.userId = response.data.userId;
                 UserData.instance.lastStage = response.data.lastStage;
 
-                SceneManager.LoadScene("Test");
+                SceneManager.LoadScene("LobbyScene");
 
                 //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
                 //PlayerPrefs.SetInt("userId", response.data.userId);
