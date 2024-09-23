@@ -6,5 +6,5 @@ ipfs-*/
 
 # blockchain backend
 node_modules
-.env
+# .env
 dist
