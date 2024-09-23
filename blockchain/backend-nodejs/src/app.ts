@@ -13,6 +13,7 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+app.set("trust proxy", true);
 
 const BASE_URL = '/api/v1';
 app.use((req, res, next) => {
