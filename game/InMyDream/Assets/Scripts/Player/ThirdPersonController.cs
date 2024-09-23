@@ -67,6 +67,11 @@ public class ThirdPersonController : MonoBehaviourPun
     // 물건 집기
     void OnTriggerEnter(Collider other)
     {
+        if(!photonView.IsMine)
+        {
+            return;
+        }
+
         if (canPickUp && other.CompareTag("Grabable") && heldObject == null)
         {
             // 물건을 주운 유저가 아닌 경우
@@ -83,6 +88,10 @@ public class ThirdPersonController : MonoBehaviourPun
         else if(other.CompareTag("Bomb"))
         {
             SetCharacterDowned();
+        }
+        else if(other.CompareTag("EasterEgg"))
+        {
+
         }
     }
 
