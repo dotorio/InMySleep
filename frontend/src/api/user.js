@@ -1,6 +1,6 @@
-import { localAxios } from "@/utils/request";
+import { springAxios } from "@/utils/request";
 
-const axios = localAxios();
+const axios = springAxios();
 const baseURL = "user";
 
 export function signUp(data) {
@@ -35,7 +35,6 @@ export function emailCheck(email) {
 }
 
 export function usernameCheck(username) {
-  console.log(11);
   return axios({
     url: `${baseURL}/check-username`,
     method: "get",

@@ -1,6 +1,6 @@
-import { localAxios } from "@/utils/request";
+import { expressAxios } from "@/utils/request";
 
-const axios = localAxios();
+const axios = expressAxios();
 const baseURL = "nfts";
 
 export function myNFTs(address, token) {

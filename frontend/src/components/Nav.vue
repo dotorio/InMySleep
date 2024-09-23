@@ -52,6 +52,7 @@ async function connectWallet() {
       accounts[0],
       signature,
       message,
+      uStore.user.data.username,
     );
 
     if (response.data.token) {
