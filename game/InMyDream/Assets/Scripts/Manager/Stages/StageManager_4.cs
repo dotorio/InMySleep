@@ -13,6 +13,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
     public GameObject Client_2;
     public GameObject Master_3;
     public GameObject Client_3;
+    public GameObject EasterEgg;
 
     void Start()
     {
@@ -26,6 +27,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
         Debug.Log($"선택된 캐릭터: {characterName}");
 
         int stage = UserData.instance.stage;
+        int easterStage = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggStage"];
         Transform point;
 
         if (stage == 4)
@@ -44,6 +46,20 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_2.transform;
+
+                if (easterStage == 4)
+                {
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg.transform.position, EasterEgg.transform.rotation, 0);
+
+                    if (instantiatedEasterEgg == null)
+                    {
+                        Debug.Log("이스터 에그 생성에 실패했습니다.");
+                    }
+                    else
+                    {
+                        Debug.Log("이스터 에그 생성에 성공했습니다.");
+                    }
+                }
             }
             else
             {

@@ -89,10 +89,6 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             SetCharacterDowned();
         }
-        else if(other.CompareTag("EasterEgg"))
-        {
-
-        }
     }
 
     // 캐릭터 이동 처리

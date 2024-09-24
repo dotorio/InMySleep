@@ -96,6 +96,16 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             // 백엔드 db 방 생성
             StartCoroutine(StartRoomDB(data));
 
+            // 이스터 에그 정보 생성
+            int randomStage = Random.Range(1, 5);
+            int randomData = Random.Range(1, 11);
+
+            // Room Custom Properties에 이스터 에그 정보 저장
+            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
+            customProperties["EasterEggStage"] = randomStage;
+            customProperties["EasterEggData"] = randomData;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+
             // 씬 로드
             PhotonNetwork.LoadLevel("kysLobbyTest");
         }
