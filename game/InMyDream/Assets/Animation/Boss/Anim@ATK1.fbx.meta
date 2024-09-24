@@ -670,7 +670,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.24752475
-        functionName: BallThrow
+        functionName: P1
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: cdd2898f30110e542a9910d44128e89c, type: 3}
         floatParameter: 0

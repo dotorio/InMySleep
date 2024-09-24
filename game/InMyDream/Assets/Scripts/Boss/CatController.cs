@@ -5,29 +5,22 @@ using UnityEngine;
 
 public class CatController : MonoBehaviour
 {
-    //public float speed = 2.0f;  // 고양이의 이동 속도
-    //private bool isMovingForward = true;  // 앞으로 이동 중인지 확인하는 변수
-    //private float moveTime = 1.0f;  // 1초 동안 이동
-    //private float timer = 0.0f;  // 시간 측정용 타이머
     private Animator animator;  // 애니메이터
     public GameObject bomb; // 캐릭터 팔에 연결된 공
-    public GameObject cube; // 캐릭터 팔에 연결된 공
-    public GameObject big; // 캐릭터 팔에 연결된 공
+    public GameObject bigBomb; // 캐릭터 팔에 연결된 공
+    public GameObject ball; // 캐릭터 팔에 연결된 공
+    public GameObject redBomb; // 캐릭터 팔에 연결된 공
     public Transform hand;  // 캐릭터의 손 위치
     public Transform hand2;  // 캐릭터의 손 위치
     public Transform hand3;  // 캐릭터의 손 위치
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
-    private float projectileCooldown = 1f;  // 원거리 공격 쿨타임
-    private float lastProjectileTime = 0f;  // 마지막 원거리 공격 시간
     private float cnt = 0f;
     public int phase = 1;
     private int randomNumber; // 랜덤 숫자
     private bool isDying = false; // Die1 애니메이션 실행 중 여부
-    private Rigidbody rb2;
     private int damage = 0;
     private float originalSpeed;
-
 
     // Start는 첫 프레임 업데이트 전에 호출됩니다.
     void Start()
@@ -35,49 +28,98 @@ public class CatController : MonoBehaviour
         // Animator 컴포넌트 가져오기
         animator = GetComponent<Animator>();
         originalSpeed = animator.speed;
-        Debug.Log(originalSpeed);
-        rb2 = GetComponent<Rigidbody>();
         StartCoroutine(PlayRandomAnimation());
         SetAnimationSpeed();
-        //animator.SetBool("Move", true);
-        Debug.Log("시작a");
-    }
-    void Update()
-    {
-        // 현재 애니메이션 상태 정보를 가져옴
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-        // 현재 애니메이션 속도를 콘솔에 출력
-        Debug.Log("현재 애니메이션 속도: " + stateInfo.speed);
     }
 
     private IEnumerator PlayRandomAnimation()
     {
         while (true) // 무한 루프
         {
-            // 1~4 사이의 랜덤 숫자 생성 (1 포함, 5는 미포함)
-            randomNumber = Random.Range(1, 5);
-            Debug.Log("랜덤 숫자: " + randomNumber);
-
-            // 랜덤 숫자에 따라 애니메이션 재생
-            switch (randomNumber)
+            if (phase == 1)
             {
-                case 1:
-                    Debug.Log("1번");
-                    animator.Play("Atk1"); // 첫 번째 애니메이션
-                    break;
-                case 2:
-                    Debug.Log("2번");
-                    animator.Play("Atk2"); // 두 번째 애니메이션
-                    break;
-                case 3:
-                    Debug.Log("3번");
-                    animator.Play("Atk3"); // 세 번째 애니메이션
-                    break;
-                case 4:
-                    Debug.Log("4번");
-                    animator.Play("Victory"); // 네 번째 애니메이션
-                    break;
+                randomNumber = Random.Range(1, 11);
+                switch (randomNumber)
+                {
+                    case 1:
+                    case 2:
+                        animator.Play("Victory");
+                        break;
+                    case 3:
+                    case 4:
+                        animator.Play("rightBomb");
+                        break;
+                    case 5:
+                        animator.Play("rightBall");
+                        break;
+                    case 6:
+                    case 7:
+                        animator.Play("leftBomb"); 
+                        break;
+                    case 8:
+                        animator.Play("leftBall");
+                        break;
+                    case 9:
+                    case 10:
+                        animator.Play("BigBomb");
+                        break;
+                }
+            }
+            else if (phase == 2)
+            {
+                randomNumber = Random.Range(11, 21);
+                switch (randomNumber)
+                {
+                    case 11:
+                    case 12:
+                        animator.Play("Victory");
+                        break;
+                    case 13:
+                    case 14:
+                        animator.Play("rightBomb");
+                        break;
+                    case 15:
+                    case 16:
+                        animator.Play("rightBall");
+                        break;
+                    case 17:
+                    case 18:
+                        animator.Play("leftBomb");
+                        break;
+                    case 19:
+                    case 20:
+                        animator.Play("leftBall");
+                        break;
+                }
+            }
+            else
+            {
+                randomNumber = Random.Range(21, 31);
+                switch (randomNumber)
+                {
+                    case 21:
+                    case 22:
+                        animator.Play("Victory");
+                        break;
+                    case 23:
+                    case 24:
+                        animator.Play("rightBomb");
+                        break;
+                    case 25:
+                        animator.Play("rightRed");
+                        break;
+                    case 26:
+                    case 27:
+                        animator.Play("leftBomb");
+                        break;
+                    case 28:
+                        animator.Play("leftRed");
+                        break;
+                    case 29:
+                    case 30:
+                        animator.Play("BigBomb");
+                        break;
+                }
             }
 
             // 현재 재생 중인 애니메이션이 끝날 때까지 대기
@@ -91,15 +133,12 @@ public class CatController : MonoBehaviour
         {
             case 1: // 페이즈 1
                 animator.speed = originalSpeed; // 원래 속도
-                Debug.Log(originalSpeed);
                 break;
             case 2: // 페이즈 2
                 animator.speed = originalSpeed * 1.3f; // 속도를 1.3배로 증가
-                Debug.Log(originalSpeed);
                 break;
             case 3: // 페이즈 3
                 animator.speed = originalSpeed * 1.6f; // 속도를 1.6배로 증가
-                Debug.Log(originalSpeed);
                 break;
             default:
                 animator.speed = originalSpeed; // 기본 속도로 설정
@@ -109,11 +148,9 @@ public class CatController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("만나긴 했음");
 
         if (other.CompareTag("Shelf") && !isDying)
         {
-            Debug.Log("Shelf와 충돌함");
             animator.Play("Die1");
             isDying = true;
 
@@ -121,21 +158,17 @@ public class CatController : MonoBehaviour
             if (shelfCollider != null)
             {
                 shelfCollider.center = new Vector3(0, 0, 0);
-                Debug.Log("shelf의 콜라이더 센터 변경됨");
             }
             StartCoroutine(WaitForDieAnimationToEnd());
         }
 
         if (other.CompareTag("Stone") && !isDying) // isDying이 false일 때만 Damage 애니메이션 재생
         {
-            Debug.Log("Stone과 충돌함");
             damage++;
             if (damage == 3)
             {
                 animator.Play("Die2");
                 //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
-
-                Debug.Log("Die2 애니메이션 종료");
                 isDying = false; // 애니메이션 실행 상태 초기화
             }
             else
@@ -151,7 +184,7 @@ public class CatController : MonoBehaviour
     private IEnumerator WaitForDamageAnimationToEnd()
     {
         // Damage 애니메이션이 끝날 때까지 대기
-        yield return new WaitUntil(() => IsAnimationFinished(6));
+        yield return new WaitUntil(() => IsAnimationFinished(31));
 
         Debug.Log("Damage 애니메이션 종료");
         isDying = false; // Damage 애니메이션이 끝나면 다시 초기화
@@ -165,7 +198,7 @@ public class CatController : MonoBehaviour
     private IEnumerator WaitForDieAnimationToEnd()
     {
         // Die1 애니메이션이 끝날 때까지 대기
-        yield return new WaitUntil(() => IsAnimationFinished(5)); // '5'로 설정하여 Die1 애니메이션 확인
+        yield return new WaitUntil(() => IsAnimationFinished(32)); // '5'로 설정하여 Die1 애니메이션 확인
 
         Debug.Log("Die1 애니메이션 종료");
         isDying = false; // 애니메이션 실행 상태 초기화
@@ -178,34 +211,54 @@ public class CatController : MonoBehaviour
         switch (animationIndex)
         {
             case 1:
-                return stateInfo.IsName("Atk1") && stateInfo.normalizedTime >= 1f;
             case 2:
-                return stateInfo.IsName("Atk2") && stateInfo.normalizedTime >= 1f;
-            case 3:
-                return stateInfo.IsName("Atk3") && stateInfo.normalizedTime >= 1f;
-            case 4:
+            case 11:
+            case 12:
+            case 21:
+            case 22:
                 return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
+            case 3:
+            case 4:
+            case 13:
+            case 14:
+            case 23:
+            case 24:
+                return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
             case 5:
-                return stateInfo.IsName("Die1") && stateInfo.normalizedTime >= 1f;
+            case 15:
+            case 16:
+                return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
             case 6:
-                return stateInfo.IsName("Damage") && stateInfo.normalizedTime >= 1f;
             case 7:
-                return stateInfo.IsName("Die2") && stateInfo.normalizedTime >= 1f;
+            case 17:
+            case 18:
+            case 26:
+            case 27:
+                return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
+            case 8:
+            case 19:
+            case 20:
+                return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
+            case 9:
+            case 10:
+            case 29:
+            case 30:
+                return stateInfo.IsName("BigBomb") && stateInfo.normalizedTime >= 1f;
+            case 25:
+                return stateInfo.IsName("rightRed") && stateInfo.normalizedTime >= 1f;
+            case 28:
+                return stateInfo.IsName("leftRed") && stateInfo.normalizedTime >= 1f;
+            case 31:
+                return stateInfo.IsName("Damage") && stateInfo.normalizedTime >= 1f;
+            case 32:
+                return stateInfo.IsName("Die1") && stateInfo.normalizedTime >= 1f;
             default:
                 return false;
         }
     }
 
 
-
-    //private void StopCharacterMovement()
-    //{
-    //    // 캐릭터의 움직임을 멈추는 로직
-    //    rb2.velocity = Vector3.zero; // Rigidbody의 속도를 0으로 설정하여 캐릭터가 움직이지 않도록 함
-    //}
-
-
-    void BigThrow()
+    void BombThrow()
     {
         //animator.SetBool("isATK", true);
 
@@ -232,27 +285,28 @@ public class CatController : MonoBehaviour
         bombController.StartDestroyCountdown(4f);
     }
 
-    void CubeThrow()
+    void RedThrow()
     {
         // 발사체 생성
         GameObject projectile = Instantiate(cube, hand2.position, hand2.rotation);
+        BombController bombController = projectile.GetComponent<BombController>();
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
-        // 발사 방향 계산
+        //발사 방향 계산
         if (cnt % 2 == 0)
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player2.transform.position, 20f);
-            rb.velocity = launchDirection;
+            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player2.transform.position * 0.8f, 40f);
+            rb.velocity = launchDirection * 0.8f;
         }
         else
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player1.transform.position, 20f);
-            rb.velocity = launchDirection;
+            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player1.transform.position * 0.8f, 40f);
+            rb.velocity = launchDirection * 0.8f;
         }
 
         cnt++;
 
-        StartCoroutine(FadeOutAndDestroy(projectile, 5f, 1f)); // 코루틴 시작
+        bombController.StartDestroyCountdown(10f);
     }
 
     void BallThrow()
@@ -275,29 +329,29 @@ public class CatController : MonoBehaviour
 
         cnt++;
 
-        StartCoroutine(FadeOutAndDestroy(projectile, 5f, 1f)); // 코루틴 시작
+        //StartCoroutine(FadeOutAndDestroy(projectile, 5f, 1f)); // 코루틴 시작
     }
 
-    private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
-    {
-        // 5초 대기
-        yield return new WaitForSeconds(delay);
+    //private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
+    //{
+    //    // 5초 대기
+    //    yield return new WaitForSeconds(delay);
 
-        Renderer renderer = projectile.GetComponent<Renderer>();
-        Material material = renderer.material;
-        Color initialColor = material.color;
+    //    Renderer renderer = projectile.GetComponent<Renderer>();
+    //    Material material = renderer.material;
+    //    Color initialColor = material.color;
 
-        // Alpha 값을 서서히 줄이기
-        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
-        {
-            float normalizedTime = t / fadeDuration;
-            material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
-            yield return null; // 다음 프레임까지 대기
-        }
+    //    // Alpha 값을 서서히 줄이기
+    //    for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+    //    {
+    //        float normalizedTime = t / fadeDuration;
+    //        material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
+    //        yield return null; // 다음 프레임까지 대기
+    //    }
 
-        // 완전히 사라진 후 삭제
-        Destroy(projectile);
-    }
+    //    // 완전히 사라진 후 삭제
+    //    Destroy(projectile);
+    //}
 
 
 
@@ -322,17 +376,19 @@ public class CatController : MonoBehaviour
 
         float angleBetweenObjects
             = Vector3.Angle(Vector3.forward, planarTarget - planarPosition) * (target.x > player.x ? 1 : -1);
-        Vector3 finalVelocity
-            = Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity * 0.9f;
+        if (phase == 2)
+        {
 
-        return finalVelocity;
-    }
-
-    void Lie()
-    {
-        // 애니메이션이나 다른 행동을 정의
-        Debug.Log("눕는다는 함수 실행");
-        animator.SetBool("isDie", true);  // isDie 파라미터를 true로 설정
+            Vector3 finalVelocity
+                = Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity;
+            return finalVelocity;
+        }
+        else
+        {
+            Vector3 finalVelocity
+               = Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity * 0.9f;
+            return finalVelocity;
+        }
     }
 
 }
