@@ -16,6 +16,7 @@ const startServer = async () => {
     await connectDB();
 
     https.createServer(options, app).listen(port, () => {
+      console.log('https')
       console.log(`Server is running on port ${port}`);
     })
     
