@@ -13,6 +13,7 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+app.set("trust proxy", true);
 
 const BASE_URL = '/api/v1';
 app.use((req, res, next) => {
@@ -25,5 +26,9 @@ app.use(`${BASE_URL}/contracts`, contractRoutes);
 // app.use('/ipfs', ipfsRoutes);
 app.use(`${BASE_URL}/nfts`, nftRoutes);
 app.use(`${BASE_URL}/wallet`, walletRoutes);
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
 export default app;

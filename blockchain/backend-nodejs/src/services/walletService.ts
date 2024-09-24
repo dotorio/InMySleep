@@ -34,11 +34,21 @@ export const saveWallet = async (address: string, username: string): Promise<voi
 }
 
 export const generateJWT = async (address: string): Promise<string> => {
-    const token = jwt.sign({ address }, jwtSecret as string, { expiresIn: '1h' });
-    return token;
+    try {
+        const token = jwt.sign({ address }, jwtSecret as string, { expiresIn: '1h' });
+        return token;
+    } catch (error) {
+        console.error('Error generating token:', error);
+        throw error;
+    }
 }
 
 export const verifyJWT = async (token: string): Promise<string | jwt.JwtPayload> => {
-    const decoded = jwt.verify(token, jwtSecret as string);
-    return decoded;
+    try {
+        const decoded = jwt.verify(token, jwtSecret as string);
+        return decoded;
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        throw error;
+    }
 }
