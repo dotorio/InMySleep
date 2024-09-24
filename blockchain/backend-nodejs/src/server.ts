@@ -3,11 +3,12 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import { connectDB } from './db/dbConnection';
-import { port, sslKey, sslCert } from './config';
+import { port, sslKey, sslCert, sslChain } from './config';
 
 const options = {
   key: fs.readFileSync(path.join(__dirname, sslKey)),
-  cert: fs.readFileSync(path.join(__dirname, sslCert))
+  cert: fs.readFileSync(path.join(__dirname, sslCert)),
+  ca: fs.readFileSync(path.join(__dirname, sslChain))
 }
 
 const startServer = async () => {
