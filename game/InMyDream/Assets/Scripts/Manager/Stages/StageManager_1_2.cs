@@ -11,6 +11,8 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject Client_1;
     public GameObject Master_2;
     public GameObject Client_2;
+    public GameObject EasterEgg_1;
+    public GameObject EasterEgg_2;
 
     void Start()
     {
@@ -24,6 +26,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         Debug.Log($"선택된 캐릭터: {characterName}");
 
         int stage = UserData.instance.stage;
+        int easterStage = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggStage"];
         Transform point;
 
         if(stage == 1)
@@ -31,6 +34,20 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             if(PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_1.transform;
+
+                if(stage == easterStage)
+                {
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg_1.transform.position, EasterEgg_1.transform.rotation, 0);
+
+                    if(instantiatedEasterEgg == null)
+                    {
+                        Debug.Log("이스터 에그 생성에 실패했습니다.");
+                    }
+                    else
+                    {
+                        Debug.Log("이스터 에그 생성에 성공했습니다.");
+                    }
+                }
             }
             else
             {
@@ -42,6 +59,21 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_2.transform;
+
+
+                if (stage == easterStage)
+                {
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg_2.transform.position, EasterEgg_2.transform.rotation, 0);
+
+                    if (instantiatedEasterEgg == null)
+                    {
+                        Debug.Log("이스터 에그 생성에 실패했습니다.");
+                    }
+                    else
+                    {
+                        Debug.Log("이스터 에그 생성에 성공했습니다.");
+                    }
+                }
             }
             else
             {
