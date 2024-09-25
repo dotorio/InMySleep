@@ -15,6 +15,7 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
     public Button errorNotiBtn;
     public TMP_Text errorText;
     public GameObject friendList;
+    
 
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
@@ -44,6 +45,7 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
     // 게임 시작 버튼
     public void StartGame()
     {
+        
         if (PhotonNetwork.IsMasterClient)
         {
             // 인원 수가 차있는지 확인
