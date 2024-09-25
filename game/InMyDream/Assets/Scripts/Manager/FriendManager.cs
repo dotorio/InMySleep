@@ -9,8 +9,8 @@ using TMPro;
 
 public class FriendManager : MonoBehaviourPunCallbacks
 {
-    //private int myUserId = UserData.instance.userId;
-    int myUserId = 41;
+    private int myUserId;
+    //int myUserId = 41;
     public PhotonManager photonManager;
     public GameObject inviteNoti;
     public List<FriendDto> friendList = new List<FriendDto>();
@@ -20,6 +20,13 @@ public class FriendManager : MonoBehaviourPunCallbacks
     public string roomNameText;
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/friend/";
 
+    private void Start()
+    {
+        if (UserData.instance != null)
+        {
+            myUserId = UserData.instance.userId;
+        }
+    }
 
     // 친구 목록 확인
     public IEnumerator LoadFriendList()
@@ -266,8 +273,8 @@ public class FriendManager : MonoBehaviourPunCallbacks
 
     public void SendInvite(string friendName)
     {
-        //string userName = UserData.instance.userName;
-        string userName = "ttest";
+        string userName = UserData.instance.userName;
+        //string userName = "ttest";
 
         photonManager.SendInvite(friendName, userName);
         

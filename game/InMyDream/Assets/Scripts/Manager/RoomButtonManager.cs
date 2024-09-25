@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class RoomButtonManager : MonoBehaviourPunCallbacks
 {
     public PhotonManager photonManager;
     public FriendManager friendManager;
+    public GameObject errorNoti;
+    public Button errorNotiBtn;
+    public TMP_Text errorText;
     public GameObject friendList;
 
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
@@ -45,6 +50,9 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.CurrentRoom.PlayerCount != 2)
             {
                 Debug.Log("인원이 부족합니다.");
+                errorNoti.SetActive(true);
+                errorNotiBtn.onClick.AddListener(ErrorNotiClose);
+                errorText.text = "인원이 부족합니다.";
                 return;
             }
 
@@ -90,6 +98,9 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             if (users[0] == users[1])
             {
                 Debug.Log("캐릭터가 중복됩니다.");
+                errorNoti.SetActive(true);
+                errorNotiBtn.onClick.AddListener(ErrorNotiClose);
+                errorText.text = "캐릭터가 중복됩니다.";
                 return;
             }
 
@@ -107,8 +118,13 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
             // 씬 로드
-            PhotonNetwork.LoadLevel("kysLobbyTest");
+            PhotonNetwork.LoadLevel("CutScene1");
         }
+    }
+
+    void ErrorNotiClose()
+    {
+        errorNoti.SetActive(false);
     }
 
     IEnumerator DisplayFriendList()
