@@ -16,18 +16,20 @@ const nftData = ref([
 const uStore = useUserStore();
 
 onBeforeMount(async () => {
-  try {
-    const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
-    nftData.value = response.data;
-    console.log(nftData.value);
-    nftData.value = prepareNftData(nftData);
-    console.log(nftData.value);
-    filterNftData(nftData);
-    console.log(bear.value.nft);
-    console.log(rabbit.value.nft);
-  } catch (error) {
-    console.error(error);
-  }
+  // try {
+  //   const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
+  //   nftData.value = response.data;
+  //   console.log(nftData.value);
+  //   if (nftData.value.length > 1) {
+  //     nftData.value = prepareNftData(nftData);
+  //     console.log(nftData.value);
+  //     filterNftData(nftData);
+  //     console.log(bear.value.nft);
+  //     console.log(rabbit.value.nft);
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  // }
 })
 
 const choice = ref("bear");
