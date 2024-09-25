@@ -10,7 +10,7 @@ public class GoalManager : MonoBehaviour
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
-    private string[] nextScene = {"", "1_2stage", "2_3stage", "3_4stage", "4_4_1stage", "", "4_2_end_stage"};
+    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "4_4_1stage", "", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
 
