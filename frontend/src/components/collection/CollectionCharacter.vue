@@ -16,26 +16,60 @@ const nftData = ref([
 const uStore = useUserStore();
 
 onBeforeMount(async () => {
-  try {
-    const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
-    nftData.value = response.data;
-    console.log(nftData.value);
-    nftData.value = prepareNftData(nftData);
-    console.log(nftData.value);
-    filterNftData(nftData);
-    console.log(bear.value.nft);
-    console.log(rabbit.value.nft);
-  } catch (error) {
-    console.error(error);
-  }
+  // try {
+  //   const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
+  //   nftData.value = response.data;
+  //   console.log(nftData.value);
+  //   if (nftData.value.length > 1) {
+  //     nftData.value = prepareNftData(nftData);
+  //     console.log(nftData.value);
+  //     filterNftData(nftData);
+  //     console.log(bear.value.nft);
+  //     console.log(rabbit.value.nft);
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  // }
 })
 
 const choice = ref("bear");
 const bear = ref({
-  nft: ["QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
+  nft: [
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+  ]
 });
 const rabbit = ref({
-  nft: ["QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
+  nft: [
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+    {
+      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
+    },
+  ]
 });
 
 // const bear = {
