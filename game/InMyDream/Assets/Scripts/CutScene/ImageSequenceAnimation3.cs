@@ -22,6 +22,7 @@ public class ImageSequenceAnimation3 : MonoBehaviour
 
     public AudioSource BGM1;
     public AudioSource BGM2;
+    public AudioSource BGM3;
 
     private Coroutine currentFadeInCoroutineImage; // 현재 진행 중인 이미지 페이드 인 코루틴
     private Coroutine currentFadeInCoroutineText; // 현재 진행 중인 텍스트 페이드 인 코루틴
@@ -139,6 +140,7 @@ public class ImageSequenceAnimation3 : MonoBehaviour
 
                 if (currentIndex == 3)
                 {
+                    BGM3.Play();
                     character41.SetActive(true); // 캐릭터 활성화
                     character42.SetActive(true); // 캐릭터 활성화
                 }
