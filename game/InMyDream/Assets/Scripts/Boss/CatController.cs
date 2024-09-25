@@ -327,18 +327,18 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 0.7f;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 0.7f;
             }
 
             cnt++;
 
             // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(4f);
+            bombController.StartDestroyCountdown(10f);
         }
         else
         {
@@ -351,18 +351,18 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 0.7f;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 0.7f;
             }
 
             cnt++;
 
             // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(4f);
+            bombController.StartDestroyCountdown(10f);
         }
     }
 
