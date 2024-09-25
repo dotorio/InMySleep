@@ -30,7 +30,7 @@ function imgUrl(nft) {
     <div class="nft-list">
       <img :src="imgUrl(nft)" alt="lock" v-for="(nft, index) in nftData.nft" :key="index"
         :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }" @mouseenter="nftHover(index)"
-        @click="uStore.changeNft(nft)" />
+        @click="true/*uStore.changeNft(nft)*/" />
     </div>
     <div></div>
   </div>

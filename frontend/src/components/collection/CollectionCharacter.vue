@@ -2,8 +2,51 @@
 import { ref, onBeforeMount } from "vue";
 import CollectionNft from "@/components/collection/CollectionNft.vue";
 import { myNFTs } from "@/api/nft";
+import { getEquippedSkin, getSkinList } from "@/api/skin";
 import { useUserStore } from "@/stores/user";
 
+const choice = ref("bear");
+const equippedBear = ref(0);
+const equippedRabbit = ref(0);
+const defaultUrl = "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6";
+const bear = ref({
+  nft: [
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+  ]
+});
+const rabbit = ref({
+  nft: [
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+    {
+      imageUrl: defaultUrl,
+    },
+  ]
+});
 const nftData = ref([
   {
     description: "",
@@ -16,6 +59,20 @@ const nftData = ref([
 const uStore = useUserStore();
 
 onBeforeMount(async () => {
+  try {
+    const response = await getEquippedSkin(uStore.user.data.userId);
+    equippedBear.value = response.data.bear_skin;
+    equippedRabbit.value = response.data.rabbit_skin;
+  } catch (error) {
+    console.error(error);
+  }
+
+  try {
+    const response = await getSkinList(uStore.user.userId);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
   // try {
   //   const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
   //   nftData.value = response.data;
@@ -31,46 +88,6 @@ onBeforeMount(async () => {
   //   console.error(error);
   // }
 })
-
-const choice = ref("bear");
-const bear = ref({
-  nft: [
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-  ]
-});
-const rabbit = ref({
-  nft: [
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-    {
-      imageUrl: "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6",
-    },
-  ]
-});
 
 // const bear = {
 //   nft: ["bear1", "bear2", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "bear3", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
@@ -103,6 +120,13 @@ function filterNftData(nftData) {
       rabbit.value.nft.push(nft);
     }
   });
+}
+
+function equipSkin(equippedId) {
+  if (equippedId === 0) {
+    return new URL(`${VITE_VUE_IPFS_URL}QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6`, import.meta.url).href;
+  }
+  return new URL(`${VITE_VUE_IPFS_URL}${skinId}`, import.meta.url).href;
 }
 </script>
 
