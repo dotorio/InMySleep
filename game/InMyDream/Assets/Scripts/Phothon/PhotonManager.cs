@@ -9,8 +9,8 @@ using ExitGames.Client.Photon;
 public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 {
     private readonly string version = "1.0f";
-    private int userId = UserData.instance.userId;
-    private string userName = UserData.instance.userName;
+    private int userId;
+    private string userName;
     private ChatClient chatClient;
 
     public RoomManager roomManager;
@@ -23,6 +23,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     private void Awake()
     {
+        if(UserData.instance != null)
+        {
+            userId = UserData.instance.userId;
+            userName = UserData.instance.userName;
+        }
+
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = version;
         PhotonNetwork.NickName = userName;
