@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class ImageSequenceAnimation2 : MonoBehaviour
+public class ImageSequenceAnimation3 : MonoBehaviour
 {
     public Image[] images; // 여러 개의 이미지를 드래그해서 연결
     public TextMeshProUGUI[] texts; // 여러 개의 TMP 텍스트를 드래그해서 연결
