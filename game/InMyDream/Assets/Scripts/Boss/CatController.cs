@@ -10,9 +10,9 @@ public class CatController : MonoBehaviour
     public GameObject bigBomb; // 캐릭터 팔에 연결된 공
     public GameObject ball; // 캐릭터 팔에 연결된 공
     public GameObject redBomb; // 캐릭터 팔에 연결된 공
-    public Transform hand;  // 캐릭터의 손 위치
-    public Transform hand2;  // 캐릭터의 손 위치
-    public Transform hand3;  // 캐릭터의 손 위치
+    public Transform rightHand;  // 캐릭터의 손 위치
+    public Transform leftHand;  // 캐릭터의 손 위치
+    public Transform jumphand;  // 캐릭터의 손 위치
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     private float cnt = 0f;
@@ -258,72 +258,174 @@ public class CatController : MonoBehaviour
     }
 
 
-    void BombThrow()
+    void BombThrow(string dir)
     {
-        //animator.SetBool("isATK", true);
+        Debug.Log(dir);
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bomb, leftHand.position, leftHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bomb, rightHand.position, rightHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+
+        
+    }
+
+    void RedThrow(string dir)
+    {
+        Debug.Log(dir);
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(redBomb, leftHand.position, leftHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(redBomb, rightHand.position, rightHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+    }
+
+    void BallThrow(string dir)
+    {
+        Debug.Log(dir);
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(ball, leftHand.position, leftHand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(ball, rightHand.position, rightHand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+        }
+    }
+
+    void BigThrow()
+    {
         // 발사체 생성
-        GameObject projectile = Instantiate(bomb, hand3.position, hand3.rotation);
-        BombController bombController = projectile.GetComponent<BombController>();
+        GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
         // 발사 방향 계산
         if (cnt % 2 == 0)
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand3.position, player2.transform.position, 20f);
+            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player2.transform.position, 20f);
             rb.velocity = launchDirection;
         }
         else
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand3.position, player1.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
-
-        cnt++;
-
-        // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-        bombController.StartDestroyCountdown(4f);
-    }
-
-    void RedThrow()
-    {
-        // 발사체 생성
-        GameObject projectile = Instantiate(cube, hand2.position, hand2.rotation);
-        BombController bombController = projectile.GetComponent<BombController>();
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        //발사 방향 계산
-        if (cnt % 2 == 0)
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player2.transform.position * 0.8f, 40f);
-            rb.velocity = launchDirection * 0.8f;
-        }
-        else
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player1.transform.position * 0.8f, 40f);
-            rb.velocity = launchDirection * 0.8f;
-        }
-
-        cnt++;
-
-        bombController.StartDestroyCountdown(10f);
-    }
-
-    void BallThrow()
-    {
-        // 발사체 생성
-        GameObject projectile = Instantiate(big, hand.position, hand.rotation);
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        // 발사 방향 계산
-        if (cnt % 2 == 0)
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player2.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
-        else
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player1.transform.position, 20f);
+            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player1.transform.position, 20f);
             rb.velocity = launchDirection;
         }
 
