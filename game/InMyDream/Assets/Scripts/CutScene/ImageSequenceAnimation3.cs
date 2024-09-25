@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class ImageSequenceAnimation3 : MonoBehaviour
+public class ImageSequenceAnimation3 : MonoBehaviourPunCallbacks
 {
     public Image[] images; // 여러 개의 이미지를 드래그해서 연결
     public TextMeshProUGUI[] texts; // 여러 개의 TMP 텍스트를 드래그해서 연결
@@ -59,7 +60,7 @@ public class ImageSequenceAnimation3 : MonoBehaviour
     {
         if (isNext)
         {
-            SceneManager.LoadScene("Test1");
+            SceneManager.LoadScene("3s_Scene");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -67,88 +68,97 @@ public class ImageSequenceAnimation3 : MonoBehaviour
             isNext = true;
         }
 
-        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (currentIndex < images.Length - 1 && currentIndex < texts.Length - 1)
+            // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                // 현재 진행 중인 페이드 인 코루틴을 중단
-                if (currentFadeInCoroutineImage != null)
-                {
-                    StopCoroutine(currentFadeInCoroutineImage);
-                }
-                if (currentFadeInCoroutineText != null)
-                {
-                    StopCoroutine(currentFadeInCoroutineText);
-                }
+                photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
+            }
+        }
+    }
 
-                // 이전 이미지와 텍스트를 즉시 숨기기
-                if (currentIndex >= 0) // 첫 번째 이미지부터 이전 이미지 숨기기
-                {
-                    HideImageImmediately(images[currentIndex]); // 이전 이미지 즉시 사라지게 함
-                    HideTextImmediately(texts[currentIndex]); // 이전 텍스트 즉시 사라지게 함
-                }
+    [PunRPC]
+    public void NextImageSequence()
+    {
+        if (currentIndex < images.Length - 1 && currentIndex < texts.Length - 1)
+        {
+            // 현재 진행 중인 페이드 인 코루틴을 중단
+            if (currentFadeInCoroutineImage != null)
+            {
+                StopCoroutine(currentFadeInCoroutineImage);
+            }
+            if (currentFadeInCoroutineText != null)
+            {
+                StopCoroutine(currentFadeInCoroutineText);
+            }
 
-                // 다음 이미지 및 텍스트로 이동
-                currentIndex++;
+            // 이전 이미지와 텍스트를 즉시 숨기기
+            if (currentIndex >= 0) // 첫 번째 이미지부터 이전 이미지 숨기기
+            {
+                HideImageImmediately(images[currentIndex]); // 이전 이미지 즉시 사라지게 함
+                HideTextImmediately(texts[currentIndex]); // 이전 텍스트 즉시 사라지게 함
+            }
 
-                currentFadeInCoroutineImage = StartCoroutine(FadeInImage(images[currentIndex])); // 다음 이미지를 페이드 인
-                currentFadeInCoroutineText = StartCoroutine(FadeInText(texts[currentIndex]));   // 다음 텍스트를 페이드 인
-                shownImageCount++; // 표시된 이미지 개수 증가
+            // 다음 이미지 및 텍스트로 이동
+            currentIndex++;
 
-                if (currentIndex >= 4)
-                {
-                    isNext = true;
-                }
+            currentFadeInCoroutineImage = StartCoroutine(FadeInImage(images[currentIndex])); // 다음 이미지를 페이드 인
+            currentFadeInCoroutineText = StartCoroutine(FadeInText(texts[currentIndex]));   // 다음 텍스트를 페이드 인
+            shownImageCount++; // 표시된 이미지 개수 증가
 
-                // 캐릭터가 이미지 2번째(인덱스 0)일 때만 나타나도록 설정
-                if (currentIndex == 0)
-                {
-                    character11.SetActive(true); // 캐릭터 활성화
-                    character12.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character11.SetActive(false); // 캐릭터 비활성화
-                    character12.SetActive(false); // 캐릭터 비활성화
-                }
+            if (currentIndex >= 4)
+            {
+                isNext = true;
+            }
 
-                // 캐릭터가 이미지 2번째(인덱스 1)일 때만 나타나도록 설정
-                if (currentIndex == 1)
-                {
-                    character21.SetActive(true); // 캐릭터 활성화
-                    character22.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character21.SetActive(false); // 캐릭터 비활성화
-                    character22.SetActive(false); // 캐릭터 비활성화
-                }
+            // 캐릭터가 이미지 2번째(인덱스 0)일 때만 나타나도록 설정
+            if (currentIndex == 0)
+            {
+                character11.SetActive(true); // 캐릭터 활성화
+                character12.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character11.SetActive(false); // 캐릭터 비활성화
+                character12.SetActive(false); // 캐릭터 비활성화
+            }
 
-                if (currentIndex == 2)
-                {
-                    character31.SetActive(true); // 캐릭터 활성화
-                    character32.SetActive(true); // 캐릭터 활성화
-                    BGM1.Stop();
-                    BGM2.Play();
-                }
-                else
-                {
-                    character31.SetActive(false); // 캐릭터 비활성화
-                    character32.SetActive(false); // 캐릭터 비활성화
-                }
+            // 캐릭터가 이미지 2번째(인덱스 1)일 때만 나타나도록 설정
+            if (currentIndex == 1)
+            {
+                character21.SetActive(true); // 캐릭터 활성화
+                character22.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character21.SetActive(false); // 캐릭터 비활성화
+                character22.SetActive(false); // 캐릭터 비활성화
+            }
 
-                if (currentIndex == 3)
-                {
-                    BGM3.Play();
-                    character41.SetActive(true); // 캐릭터 활성화
-                    character42.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character41.SetActive(false); // 캐릭터 비활성화
-                    character42.SetActive(false); // 캐릭터 비활성화
-                }
+            if (currentIndex == 2)
+            {
+                character31.SetActive(true); // 캐릭터 활성화
+                character32.SetActive(true); // 캐릭터 활성화
+                BGM1.Stop();
+                BGM2.Play();
+            }
+            else
+            {
+                character31.SetActive(false); // 캐릭터 비활성화
+                character32.SetActive(false); // 캐릭터 비활성화
+            }
+
+            if (currentIndex == 3)
+            {
+                BGM3.Play();
+                character41.SetActive(true); // 캐릭터 활성화
+                character42.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character41.SetActive(false); // 캐릭터 비활성화
+                character42.SetActive(false); // 캐릭터 비활성화
             }
         }
     }
