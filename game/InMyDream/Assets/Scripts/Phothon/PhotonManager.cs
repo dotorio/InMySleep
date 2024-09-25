@@ -15,11 +15,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     public RoomManager roomManager;
     public FriendManager friendManager;
+    
+    public StartController startController;
 
     
-    // testing variable
-    //private int userId = 41;
-    //private string userName = "user2";
+    //// testing variable
+    //private int userId = 42;
+    //private string userName = "ttest";
 
     private void Awake()
     {
@@ -91,6 +93,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         playerProps["isDowned"] = false;
         playerProps["roomName"] = userName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+        startController.buttonUpdate();
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

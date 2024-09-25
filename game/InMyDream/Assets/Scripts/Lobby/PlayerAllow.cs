@@ -9,28 +9,19 @@ public class PlayerAllow : MonoBehaviour
     public float floatSpeed = 4f;        // 위아래로 움직이는 속도
 
     private Vector2 initialPosition;     // 초기 위치 저장
-    private bool isFloating = false;     // 움직임 상태를 제어하는 플래그
 
-    void Start()
+    void Awake()
     {
         // 초기 위치 설정
         initialPosition = allow.anchoredPosition;
-        allow.gameObject.SetActive(false);  // 초기에는 비활성화 상태
     }
 
-    void Update()
+
+    private void OnEnable()
     {
-        // allow 오브젝트가 활성화되었을 때만 움직임 시작
-        if (allow.gameObject.activeSelf && !isFloating)
-        {
-            StartCoroutine(FloatArrow());
-            isFloating = true;  // 중복 실행 방지
-        }
-        else if (!allow.gameObject.activeSelf)
-        {
-            isFloating = false;  // 비활성화되면 다시 초기화
-        }
+        StartCoroutine(FloatArrow());
     }
+    
 
     IEnumerator FloatArrow()
     {
