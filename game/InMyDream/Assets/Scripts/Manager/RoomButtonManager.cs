@@ -107,7 +107,7 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
             // 씬 로드
-            PhotonNetwork.LoadLevel("kysLobbyTest");
+            PhotonNetwork.LoadLevel("CutScene1");
         }
     }
 
