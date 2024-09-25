@@ -16,7 +16,7 @@ public class CatController : MonoBehaviour
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     private float cnt = 0f;
-    public int phase = 1;
+    public int phase;
     private int randomNumber; // 랜덤 숫자
     private bool isDying = false; // Die1 애니메이션 실행 중 여부
     private int damage = 0;
@@ -391,12 +391,27 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                if (phase == 2)
+                {
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    rb.velocity = launchDirection * 0.7f;
+                }
+                
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                if (phase == 2)
+                {
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    rb.velocity = launchDirection * 0.7f;
+                }
             }
 
             cnt++;
@@ -413,12 +428,26 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                if (phase == 2)
+                {
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    rb.velocity = launchDirection * 0.7f;
+                }
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                if (phase == 2)
+                {
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    rb.velocity = launchDirection * 0.7f;
+                }
             }
 
             cnt++;
