@@ -53,7 +53,7 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
     {
         if (isNext)
         {
-            SceneManager.LoadScene("Test1");
+            SceneManager.LoadScene("2s_Scene 1");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -66,13 +66,13 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
             // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                photonView.RPC("NextImageSequence", RpcTarget.All); // 모든 클라이언트에게 RPC 호출
+                photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
             }
         }
     }
 
     [PunRPC]
-    void NextImageSequence()
+    public void NextImageSequence()
     {
         if (currentIndex < images.Length - 1 && currentIndex < texts.Length - 1)
         {
