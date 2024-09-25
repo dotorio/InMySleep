@@ -28,20 +28,21 @@ onBeforeMount(async () => {
   } catch (error) {
     console.error(error);
   }
-});
+})
 
 const choice = ref("bear");
 const bear = ref({
-  nft: []
+  nft: ["QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
 });
 const rabbit = ref({
-  nft: []
+  nft: ["QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
 });
+
 // const bear = {
-//   nft: ["bear1", "bear2", "lock-nft", "bear3", "lock-nft"],
+//   nft: ["bear1", "bear2", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "bear3", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
 // };
 // const rabbit = {
-//   nft: ["rabbit1", "lock-nft", "lock-nft", "rabbit2", "rabbit3"],
+//   nft: ["rabbit1", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "rabbit2", "rabbit3"],
 // };
 
 function choiceCharacter(character) {
