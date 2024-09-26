@@ -8,8 +8,13 @@ export const useUserStore = defineStore(
 
     const userInfo = ref({
       nickname: "김종덕 만렙",
-      nft: "rabbit1",
+      choice: "bear",
+      bearColor: "0",
+      rabbitColor: "0",
     });
+
+    const userBearSkin = ref([]);
+    const userRabbitSkin = ref([]);
 
     function changeNft(nft) {
       if (nft === "lock-nft") {
@@ -32,7 +37,15 @@ export const useUserStore = defineStore(
       user.value = "";
     }
 
-    return { user, userInfo, changeNft, userLogin, userLogout };
+    return {
+      user,
+      userInfo,
+      userBearSkin,
+      userRabbitSkin,
+      changeNft,
+      userLogin,
+      userLogout,
+    };
   },
   { persist: true }
 );
