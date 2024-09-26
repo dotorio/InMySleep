@@ -113,7 +113,15 @@ public class DogMovement : MonoBehaviour
         isBarking = true;
         agent.isStopped = true;
         animator.SetInteger("moveDirection", 10); // 짖는 애니메이션
+        StartCoroutine(StopBarkingAfterDelay(3.0f)); // 2초 후 짖는 것을 멈춤
     }
+
+    IEnumerator StopBarkingAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StopBarking(); // 2초 후 짖는 것을 멈추는 메서드 호출
+    }
+
 
     public void StopBarking()
     {
