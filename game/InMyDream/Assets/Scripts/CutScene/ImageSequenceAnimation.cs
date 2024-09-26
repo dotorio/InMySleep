@@ -68,21 +68,21 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
             isNext = true;
         }
 
-        // 실제에 사용할 코드
-        //if(PhotonNetwork.LocalPlayer.IsMasterClient)
-        //{
-        //    // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
-        //    if (Input.GetKeyDown(KeyCode.Space))
-        //    {
-        //        photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
-        //    }
-        //}
-        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
-        if (Input.GetKeyDown(KeyCode.Space))
+        //실제에 사용할 코드
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            nextCutAudio.Play();
-            NextImageSequence();
+            // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
+            }
         }
+        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    nextCutAudio.Play();
+        //    NextImageSequence();
+        //}
     }
 
     [PunRPC]
