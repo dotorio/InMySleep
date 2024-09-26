@@ -185,7 +185,7 @@ function usernameInput() {
                   :class="{ check: emailCheckVal }"
                   @click="emailCheckFun"
                 >
-                  인증번호
+                  인증받기
                 </button>
               </div>
             </div>
@@ -201,9 +201,6 @@ function usernameInput() {
           <div class="username box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="username" class="bit-t">인증번호</label>
-              <div class="username-confirm bit-t">
-                {{ usernameConfirm }}
-              </div>
             </div>
             <div class="flex-align" style="justify-content: space-between">
               <input
