@@ -391,27 +391,13 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                if (phase == 2)
-                {
-                    rb.velocity = launchDirection;
-                }
-                else
-                {
-                    rb.velocity = launchDirection * 0.7f;
-                }
-                
+                rb.velocity = launchDirection * 1.2f;
+
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                if (phase == 2)
-                {
-                    rb.velocity = launchDirection;
-                }
-                else
-                {
-                    rb.velocity = launchDirection * 0.7f;
-                }
+                rb.velocity = launchDirection * 1.2f;
             }
 
             cnt++;
@@ -428,26 +414,12 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                if (phase == 2)
-                {
-                    rb.velocity = launchDirection;
-                }
-                else
-                {
-                    rb.velocity = launchDirection * 0.7f;
-                }
+                rb.velocity = launchDirection * 1.2f;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                if (phase == 2)
-                {
-                    rb.velocity = launchDirection;
-                }
-                else
-                {
-                    rb.velocity = launchDirection * 0.7f;
-                }
+                rb.velocity = launchDirection * 1.2f;
             }
 
             cnt++;
