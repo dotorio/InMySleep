@@ -34,6 +34,22 @@ export function emailCheck(email) {
   });
 }
 
+export function emailAuth(email) {
+  return axios({
+    url: `auth/email/verification-request`,
+    method: "post",
+    params: { email },
+  });
+}
+
+export function emailAuthCheck(email, code) {
+  return axios({
+    url: `auth/emails/verifications`,
+    method: "get",
+    params: { email, code },
+  });
+}
+
 export function usernameCheck(username) {
   return axios({
     url: `${baseURL}/check-username`,
