@@ -10,11 +10,17 @@ public class StageController : MonoBehaviour
     public Button nextButton; // 다음 버튼
 
     
-    private int lastStage = UserData.instance.lastStage - 1;
+    private int lastStage;
     public int currentStageIndex = 0; // 현재 스테이지 인덱스
 
     void Start()
     {
+        // 변수 초기화
+        lastStage = UserData.instance.lastStage - 1;
+
+        // 1스테이지 시작
+        UserData.instance.stage = 1;
+
         UpdateStageObjects(); // 초기 스테이지 설정
         UnlockStages(); // 스테이지 락 해제
 

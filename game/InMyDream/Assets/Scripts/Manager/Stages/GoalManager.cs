@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GoalManager : MonoBehaviour
+public class GoalManager : MonoBehaviourPunCallbacks
 {
     // 도착지점 체크
     private bool localPlayerReached = false;
@@ -45,8 +45,9 @@ public class GoalManager : MonoBehaviour
         if (localPlayerReached && otherPlayerReached)
         {
             int stage = UserData.instance.stage;
+            
             // 두 플레이어 모두 도착하면 씬 전환 메소드 실행
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 int roomId = UserData.instance.roomId;
                 if (stage < 4)
@@ -59,11 +60,21 @@ public class GoalManager : MonoBehaviour
                     StartCoroutine(UpdateClear(roomId, 4));
                     StartCoroutine(GameClear(roomId));
                 }
+
+                // RPC로 모든 플레이어의 스테이지 값을 업데이트
+                photonView.RPC("RPC_UpdateStage", RpcTarget.AllBuffered, stage + 1);
+
+                PhotonNetwork.LoadLevel(nextScene[stage]);
             }
 
-            UserData.instance.stage = stage + 1;
-            PhotonNetwork.LoadLevel(nextScene[stage]);
         }
+    }
+
+    [PunRPC]
+    public void RPC_UpdateStage(int newStage)
+    {
+        // 모든 클라이언트에서 UserData의 stage 값을 업데이트
+        UserData.instance.stage = newStage;
     }
 
     // 스테이지 클리어 정보 전달
