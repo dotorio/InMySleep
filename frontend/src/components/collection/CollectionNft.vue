@@ -24,6 +24,23 @@ function imgUrl(nft) {
   const hash = nft.imageUrl.split("ipfs://")[1];
   return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
 }
+
+function changeSkin(selectedSkin) {
+  console.log(selectedSkin);
+  if (!selectedSkin.attributes) {
+    Swal.fire({
+      icon: "error",
+      title: "NFT를 가지고 있지 않습니다",
+      text: "스토리를 클리어하면서 NFT를 수집해보세요!",
+    });
+    return;
+  }
+  if (uStore.userInfo.choice === "bear") {
+    uStore.userInfo.selectedBearColor = selectedSkin.attributes.color;
+  } else if (uStore.userInfo.choice === "rabbit") {
+    uStore.userInfo.selectedRabbitColor = selectedSkin.attributes.color;
+  }
+}
 </script>
 
 <template>
@@ -31,7 +48,7 @@ function imgUrl(nft) {
     <div class="nft-list">
       <img :src="imgUrl(nft)" alt="lock" v-for="(nft, index) in nftData.nft" :key="index"
         :style="{ left: index * 70 + (index > nftIndex ? 100 : 0) + 'px' }" @mouseenter="nftHover(index)"
-        @click="uStore.changeNft(nft)" />
+        @click="changeSkin(nft)" />
     </div>
     <div></div>
   </div>
