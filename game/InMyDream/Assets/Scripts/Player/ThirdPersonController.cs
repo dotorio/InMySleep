@@ -10,7 +10,9 @@ public class ThirdPersonController : MonoBehaviourPun
     public float sprintSpeedMultiplier = 1.5f; // 스프린트 시 속도 배율
     public float turnSmoothTime = 0.1f; // 회전 부드러움 시간
     private float turnSmoothVelocity;
-
+    public AudioSource runAudio;
+    public AudioSource jumpAudio;
+    bool isJumping = false;
     public float gravity = -9.81f; // 중력 값
     public float jumpHeight = 1.5f; // 점프 높이
 
@@ -61,8 +63,37 @@ public class ThirdPersonController : MonoBehaviourPun
         }
 
         HandleMovement();
+        playAudio();
         HandleAimingAndThrowing(); // 조준 및 던지기 처리
     }
+
+    void playAudio()
+    {
+        if (isJumping)
+        {
+            runAudio.Pause();
+            return;
+        }
+
+
+        if (Input.GetKey(KeyCode.LeftShift) && !isJumping)
+        {
+            if (runAudio != null && !runAudio.isPlaying)
+            {
+                runAudio.Play(); // 소리 재생
+            }
+        }
+        else
+        {
+            // Shift 키를 떼면 소리 멈춤
+            if (runAudio != null && runAudio.isPlaying)
+            {
+                runAudio.Pause(); // 소리 일시정지
+            }
+        }
+    }
+
+
 
     // 물건 집기
     void OnTriggerEnter(Collider other)
@@ -100,6 +131,7 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             velocity.y = -2f; // 작은 값으로 설정하여 땅에 붙어있게 함
             animator.SetInteger("animation", 1); // Idle 모션
+            isJumping = false;
         }
 
         // 입력 처리
@@ -114,6 +146,8 @@ public class ThirdPersonController : MonoBehaviourPun
         if ((horizontal != 0f || vertical != 0f) && isGrounded && canPickUp)
         {
             animator.SetInteger("animation", 18); // 걷기 모션
+            //runAudio.Stop();
+
         }
         if (isSprinting)
         {
@@ -123,6 +157,8 @@ public class ThirdPersonController : MonoBehaviourPun
             {
                 animator.SetInteger("animation", 15); // 달리기 모션
             }
+             
+            
         }
 
         if (direction.magnitude >= 0.1f)
@@ -144,6 +180,8 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             animator.SetInteger("animation", 9); // 점프 모션
+            isJumping = true;
+            jumpAudio.Play();
         }
 
         // 중력 적용
