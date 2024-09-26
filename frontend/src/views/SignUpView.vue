@@ -1,7 +1,13 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
 import Footer from "@/components/Footer.vue";
-import { emailCheck, usernameCheck, signUp } from "@/api/user";
+import {
+  emailCheck,
+  usernameCheck,
+  signUp,
+  emailAuth,
+  emailAuthCheck,
+} from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -9,11 +15,13 @@ const router = useRouter();
 const email = ref("");
 const username = ref("");
 const emailConfirm = ref("");
+const emailAuthNum = ref("");
 const usernameConfirm = ref("");
 const password = ref("");
 const passwordConfirm = ref("");
 
 const emailCheckVal = ref(false);
+const emailAuthVal = ref(false);
 const usernameCheckVal = ref(false);
 const passwordConfirmVal = ref(false);
 
@@ -34,6 +42,14 @@ function signUpFun() {
     return;
   }
 
+  if (!emailAuthVal.value) {
+    Swal.fire({
+      icon: "error",
+      title: "이메일 인증을 해주세요!",
+    });
+    return;
+  }
+
   signUp({
     email: email.value,
     username: username.value,
@@ -46,6 +62,20 @@ function signUpFun() {
         title: "회원가입 완료!",
       });
       router.replace({ name: "login" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+function emailAuthFun() {
+  const useremail = email.value;
+  const authNum = emailAuthNum.value;
+
+  emailAuthCheck(useremail, authNum)
+    .then((res) => {
+      console.log(res.data);
+      emailAuthVal.value = true;
     })
     .catch((err) => {
       console.log(err);
@@ -73,6 +103,14 @@ function emailCheckFun() {
     .then((res) => {
       emailCheckVal.value = true;
       emailConfirm.value = "사용 가능한 이메일입니다.";
+      console.log("사용 가능 이메일");
+      emailAuth(email.value)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       Swal.fire({
@@ -117,6 +155,7 @@ function passwordCheck() {
 
 function emailInput() {
   emailCheckVal.value = false;
+  emailAuthVal.value = false;
   emailConfirm.value = "";
 }
 
@@ -131,7 +170,7 @@ function usernameInput() {
     <Nav />
 
     <div class="background box-md">
-      <div class="signup-con box-col">
+      <div class="signup-con box-col box-md">
         <span class="big-text bit-t">회원가입</span>
         <div class="input-con box-col">
           <div class="email box-col">
@@ -141,13 +180,51 @@ function usernameInput() {
                 <div class="email-confirm bit-t">
                   {{ emailConfirm }}
                 </div>
-                <button class="check-btn bit-t" :class="{ check: emailCheckVal }" @click="emailCheckFun">
-                  중복확인
+                <button
+                  class="check-btn bit-t"
+                  :class="{ check: emailCheckVal }"
+                  @click="emailCheckFun"
+                >
+                  인증번호
                 </button>
               </div>
             </div>
-            <input id="email" class="bit-t" type="text" placeholder="이메일을 입력해주세요." v-model="email"
-              @input="emailInput" />
+            <input
+              id="email"
+              class="bit-t"
+              type="text"
+              placeholder="이메일을 입력해주세요."
+              v-model="email"
+              @input="emailInput"
+            />
+          </div>
+          <div class="username box-col">
+            <div class="flex-align" style="justify-content: space-between">
+              <label for="username" class="bit-t">인증번호</label>
+              <div class="username-confirm bit-t">
+                {{ usernameConfirm }}
+              </div>
+            </div>
+            <div class="flex-align" style="justify-content: space-between">
+              <input
+                id="emailAuth"
+                class="bit-t"
+                type="text"
+                placeholder="인증번호"
+                v-model="emailAuthNum"
+                maxlength="6"
+              />
+              <div>
+                <span class="isAuth bit-t" v-if="emailAuthVal">인증완료!</span>
+                <button
+                  class="check-btn bit-t"
+                  :class="{ check: emailAuthVal }"
+                  @click="emailAuthFun"
+                >
+                  인증하기
+                </button>
+              </div>
+            </div>
           </div>
           <div class="username box-col">
             <div class="flex-align" style="justify-content: space-between">
@@ -156,25 +233,49 @@ function usernameInput() {
                 <div class="username-confirm bit-t">
                   {{ usernameConfirm }}
                 </div>
-                <button class="check-btn bit-t" :class="{ check: usernameCheckVal }" @click="usernameCheckFun">
+                <button
+                  class="check-btn bit-t"
+                  :class="{ check: usernameCheckVal }"
+                  @click="usernameCheckFun"
+                >
                   중복확인
                 </button>
               </div>
             </div>
-            <input id="username" class="bit-t" type="text" placeholder="닉네임을 입력해주세요." v-model="username"
-              @input="usernameInput" />
+            <input
+              id="username"
+              class="bit-t"
+              type="text"
+              placeholder="닉네임을 입력해주세요."
+              v-model="username"
+              @input="usernameInput"
+            />
           </div>
           <div class="password box-col">
             <label for="password" class="bit-t">비밀번호</label>
-            <input id="password" class="bit-t" type="password" v-model="password" />
+            <input
+              id="password"
+              class="bit-t"
+              type="password"
+              v-model="password"
+            />
             <div class="flex-align" style="justify-content: space-between">
               <label for="password-confirm" class="bit-t">비밀번호 확인</label>
-              <span class="bit-t" :class="{
-                agreement: passwordConfirmVal,
-                disagreement: !passwordConfirmVal,
-              }">{{ passwordCheck() }}</span>
+              <span
+                class="bit-t"
+                :class="{
+                  agreement: passwordConfirmVal,
+                  disagreement: !passwordConfirmVal,
+                }"
+                >{{ passwordCheck() }}</span
+              >
             </div>
-            <input id="password-confirm" class="bit-t" type="password" v-model="passwordConfirm" />
+            <input
+              id="password-confirm"
+              class="bit-t"
+              type="password"
+              v-model="passwordConfirm"
+            />
           </div>
           <button class="btn bit-t" @click="signUpFun">회원가입</button>
         </div>
@@ -186,13 +287,13 @@ function usernameInput() {
 
 <style scoped>
 .background {
-  height: 85vh;
+  height: 120vh;
   background-color: aqua;
 }
 
 .signup-con {
   width: 650px;
-  height: 550px;
+  /* height: 700px; */
   align-items: center;
   /* background-color: blue; */
 }
@@ -221,6 +322,10 @@ label {
   font-size: 20px;
   margin: 10px 0;
   height: 40px;
+}
+
+#emailAuth {
+  text-align: center;
 }
 
 .btn {
@@ -255,7 +360,8 @@ button {
 }
 
 .email-confirm,
-.username-confirm {
+.username-confirm,
+.isAuth {
   color: rgb(48, 164, 48);
   margin-right: 20px;
 }
