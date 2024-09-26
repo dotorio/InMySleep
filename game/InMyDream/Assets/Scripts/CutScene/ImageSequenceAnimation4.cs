@@ -58,7 +58,7 @@ public class ImageSequenceAnimation4 : MonoBehaviourPunCallbacks
     {
         if (isNext)
         {
-            SceneManager.LoadScene("3s_Scene");
+            SceneManager.LoadScene("4s_Scene");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
