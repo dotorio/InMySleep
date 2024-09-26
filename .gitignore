@@ -1,3 +1,6 @@
+# settings
+.vscode
+
 # blockchain solidity
 blockchain/solidity-contracts/build/contracts/
 

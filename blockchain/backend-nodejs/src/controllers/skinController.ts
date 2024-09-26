@@ -5,7 +5,6 @@ export const getEquippedSkin = async (req: Request, res: Response) => {
     const userId = req.query.userId as string;
     try {
         const curSkins = await findEquippedSkin(userId);
-        console.log('Current equipped skin:', curSkins);
         res.status(200).json(curSkins);
     } catch (error) {
         console.error('Error getting equipped skin:', error);

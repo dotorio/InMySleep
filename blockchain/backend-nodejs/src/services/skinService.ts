@@ -1,8 +1,8 @@
-import { getSkinByUserId, getSkinListByUserId } from '../db/userRepository';
+import { getEquipeedSkinByUserId, getSkinListByUserId } from '../db/skinRepository';
 
 export const findEquippedSkin = async (userId: string): Promise<any> => {
     try {
-        return await getSkinByUserId(userId);
+        return await getEquipeedSkinByUserId(userId);
     } catch (error) {
         console.error('Error finding equipped skin:', error);
         throw error
