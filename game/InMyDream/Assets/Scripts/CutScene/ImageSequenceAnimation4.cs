@@ -66,18 +66,18 @@ public class ImageSequenceAnimation4 : MonoBehaviourPunCallbacks
             isNext = true;
         }
 
-        //if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        //{
-        //    // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
-        //    if (Input.GetKeyDown(KeyCode.Space))
-        //    {
-        //        photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
-        //    }
-        //}
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            NextImageSequence();
+            // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
+            }
         }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    NextImageSequence();
+        //}
     }
 
     [PunRPC]
