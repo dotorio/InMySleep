@@ -31,3 +31,18 @@ export const getSkinListByUserId = async (userId: string): Promise<any> => {
         throw error;
     }
 }
+
+export const putEquipSkin = async (userId: string, character: string, color: string): Promise<any> => {
+    try {
+        const conn = await connectDB();
+        const query = `
+        UPDATE user_skin
+        SET ${character}_skin = ?
+        WHERE user_id = ?;`;
+        const [rows]: [any[], FieldPacket[]] = await conn.query(query, [color, userId]);
+        return rows;
+    } catch (error) {
+        console.error('Error equipping skin:', error);
+        throw error;
+    }
+}
