@@ -1,7 +1,6 @@
 <script setup>
 import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
-
 const { VITE_VUE_IPFS_URL } = import.meta.env;
 
 defineProps({
@@ -13,13 +12,15 @@ const uStore = useUserStore();
 
 function nftHover(index) {
   nftIndex.value = index;
-  console.log(nftIndex.value);
 }
 
 // function imgUrl(nft) {
 //   return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
 // }
 function imgUrl(nft) {
+  if (!nft.imageUrl) {
+    return "";
+  }
   const hash = nft.imageUrl.split("ipfs://")[1];
   return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
 }
