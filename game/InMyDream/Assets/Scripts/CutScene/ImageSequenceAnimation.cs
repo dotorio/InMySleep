@@ -68,7 +68,7 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
             isNext = true;
         }
 
-        실제에 사용할 코드
+        //실제에 사용할 코드
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
