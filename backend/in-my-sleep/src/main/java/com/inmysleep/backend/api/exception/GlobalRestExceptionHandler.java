@@ -60,4 +60,11 @@ public class GlobalRestExceptionHandler {
         response.setResponseFalse(null, "An unexpected error occurred : " + e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(EmailSendException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnableToSendEmailException(EmailSendException e) {
+        ApiResponse<Void> response = new ApiResponse<>();
+        response.setResponseFalse(null, "Unable to send email: " + e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
