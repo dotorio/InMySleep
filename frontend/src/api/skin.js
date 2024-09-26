@@ -18,3 +18,11 @@ export function getSkinList(userId) {
     params: { userId },
   });
 }
+
+export function putEquipSkin(userId, character, color) {
+  return axios({
+    url: `${baseURL}/equip`,
+    method: "put",
+    data: { userId, character, color },
+  });
+}

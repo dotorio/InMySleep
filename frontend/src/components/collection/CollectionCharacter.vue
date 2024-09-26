@@ -5,9 +5,9 @@ import { myNFTs } from "@/api/nft";
 import { getEquippedSkin, getSkinList } from "@/api/skin";
 import { useUserStore } from "@/stores/user";
 
-const choice = ref("bear");
-const equippedBear = ref(0);
-const equippedRabbit = ref(0);
+// const choice = ref("bear");
+// const equippedBear = ref(0);
+// const equippedRabbit = ref(0);
 const defaultUrl = "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6";
 const bear = ref({
   nft: [
@@ -62,14 +62,16 @@ onBeforeMount(async () => {
   try {
     const response = await getEquippedSkin(uStore.user.data.userId);
     console.log(response);
-    equippedBear.value = response.data[0].attributes.color;
-    equippedRabbit.value = response.data[1].attributes.color;
+    uStore.userInfo.selectedBearColor = uStore.userInfo.bearColor = response.data[0].attributes.color;
+    uStore.userInfo.selectedRabbitColor = uStore.userInfo.rabbitColor = response.data[1].attributes.color;
+    // equippedBear.value = response.data[0].attributes.color;
+    // equippedRabbit.value = response.data[1].attributes.color;
 
-    if (choice.value === "bear") {
-      bear.value.nft[equippedBear.value] = response.data[0];
-    } else {
-      rabbit.value.nft[equippedRabbit.value] = response.data[1];
-    }
+    // if (uStore.userInfo.choice === "bear") {
+    //   bear.value.nft[equippedBear.value] = response.data[0];
+    // } else {
+    //   rabbit.value.nft[equippedRabbit.value] = response.data[1];
+    // }
   } catch (error) {
     console.error(error);
   }
