@@ -64,9 +64,14 @@ async function equipSkin() {
     <img v-if="uStore.userInfo.choice === 'bear'" :src="getNftSrc('bear', uStore.userInfo.selectedBearColor)" alt="곰" />
     <img v-else-if="uStore.userInfo.choice === 'rabbit'" :src="getNftSrc('rabbit', uStore.userInfo.selectedRabbitColor)"
       alt="토끼" />
-      <div v-if="(uStore.userInfo.choice === 'bear' && uStore.userInfo.selectedBearColor !== uStore.userInfo.bearColor) || (uStore.userInfo.choice === 'rabbit' && uStore.userInfo.selectedRabbitColor !== uStore.userInfo.rabbitColor)" class="equip box-md" @click="equipSkin()">
-        <img src="/src/assets/collection/equipped.svg" alt="equipped" />
-      </div>
+    <div class="equip box-md">
+      <img v-if="(uStore.userInfo.choice === 'bear' && uStore.userInfo.selectedBearColor !== uStore.userInfo.bearColor) || (uStore.userInfo.choice === 'rabbit' && uStore.userInfo.selectedRabbitColor !== uStore.userInfo.rabbitColor)" src="/src/assets/collection/equip.svg" alt="equip" @click="equipSkin()"/>
+      <img v-else src="/src/assets/collection/equip_disable.svg" alt="equie_diable" />
+    </div>
+    <div class="equip box-md">
+      <img v-if="true" src="/src/assets/collection/gen_nft.svg" alt="gen_nft" />
+      <img v-else src="/src/assets/collection/gen_nft_disable.svg" alt="gen_nft_disable" />
+    </div>
   </div>
 </template>
 
@@ -101,5 +106,10 @@ img {
 .equip>img:hover {
   scale: 1.1;
   opacity: 1;
+}
+
+.equip img:last-child {
+  scale: 1;
+  cursor: default;
 }
 </style>
