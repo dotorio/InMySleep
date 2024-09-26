@@ -10,7 +10,7 @@ public class GoalManager : MonoBehaviourPunCallbacks
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
-    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "4_4_1stage", "4_1_4_2stage", "4_2_end_stage"};
+    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "CutScene4", "4_1_4_2stage", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
 
