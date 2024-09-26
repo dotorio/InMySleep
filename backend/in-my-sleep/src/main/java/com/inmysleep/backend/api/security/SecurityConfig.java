@@ -38,18 +38,22 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**")  // 모든 경로에 대해 CSRF 비활성화
                 )
+                // 임시적으로 비활성화
+//                .authorizeHttpRequests(authorize -> authorize
+//                        // 인증 없이 접근 가능
+//                        .requestMatchers(
+//                                "/auth/signup",
+//                                "/auth/login",
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/user/check-email",
+//                                "/user/check-username",
+//                                "/auth/email/verification-request",
+//                                "/auth/emails/verifications").permitAll()
+//                        .anyRequest().authenticated()
+//                )
                 .authorizeHttpRequests(authorize -> authorize
-                        // 인증 없이 접근 가능
-                        .requestMatchers(
-                                "/auth/signup",
-                                "/auth/login",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/user/check-email",
-                                "/user/check-username",
-                                "/auth/email/verification-request",
-                                "/auth/emails/verifications").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // 모든 요청에 대해 인증 없이 접근 허용
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
