@@ -16,7 +16,7 @@ public class CatController : MonoBehaviour
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     private float cnt = 0f;
-    public int phase = 1;
+    public int phase;
     private int randomNumber; // 랜덤 숫자
     private bool isDying = false; // Die1 애니메이션 실행 중 여부
     private int damage = 0;
@@ -315,7 +315,19 @@ public class CatController : MonoBehaviour
 
     void RedThrow(string dir)
     {
-        Debug.Log(dir);
+        float randomValue;
+
+        // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
+        if (Random.value < 0.5f)
+        {
+            // 1.0f ~ 2.0f 사이의 랜덤 값
+            randomValue = Random.Range(0.6f, 0.8f);
+        }
+        else
+        {
+            // 3.0f ~ 4.0f 사이의 랜덤 값
+            randomValue = Random.Range(1.2f, 1.4f);
+        }
         if (dir == "left")
         {
             // 발사체 생성
@@ -327,12 +339,12 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                rb.velocity = launchDirection * randomValue;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                rb.velocity = launchDirection * randomValue;
             }
 
             cnt++;
@@ -351,12 +363,12 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                rb.velocity = launchDirection * randomValue;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 0.7f;
+                rb.velocity = launchDirection * randomValue;
             }
 
             cnt++;
@@ -379,15 +391,18 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 1.2f;
+
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 1.2f;
             }
 
             cnt++;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
         }
         else
         {
@@ -399,15 +414,17 @@ public class CatController : MonoBehaviour
             if (cnt % 2 == 0)
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 1.2f;
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
+                rb.velocity = launchDirection * 1.2f;
             }
 
             cnt++;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
         }
     }
 
@@ -415,6 +432,7 @@ public class CatController : MonoBehaviour
     {
         // 발사체 생성
         GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
+        BombController bombController = projectile.GetComponent<BombController>();
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
         // 발사 방향 계산
@@ -431,29 +449,29 @@ public class CatController : MonoBehaviour
 
         cnt++;
 
-        //StartCoroutine(FadeOutAndDestroy(projectile, 5f, 1f)); // 코루틴 시작
+        bombController.StartDestroyCountdown(4f);
     }
 
-    //private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
-    //{
-    //    // 5초 대기
-    //    yield return new WaitForSeconds(delay);
+    private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
+    {
+        // 5초 대기
+        yield return new WaitForSeconds(delay);
 
-    //    Renderer renderer = projectile.GetComponent<Renderer>();
-    //    Material material = renderer.material;
-    //    Color initialColor = material.color;
+        Renderer renderer = projectile.GetComponent<Renderer>();
+        Material material = renderer.material;
+        Color initialColor = material.color;
 
-    //    // Alpha 값을 서서히 줄이기
-    //    for (float t = 0; t < fadeDuration; t += Time.deltaTime)
-    //    {
-    //        float normalizedTime = t / fadeDuration;
-    //        material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
-    //        yield return null; // 다음 프레임까지 대기
-    //    }
+        // Alpha 값을 서서히 줄이기
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        {
+            float normalizedTime = t / fadeDuration;
+            material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
+            yield return null; // 다음 프레임까지 대기
+        }
 
-    //    // 완전히 사라진 후 삭제
-    //    Destroy(projectile);
-    //}
+        // 완전히 사라진 후 삭제
+        Destroy(projectile);
+    }
 
 
 

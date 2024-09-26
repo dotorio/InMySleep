@@ -17,6 +17,12 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
     public GameObject character52; // 캐릭터 오브젝트 5-2
     public GameObject character61; // 캐릭터 오브젝트 6-1
     public GameObject character62; // 캐릭터 오브젝트 6-2
+   
+    
+    public AudioSource nextCutAudio;
+    public AudioSource BGM1;
+    public AudioSource BGM2;
+    
 
     private Coroutine currentFadeInCoroutineImage; // 현재 진행 중인 이미지 페이드 인 코루틴
     private Coroutine currentFadeInCoroutineText; // 현재 진행 중인 텍스트 페이드 인 코루틴
@@ -24,6 +30,7 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
 
     void Start()
     {
+    
         // 모든 이미지를 투명하게 설정 (알파값 0)
         foreach (Image img in images)
         {
@@ -51,24 +58,30 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (isNext)
+        //실제에 사용할 코드
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            SceneManager.LoadScene("2s_Scene 1");
-        }
+            if (isNext)
+            {
+                SceneManager.LoadScene("2s_Scene 1");
+            }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            isNext = true;
-        }
-
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isNext = true;
+            }
             // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
             }
         }
+        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    nextCutAudio.Play();
+        //    NextImageSequence();
+        //}
     }
 
     [PunRPC]
@@ -99,6 +112,7 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
             // 4번째 이미지 이후부터는 이전 이미지를 즉시 사라지게 함
             if (currentIndex >= 3)
             {
+               
                 HideImageImmediately(images[currentIndex]); // 이전 이미지 즉시 사라지게 함
             }
 
@@ -117,6 +131,8 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
             // 캐릭터가 이미지 4번째(인덱스 3)일 때만 나타나도록 설정
             if (currentIndex == 3)
             {
+                BGM1.Stop();
+                BGM2.Play();
                 character4.SetActive(true); // 캐릭터 활성화
             }
             else

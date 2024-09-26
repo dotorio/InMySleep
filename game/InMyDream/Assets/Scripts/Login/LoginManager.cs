@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Photon.Pun.Demo.Cockpit;
 
 public class LoginManager : MonoBehaviour
 {
@@ -23,6 +24,17 @@ public class LoginManager : MonoBehaviour
         // 다시 시도 버튼에 대한 클릭 이벤트 등록
         retryButton.onClick.AddListener(CloseLoginFailPopup);
         closeBtn.onClick.AddListener(CloseLoginFailPopup);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (inputEmail.isFocused)  // 아이디 입력 필드에 포커스가 있을 때
+            {
+                inputPassword.Select();  // 비밀번호 입력 필드로 포커스 이동
+            }
+        }
     }
 
 

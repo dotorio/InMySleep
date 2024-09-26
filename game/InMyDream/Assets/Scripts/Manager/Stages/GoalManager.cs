@@ -4,13 +4,13 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GoalManager : MonoBehaviour
+public class GoalManager : MonoBehaviourPunCallbacks
 {
     // 도착지점 체크
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
-    private string[] nextScene = {"", "1_2stage", "2_3stage", "3_4stage", "4_4_1stage", "", "4_2_end_stage"};
+    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "4_4_1stage", "4_1_4_2stage", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
 
@@ -45,25 +45,35 @@ public class GoalManager : MonoBehaviour
         if (localPlayerReached && otherPlayerReached)
         {
             int stage = UserData.instance.stage;
+            
             // 두 플레이어 모두 도착하면 씬 전환 메소드 실행
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 int roomId = UserData.instance.roomId;
                 if (stage < 4)
                 {
                     StartCoroutine(UpdateClear(roomId, stage + 1));
                 }
-
-                if(stage == 6)
+                else if(stage == 6)
                 {
                     StartCoroutine(UpdateClear(roomId, 4));
                     StartCoroutine(GameClear(roomId));
                 }
+
+                // RPC로 모든 플레이어의 스테이지 값을 업데이트
+                photonView.RPC("RPC_UpdateStage", RpcTarget.AllBuffered, stage + 1);
+
+                PhotonNetwork.LoadLevel(nextScene[stage]);
             }
 
-            UserData.instance.stage = stage + 1;
-            PhotonNetwork.LoadLevel(nextScene[stage]);
         }
+    }
+
+    [PunRPC]
+    public void RPC_UpdateStage(int newStage)
+    {
+        // 모든 클라이언트에서 UserData의 stage 값을 업데이트
+        UserData.instance.stage = newStage;
     }
 
     // 스테이지 클리어 정보 전달
@@ -71,6 +81,7 @@ public class GoalManager : MonoBehaviour
     {
         // 로그인 정보를 JSON 형식으로 준비
         ClearData clearData = new ClearData(roomId, stage);
+        Debug.LogError($"{roomId} {stage}");
         string jsonData = JsonUtility.ToJson(clearData);
 
         // UnityWebRequest로 HTTP POST 요청을 준비
@@ -89,7 +100,7 @@ public class GoalManager : MonoBehaviour
             // 응답 실패 시 오류 메시지 표시
 
             // 에러 발생 시 처리
-            Debug.LogError("Error: " + request.error);
+            Debug.LogError("Error: " + request.downloadHandler.text);
         }
         else
         {
@@ -159,12 +170,12 @@ public class GoalManager : MonoBehaviour
 public class ClearData
 {
     public int roomId;
-    public int stageNumbeer;
+    public int stageNumber;
 
-    public ClearData(int roomId, int stageNumbeer)
+    public ClearData(int roomId, int stageNumber)
     {
         this.roomId = roomId;
-        this.stageNumbeer = stageNumbeer;
+        this.stageNumber = stageNumber;
     }
 }
 
