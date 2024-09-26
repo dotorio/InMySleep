@@ -28,6 +28,9 @@ const linkInfo = ref([
 <template>
   <div class="main-con">
     <MainHeader />
+    <div class="download-button-container">
+      <button class="bit-t btn-download">게임 다운로드</button>
+    </div>
     <div class="links flex-align">
       <MainLink v-for="(link, index) in linkInfo" :key="index" :info="link" />
     </div>
@@ -44,5 +47,25 @@ const linkInfo = ref([
   bottom: 50px;
 
   justify-content: space-around;
+}
+
+.btn-download {
+  height: 100%;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border-width: 5px;
+  font-size: 30px;
+  border-color: #1B4F72;
+  background-color: #2980b9;
+  color: white;
+  cursor: pointer;
+}
+
+.download-button-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -70%);
 }
 </style>
