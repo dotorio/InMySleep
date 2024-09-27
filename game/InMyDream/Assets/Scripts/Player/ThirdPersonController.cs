@@ -65,6 +65,24 @@ public class ThirdPersonController : MonoBehaviourPun
         HandleMovement();
         playAudio();
         HandleAimingAndThrowing(); // 조준 및 던지기 처리
+
+        // 물체를 들고 있을 때 위치 업데이트
+        if (heldObject != null)
+        {
+            UpdateHeldObjectPosition();
+        }
+    }
+    
+    void UpdateHeldObjectPosition()
+    {
+        // 부모 위치에 맞춰 물체 위치 업데이트
+        if (heldObject != null)
+        {
+            // 부모 위치에 따라 오프셋을 조정
+            heldObject.transform.position = throwPosition.position; // 부모 위치에 맞춰 설정
+                                                                    // 또한 heldObject의 회전도 동기화할 수 있음
+            heldObject.transform.rotation = throwPosition.rotation; // 필요시 회전 동기화
+        }
     }
 
     void playAudio()
@@ -93,8 +111,6 @@ public class ThirdPersonController : MonoBehaviourPun
         }
     }
 
-
-
     // 물건 집기
     void OnTriggerEnter(Collider other)
     {
@@ -105,17 +121,13 @@ public class ThirdPersonController : MonoBehaviourPun
 
         if (canPickUp && other.CompareTag("Grabable") && heldObject == null)
         {
-            // 물건을 주운 유저가 아닌 경우
-            PhotonView objectPhotonView = other.GetComponent<PhotonView>();
-            if (objectPhotonView != null)
+            GrabableObject grabableObject = other.GetComponent<GrabableObject>();
+
+            if(grabableObject != null)
             {
-                ExitGames.Client.Photon.Hashtable objectProps = objectPhotonView.Owner.CustomProperties;
-                if (!objectProps.ContainsKey("isHeld") && (bool)objectProps["isHeld"] == false)
+                if(!grabableObject.isHeld)
                 {
                     PickUpObject(other.gameObject);
-                    // isHeld를 true로 설정
-                    objectProps["isHeld"] = true;
-                    objectPhotonView.Owner.SetCustomProperties(objectProps);
                 }
                 else
                 {
@@ -226,71 +238,92 @@ public class ThirdPersonController : MonoBehaviourPun
         }
     }
 
-    // 물건 던지기 처리
+    // 물체를 잡을 때 실행하는 메서드
+    void PickUpObject(GameObject objectToPickUp)
+    {
+        if (objectToPickUp != null)
+        {
+            // 모든 클라이언트에 물체가 들렸다는 사실과 부모 설정 동기화
+            photonView.RPC("RPC_PickUp", RpcTarget.All, objectToPickUp.GetComponent<PhotonView>().ViewID, throwPosition.position);
+
+            // 로컬에서 물건을 들고 있는 상태로 설정
+            heldObject = objectToPickUp;
+        }
+    }
+
+    // 물체의 줍는 동작을 동기화하는 RPC 메서드
+    [PunRPC]
+    void RPC_PickUp(int objectViewID, Vector3 parentPosition)
+    {
+        GameObject obj = PhotonView.Find(objectViewID).gameObject;
+        obj.GetComponent<GrabableObject>().isHeld = true;
+        
+        obj.GetComponent<Rigidbody>().isKinematic = true;
+        Collider[] colliders = obj.GetComponents<Collider>();
+        foreach(var collider in colliders)
+        {
+            collider.enabled = false;
+        }
+
+        obj.transform.localPosition = parentPosition;
+    }
+
+
+    // 물건을 던질 때 실행하는 메서드
     void ThrowObject()
     {
         if (heldObject != null)
         {
-            Rigidbody objectRb = heldObject.GetComponent<Rigidbody>();
-            objectRb.isKinematic = false;
+            canPickUp = false;
+            StartCoroutine(EnablePickUpAfterDelay(0.5f));
 
-            // 부모에서 해제
-            heldObject.transform.SetParent(null); // 부모 해제
-            
-            // 던질 위치를 약간 조정
+            // 던질 위치 및 방향 설정
             Vector3 throwStartPosition = throwPosition.position + followCamera.forward * 0.5f; // 앞쪽으로 0.5f 이동
-            heldObject.transform.position = throwStartPosition;
 
-            Vector3 throwDirection = followCamera.forward + Vector3.up * 1f; // 0.5f는 조정 가능한 높이
+            Vector3 throwDirection = followCamera.forward + Vector3.up; // 0.5f는 조정 가능한 높이
             throwDirection.Normalize(); // 방향 벡터 정규화
-            objectRb.AddForce(throwDirection * throwForce, ForceMode.VelocityChange);
+
+            // 던지기 동작을 동기화
+            photonView.RPC("RPC_ThrowObject", RpcTarget.All, heldObject.GetComponent<PhotonView>().ViewID, throwStartPosition, throwDirection, throwForce);
 
             animator.SetInteger("animation", 20);
 
-            // 줍기 기능 비활성화
-            canPickUp = false;
-            StartCoroutine(EnablePickUpAfterDelay(0.5f)); // 1초 후 줍기 기능 활성화
-
-            // 물건을 던진 후, 딜레이 후에 isHeld를 초기화
-            PhotonView heldObjectPhotonView = heldObject.GetComponent<PhotonView>();
-            StartCoroutine(ResetObjectHeldStatus(heldObjectPhotonView, 0.5f));
-
-            // 던지고 나서 들고 있던 물체 비우기
+            // 로컬에서 물건을 초기화
             heldObject = null;
         }
     }
-    IEnumerator ResetObjectHeldStatus(PhotonView objectPhotonView, float delay)
+
+    // 물건을 던지는 동작을 동기화하는 RPC 메서드
+    [PunRPC]
+    void RPC_ThrowObject(int objectViewID, Vector3 throwStartPosition, Vector3 direction, float force)
     {
-        yield return new WaitForSeconds(delay);
-        ExitGames.Client.Photon.Hashtable objectProps = objectPhotonView.Owner.CustomProperties;
-        objectProps["isHeld"] = false;
-        objectPhotonView.Owner.SetCustomProperties(objectProps);
+        GameObject obj = PhotonView.Find(objectViewID).gameObject;
+
+        Rigidbody objectRb = obj.GetComponent<Rigidbody>();
+        objectRb.isKinematic = false;
+        Collider[] colliders = obj.GetComponents<Collider>();
+        foreach (var collider in colliders)
+        {
+            collider.enabled = true;
+        }
+
+        GrabableObject grabableObject = obj.GetComponent<GrabableObject>();
+        grabableObject.isHeld = false;
+
+        // 던질 위치 및 방향 설정
+        obj.transform.position = throwStartPosition;
+
+        // 던진 후 물리적 상호작용 활성화
+        objectRb.isKinematic = false;
+        objectRb.AddForce(direction * force, ForceMode.VelocityChange);
     }
+
     private IEnumerator EnablePickUpAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         canPickUp = true; // 일정 시간 후 줍기 기능 다시 활성화
     }
 
-
-    // 물건 줍기 메소드 (다른 스크립트에서 호출)
-    public void PickUpObject(GameObject obj)
-    {
-        if (heldObject == null)
-        {
-            PhotonView objectPhotonView = obj.GetComponent<PhotonView>();
-            if (objectPhotonView != null && !objectPhotonView.IsMine)
-            {
-                objectPhotonView.RequestOwnership(); // 소유권 요청
-            }
-
-            heldObject = obj;
-            heldObject.GetComponent<Rigidbody>().isKinematic = true; // 집을 때
-            heldObject.transform.SetParent(throwPosition); // 캐릭터에게 붙이기
-            heldObject.transform.localPosition = Vector3.zero;
-            heldObject.transform.localRotation = Quaternion.identity;
-        }
-    }
 
     // 현재 활성화된 카메라를 설정하는 메서드
     public void SetActiveCamera(Transform activeCameraTransform)
