@@ -6,7 +6,7 @@ import UserInfo from "@/components/collection/UserInfo.vue";
 <template>
   <div class="collection-con box-md">
     <div class="content">
-      <span class="category bit-t">My NFT</span>
+      <span class="category bit-t">My Skin</span>
       <div class="main flex-align">
         <UserInfo />
         <CollectionCharacter />
@@ -21,11 +21,13 @@ import UserInfo from "@/components/collection/UserInfo.vue";
   justify-content: center;
   background-color: #d3caf7;
 }
+
 .category {
   position: absolute;
   top: -50px;
   font-size: 30px;
 }
+
 .content {
   padding-top: 20px;
   width: 80vw;
@@ -34,6 +36,7 @@ import UserInfo from "@/components/collection/UserInfo.vue";
   position: relative;
   /* background-color: burlywood; */
 }
+
 .main {
   width: 100%;
   height: 100%;

@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { logout } from "@/api/user";
 import { walletAuth } from "@/api/wallet";
+import { ethers } from 'ethers';
 
 const router = useRouter();
 const uStore = useUserStore();
@@ -21,7 +22,7 @@ function logoutFun() {
 
 async function connectWallet() {
 
-  if (uStore.user.token) {
+  if (uStore.user.address) {
     console.log("Already connected");
     return;
   }
@@ -56,10 +57,16 @@ async function connectWallet() {
     );
 
     if (response.data.token) {
-      uStore.user['token'] = response.data.token;
+      uStore.user.data['token'] = response.data.token;
+      uStore.user.data['address'] = accounts[0];
     }
 
     console.log("Connected", accounts);
+    // const provider = new ethers.BrowserProvider(window.ethereum);
+    // await provider.send("eth_requestAccounts", []);
+    // const signer = await provider.getSigner();
+    // uStore.user['address'] = await signer.getAddress();
+    // console.log("Connected", uStore.user.address);
 
   } catch (error) {
     console.error(error);
@@ -92,7 +99,7 @@ async function signMessage(account, message) {
         <span class="bit-t account" @click="router.push({ name: 'signup' })">회원가입</span>
       </div>
       <div v-else>
-        <span v-if="uStore.user.token" class="bit-t account">지갑 연동 완료</span>
+        <span v-if="uStore.user.data.token" class="bit-t account connect-wallet">지갑 연동 완료</span>
         <span v-else class="bit-t account" @click="connectWallet">지갑 연동</span>
         <span class="bit-t account" @click="logoutFun">로그아웃</span>
       </div>
@@ -125,5 +132,10 @@ async function signMessage(account, message) {
 
 .account:hover {
   color: #6f63f5;
+}
+
+.connect-wallet {
+  color: #6f63f5;
+  cursor: not-allowed;
 }
 </style>

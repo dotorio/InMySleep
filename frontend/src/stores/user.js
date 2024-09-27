@@ -6,17 +6,17 @@ export const useUserStore = defineStore(
   () => {
     const user = ref("");
 
-    const userInfo = ref({
-      nickname: "김종덕 만렙",
-      choice: "bear",
-      bearColor: "0",
-      selectedBearColor: "0",
-      rabbitColor: "0",
-      selectedRabbitColor: "0",
-    });
+    // const userInfo = ref({
+    //   nickname: "김종덕 만렙",
+    //   choice: "bear",
+    //   bearColor: "0",
+    //   selectedBearColor: "0",
+    //   rabbitColor: "0",
+    //   selectedRabbitColor: "0",
+    // });
 
-    const userBearSkin = ref([]);
-    const userRabbitSkin = ref([]);
+    // const userBearSkin = ref([]);
+    // const userRabbitSkin = ref([]);
 
     // function changeNft(nft) {
     //   if (nft === "lock-nft") {
@@ -41,9 +41,6 @@ export const useUserStore = defineStore(
 
     return {
       user,
-      userInfo,
-      userBearSkin,
-      userRabbitSkin,
       userLogin,
       userLogout,
     };
