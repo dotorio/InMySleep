@@ -137,12 +137,12 @@ CREATE TABLE `nft` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`nft_id`),
   UNIQUE KEY `token_id_UNIQUE` (`token_id`),
-  KEY `nfts_ibfk_1` (`metadata_id`),
+  KEY `nft_ibfk_1` (`metadata_id`),
   KEY `fk_nft_user_id_idx` (`user_id`),
   KEY `fk_nft_easter_egg_id_idx` (`easter_egg_id`),
   CONSTRAINT `fk_nft_easter_egg_id` FOREIGN KEY (`easter_egg_id`) REFERENCES `easter_egg` (`easter_egg_id`),
   CONSTRAINT `fk_nft_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `nfts_ibfk_1` FOREIGN KEY (`metadata_id`) REFERENCES `metadata` (`id`) ON DELETE RESTRICT
+  CONSTRAINT `nft_ibfk_1` FOREIGN KEY (`metadata_id`) REFERENCES `metadata` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

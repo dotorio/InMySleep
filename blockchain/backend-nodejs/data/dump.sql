@@ -13,7 +13,7 @@ VALUES
 ('ipfs://QmSi8NNDeLAbTVVnmsm8qh1pumtF3wQzgDjzCm9NuZ482n', 'ipfs://QmQLv1mHxMTrgw9tZnCKLZNdpdP1yZYPYtaGgteJy9npFH', 'This is NFT #5', '{"type": "Bear", "trait_type": "5", "value": "5"}'),
 ('ipfs://QmWmtZfCM4KdL9CN6SZNyEYxF4macLqPnjSzY3T3s5qhFi', 'ipfs://Qmbj9Au5hz7kZTDwwyDmKtHrHoXZVLEnmwJtMYqDkmAWD8', 'This is NFT #6', '{"type": "Rabbit", "trait_type": "6", "value": "6"}');
 
--- INSERT INTO nfts (contract_address, owner_address, metadata_id, token_type)
+-- INSERT INTO nft (contract_address, owner_address, metadata_id, token_type)
 -- VALUES
 -- ('0xcontract1', '0xabc123456789abcdef123456789abcdef1234567', 1, 'ERC-721'),
 -- ('0xcontract2', '0xdef123456789abcdef123456789abcdef1234567', 2, 'ERC-1155'),

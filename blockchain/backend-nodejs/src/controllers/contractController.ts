@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { mintNFT, burnNFT, updateNFTMetadata } from '../services/contractService';
+import { saveMintedNFT, saveBurnedNFT } from '../services/nftService';
 import { jsonBigIntStringify } from '../utils/jsonHelpers';
+import { privateKey } from '../config';
 
 export const mint = async (req: Request, res: Response) => {
-  const { to, tokenURI, privateKey } = req.body;
+  const { userId, address, tokenUri } = req.body;
   try {
-    const receipt = await mintNFT(to, tokenURI, privateKey);
+    console.log('Minting NFT:', userId, address, tokenUri);
+    const receipt = await mintNFT(address, tokenUri, privateKey);
+    await saveMintedNFT(receipt, userId, address, tokenUri);
     res.status(200).json(jsonBigIntStringify(receipt));
   } catch (error) {
     if (error instanceof Error) {

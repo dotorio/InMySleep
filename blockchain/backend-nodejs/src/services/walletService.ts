@@ -35,7 +35,7 @@ export const saveWallet = async (address: string, username: string): Promise<voi
 
 export const generateJWT = async (address: string): Promise<string> => {
     try {
-        const token = jwt.sign({ address }, jwtSecret as string, { expiresIn: '1h' });
+        const token = jwt.sign({ address }, jwtSecret as string, { expiresIn: '24h' });
         return token;
     } catch (error) {
         console.error('Error generating token:', error);

@@ -20,13 +20,14 @@ export const getMyNFTs = async (req: Request, res: Response) => {
   res.set('Cache-Control', 'no-store');
   const address = req.query.address as string;
   const token = req.query.token as string;
+  console.log(token)
   try {
     if (!verifyJWT(token)) {
       res.status(403).json({ error: 'Unauthorized' });
       return;
     }
     const nfts = await getNFTs(address);
-    res.status(200).json({ nfts });
+    res.status(200).json(nfts);
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
