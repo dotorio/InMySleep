@@ -56,18 +56,18 @@ public class ImageSequenceAnimation4 : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (isNext)
-        {
-            SceneManager.LoadScene("4s_Scene");
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            isNext = true;
-        }
-
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            if (isNext)
+            {
+                SceneManager.LoadScene("4s_Scene");
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isNext = true;
+            }
+
             // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
             if (Input.GetKeyDown(KeyCode.Space))
             {

@@ -32,7 +32,7 @@ public class ThirdPersonController : MonoBehaviourPun
     public Transform throwPosition; // 물건을 던질 위치
     public GameObject objectToThrow; // 던질 물체
     public float throwForce = 10f; // 던질 힘
-    private GameObject heldObject; // 들고 있는 물체
+    private GameObject heldObject = null; // 들고 있는 물체
     private bool canPickUp = true; // 물체를 주울 수 있는지 여부
 
     // 조준점 UI 요소
@@ -107,13 +107,20 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             // 물건을 주운 유저가 아닌 경우
             PhotonView objectPhotonView = other.GetComponent<PhotonView>();
-            if (objectPhotonView != null && objectPhotonView.Owner == null)
+            if (objectPhotonView != null)
             {
-                PickUpObject(other.gameObject);
-            }
-            else
-            {
-                Debug.Log("이 물건은 다른 유저가 소유하고 있습니다."); // 뺏기 시도 시 메시지
+                ExitGames.Client.Photon.Hashtable objectProps = objectPhotonView.Owner.CustomProperties;
+                if (!objectProps.ContainsKey("isHeld") && (bool)objectProps["isHeld"] == false)
+                {
+                    PickUpObject(other.gameObject);
+                    // isHeld를 true로 설정
+                    objectProps["isHeld"] = true;
+                    objectPhotonView.Owner.SetCustomProperties(objectProps);
+                }
+                else
+                {
+                    Debug.Log("이 물체는 이미 다른 플레이어가 잡고 있습니다.");
+                }
             }
         }
         else if(other.CompareTag("Bomb"))
@@ -244,17 +251,20 @@ public class ThirdPersonController : MonoBehaviourPun
             canPickUp = false;
             StartCoroutine(EnablePickUpAfterDelay(0.5f)); // 1초 후 줍기 기능 활성화
 
-            // 던지기 전에 소유권을 포기합니다.
+            // 물건을 던진 후, 딜레이 후에 isHeld를 초기화
             PhotonView heldObjectPhotonView = heldObject.GetComponent<PhotonView>();
-            if (heldObjectPhotonView != null)
-            {
-                // 소유권을 포기하고, 모든 클라이언트에 이 물체의 소유자가 없음을 알립니다.
-                //heldObjectPhotonView.TransferOwnership(0); // 0은 모든 사람에게 소유권을 넘김
-            }
+            StartCoroutine(ResetObjectHeldStatus(heldObjectPhotonView, 0.5f));
 
             // 던지고 나서 들고 있던 물체 비우기
             heldObject = null;
         }
+    }
+    IEnumerator ResetObjectHeldStatus(PhotonView objectPhotonView, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ExitGames.Client.Photon.Hashtable objectProps = objectPhotonView.Owner.CustomProperties;
+        objectProps["isHeld"] = false;
+        objectPhotonView.Owner.SetCustomProperties(objectProps);
     }
     private IEnumerator EnablePickUpAfterDelay(float delay)
     {

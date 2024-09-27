@@ -11,10 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
     guid: 840d700fb514ea1419532011b413b08b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CutScene1.unity
     guid: 148acd4738caa6e42a29194d6a6af6b3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/2s_Scene 1.unity
     guid: bed466ae228f95644a936e2b2fe559f7
   - enabled: 1

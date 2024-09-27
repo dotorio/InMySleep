@@ -73,13 +73,20 @@ public class InfiniteTileManager : MonoBehaviour
 
     void Start()
     {
+        // tilePrefabs 배열이 비어있는지 확인
+        if (tilePrefabs == null || tilePrefabs.Length == 0)
+        {
+            Debug.LogError("tilePrefabs 배열이 비어 있습니다. 타일 프리팹을 설정하세요.");
+            return; // 배열이 비어 있으면 실행 중단
+        }
+
         activeTiles = new Queue<GameObject>();
         lastSpawnPosition = player.position;
 
         // 초기 타일 생성 (1, 2, 3, 4, 5 순서)
         for (int i = 0; i < tileCount; i++)
         {
-            SpawnTile(i); // 인덱스를 사용하여 순서대로 생성
+            SpawnTile(i % tilePrefabs.Length); // 인덱스를 사용하여 순서대로 생성
         }
     }
 
@@ -88,16 +95,27 @@ public class InfiniteTileManager : MonoBehaviour
         // 플레이어가 끝에 가까워지면 타일을 생성
         if (Vector3.Distance(player.position, lastSpawnPosition) < spawnDistance)
         {
-            SpawnTile(Random.Range(0, tilePrefabs.Length)); // 랜덤한 타일 생성
+            // 랜덤한 타일 생성, 배열이 비어있는지 다시 한 번 확인
+            if (tilePrefabs.Length > 0)
+            {
+                SpawnTile(Random.Range(0, tilePrefabs.Length));
+            }
             RemoveOldTile();
         }
     }
 
     void SpawnTile(int prefabIndex)
     {
+        // 인덱스가 배열 범위를 벗어나는지 확인
+        if (prefabIndex < 0 || prefabIndex >= tilePrefabs.Length)
+        {
+            Debug.LogError("잘못된 prefabIndex: " + prefabIndex);
+            return;
+        }
+
         // 특정 인덱스의 타일 프리팹 선택
         GameObject tile = Instantiate(tilePrefabs[prefabIndex]);
-        tile.transform.position = lastSpawnPosition + new Vector3(0, 0, 5); // 타일의 위치 조정
+        tile.transform.position = lastSpawnPosition + new Vector3(0, 0, 15); // 타일의 위치 조정
         lastSpawnPosition = tile.transform.position; // 마지막 생성된 타일 위치 업데이트
         activeTiles.Enqueue(tile); // 큐에 추가
     }

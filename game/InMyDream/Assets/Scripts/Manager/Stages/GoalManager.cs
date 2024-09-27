@@ -10,7 +10,7 @@ public class GoalManager : MonoBehaviourPunCallbacks
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
-    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "4_4_1stage", "4_1_4_2stage", "4_2_end_stage"};
+    private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "CutScene4", "4_1_4_2stage", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
 
@@ -81,6 +81,7 @@ public class GoalManager : MonoBehaviourPunCallbacks
     {
         // 로그인 정보를 JSON 형식으로 준비
         ClearData clearData = new ClearData(roomId, stage);
+        Debug.LogError($"{roomId} {stage}");
         string jsonData = JsonUtility.ToJson(clearData);
 
         // UnityWebRequest로 HTTP POST 요청을 준비
@@ -99,7 +100,7 @@ public class GoalManager : MonoBehaviourPunCallbacks
             // 응답 실패 시 오류 메시지 표시
 
             // 에러 발생 시 처리
-            Debug.LogError("Error: " + request.error);
+            Debug.LogError("Error: " + request.downloadHandler.text);
         }
         else
         {
@@ -169,12 +170,12 @@ public class GoalManager : MonoBehaviourPunCallbacks
 public class ClearData
 {
     public int roomId;
-    public int stageNumbeer;
+    public int stageNumber;
 
-    public ClearData(int roomId, int stageNumbeer)
+    public ClearData(int roomId, int stageNumber)
     {
         this.roomId = roomId;
-        this.stageNumbeer = stageNumbeer;
+        this.stageNumber = stageNumber;
     }
 }
 
