@@ -1727,7 +1727,8 @@ AnimatorState:
   m_Name: Arm_Dog|idle_2
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions: []
+  m_Transitions:
+  - {fileID: 1710394805512850059}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1968,7 +1969,7 @@ AnimatorStateMachine:
     m_Position: {x: 890, y: -460, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102960208964863826}
-    m_Position: {x: 1190, y: -190, z: 0}
+    m_Position: {x: 320, y: -440, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102948514824883008}
     m_Position: {x: 650, y: 350, z: 0}
@@ -2090,6 +2091,56 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 1090, y: 410, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 1102157411103698220}
+--- !u!1101 &1710394805512850059
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 7
+    m_ConditionEvent: moveDirection
+    m_EventTreshold: 4
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 4290039196170547757}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.94
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &1835707635687728798
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: moveDirection
+    m_EventTreshold: 4
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102960208964863826}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &3003199531602037239
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2131,6 +2182,7 @@ AnimatorState:
   - {fileID: 3003199531602037239}
   - {fileID: -569636188588327418}
   - {fileID: 5806471837114415584}
+  - {fileID: 1835707635687728798}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
