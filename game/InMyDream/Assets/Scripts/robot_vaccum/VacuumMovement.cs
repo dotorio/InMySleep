@@ -5,7 +5,7 @@ using UnityEngine;
 public class VacuumMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;      // 기본 속도
-    public float reducedSpeedFactor = 0.5f;  // 속도를 줄일 비율 (예: 0.5 = 절반 속도)
+    public float reducedSpeedFactor = 0.1f;  // 속도를 줄일 비율 (예: 0.5 = 절반 속도)
     private float currentSpeed;       // 현재 속도 저장
 
     void Start()
@@ -27,20 +27,17 @@ public class VacuumMovement : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // 충돌한 물체가 장애물 태그를 가지고 있을 경우
-        if (other.CompareTag("Obstacle"))
+        if (!other.CompareTag("Player"))
         {
-            // 속도를 절반으로 줄임
-            currentSpeed = moveSpeed * reducedSpeedFactor;
+            currentSpeed -= reducedSpeedFactor;
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        // 장애물에서 벗어났을 때 속도를 원래대로 복구
-        if (other.CompareTag("Obstacle"))
+        if (!other.CompareTag("Player"))
         {
-            currentSpeed = moveSpeed;
+            currentSpeed += reducedSpeedFactor;
         }
     }
 }
