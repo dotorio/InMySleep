@@ -1,5 +1,6 @@
 <script setup>
 import { useUserStore } from "@/stores/user";
+import { useSkinStore } from "@/stores/skin";
 import { ref } from "vue";
 const { VITE_VUE_IPFS_URL } = import.meta.env;
 
@@ -9,6 +10,7 @@ defineProps({
 
 const nftIndex = ref(4);
 const uStore = useUserStore();
+const sStore = useSkinStore();
 
 function nftHover(index) {
   nftIndex.value = index;
@@ -35,10 +37,10 @@ function changeSkin(selectedSkin) {
     });
     return;
   }
-  if (uStore.userInfo.choice === "bear") {
-    uStore.userInfo.selectedBearColor = selectedSkin.attributes.color;
-  } else if (uStore.userInfo.choice === "rabbit") {
-    uStore.userInfo.selectedRabbitColor = selectedSkin.attributes.color;
+  if (sStore.userSkin.choice === "bear") {
+    sStore.userSkin.selectedBearColor = selectedSkin.attributes.color;
+  } else if (sStore.userSkin.choice === "rabbit") {
+    sStore.userSkin.selectedRabbitColor = selectedSkin.attributes.color;
   }
 }
 </script>

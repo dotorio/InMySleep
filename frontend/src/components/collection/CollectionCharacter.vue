@@ -4,6 +4,12 @@ import CollectionNft from "@/components/collection/CollectionNft.vue";
 import { myNFTs } from "@/api/nft";
 import { getEquippedSkin, getSkinList } from "@/api/skin";
 import { useUserStore } from "@/stores/user";
+import { useSkinStore } from "@/stores/skin";
+import { useNftStore } from "@/stores/nft";
+
+const uStore = useUserStore();
+const sStore = useSkinStore();
+const nStore = useNftStore();
 
 // const choice = ref("bear");
 // const equippedBear = ref(0);
@@ -56,18 +62,17 @@ const nftData = ref([
     metadataUri: "",
   }
 ]);
-const uStore = useUserStore();
 
 onBeforeMount(async () => {
   try {
     const response = await getEquippedSkin(uStore.user.data.userId);
     console.log(response);
-    uStore.userInfo.selectedBearColor = uStore.userInfo.bearColor = response.data[0].attributes.color;
-    uStore.userInfo.selectedRabbitColor = uStore.userInfo.rabbitColor = response.data[1].attributes.color;
+    sStore.userSkin.selectedBearColor = sStore.userSkin.bearColor = response.data[0].attributes.color;
+    sStore.userSkin.selectedRabbitColor = sStore.userSkin.rabbitColor = response.data[1].attributes.color;
     // equippedBear.value = response.data[0].attributes.color;
     // equippedRabbit.value = response.data[1].attributes.color;
 
-    // if (uStore.userInfo.choice === "bear") {
+    // if (sStore.userSkin.choice === "bear") {
     //   bear.value.nft[equippedBear.value] = response.data[0];
     // } else {
     //   rabbit.value.nft[equippedRabbit.value] = response.data[1];
@@ -81,8 +86,27 @@ onBeforeMount(async () => {
     nftData.value = response.data;
     nftData.value = prepareNftData(response.data);
     filterNftData(nftData);
-    uStore.userBearSkin = bear.value.nft;
-    uStore.userRabbitSkin = rabbit.value.nft;
+    sStore.userBearSkin = bear.value.nft;
+    sStore.userRabbitSkin = rabbit.value.nft;
+  } catch (error) {
+    console.error(error);
+  }
+
+  if (uStore.user.data.token === "") {
+    return;
+  }
+
+  try {
+    console.log(uStore.user.data.address);
+    const response = await myNFTs(uStore.user.data.address, uStore.user.data.token);
+    nStore.userNft = response.data;
+    // if (nftData.value.length > 1) {
+    //   nftData.value = prepareNftData(nftData);
+    //   console.log(nftData.value);
+    //   filterNftData(nftData);
+    //   console.log(bear.value.nft);
+    //   console.log(rabbit.value.nft);
+    // }
   } catch (error) {
     console.error(error);
   }
@@ -110,13 +134,14 @@ onBeforeMount(async () => {
 // };
 
 function choiceCharacter(character) {
-  uStore.userInfo.choice = character;
+  sStore.userSkin.choice = character;
   choice.value = character;
 }
 
 function prepareNftData(responseData) {
   return responseData.map((nft) => {
     return {
+      id: nft.id,
       description: nft.description,
       attributes: nft.attributes,
       imageUrl: nft.image_url,
@@ -147,7 +172,7 @@ function filterNftData(nftData) {
         <img src="/src/assets/collection/rabbit.svg" alt="토끼" :class="choice === 'rabbit' ? 'active' : ''" />
       </div>
     </div>
-    <CollectionNft :nft-data="uStore.userInfo.choice === 'bear' ? bear : rabbit" />
+    <CollectionNft :nft-data="sStore.userSkin.choice === 'bear' ? bear : rabbit" />
   </div>
 </template>
 
