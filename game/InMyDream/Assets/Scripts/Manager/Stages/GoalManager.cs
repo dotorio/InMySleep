@@ -40,6 +40,29 @@ public class GoalManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        // 태그는 동일하게 Player로 설정
+        if (other.CompareTag("Player"))
+        {
+            // PhotonView를 사용해 각 플레이어의 ID를 확인
+            PhotonView photonView = other.GetComponent<PhotonView>();
+
+            if (photonView != null)
+            {
+                // 로컬 플레이어 체크
+                if (photonView.IsMine)
+                {
+                    localPlayerReached = false;
+                }
+                else
+                {
+                    otherPlayerReached = false;
+                }
+            }
+        }
+    }
+
     private void CheckIfBothPlayersReached()
     {
         if (localPlayerReached && otherPlayerReached)
