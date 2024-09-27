@@ -22,7 +22,8 @@ export const getMyNFTs = async (req: Request, res: Response) => {
   const token = req.query.token as string;
   console.log(token)
   try {
-    if (!verifyJWT(token)) {
+    const isTokenValid = await verifyJWT(token);
+    if (!isTokenValid) {
       res.status(403).json({ error: 'Unauthorized' });
       return;
     }
