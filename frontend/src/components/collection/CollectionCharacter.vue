@@ -92,13 +92,13 @@ onBeforeMount(async () => {
     console.error(error);
   }
 
-  if (uStore.user.data.token === "") {
+  if (!uStore.user.data.metadataToken) {
     return;
   }
 
   try {
     console.log(uStore.user.data.address);
-    const response = await myNFTs(uStore.user.data.address, uStore.user.data.token);
+    const response = await myNFTs(uStore.user.data.address, uStore.user.data.metadataToken);
     nStore.userNft = response.data;
     // if (nftData.value.length > 1) {
     //   nftData.value = prepareNftData(nftData);

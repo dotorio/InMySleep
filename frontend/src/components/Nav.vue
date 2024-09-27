@@ -57,8 +57,9 @@ async function connectWallet() {
     );
 
     if (response.data.token) {
-      uStore.user.data['token'] = response.data.token;
+      uStore.user.data['metadataToken'] = response.data.token;
       uStore.user.data['address'] = accounts[0];
+      window.location.reload();
     }
 
     console.log("Connected", accounts);
@@ -99,7 +100,7 @@ async function signMessage(account, message) {
         <span class="bit-t account" @click="router.push({ name: 'signup' })">회원가입</span>
       </div>
       <div v-else>
-        <span v-if="uStore.user.data.token" class="bit-t account connect-wallet">지갑 연동 완료</span>
+        <span v-if="uStore.user.data.metadataToken" class="bit-t account connect-wallet">지갑 연동 완료</span>
         <span v-else class="bit-t account" @click="connectWallet">지갑 연동</span>
         <span class="bit-t account" @click="logoutFun">로그아웃</span>
       </div>
