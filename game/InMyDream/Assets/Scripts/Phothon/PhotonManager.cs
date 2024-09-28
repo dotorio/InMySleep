@@ -9,20 +9,28 @@ using ExitGames.Client.Photon;
 public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 {
     private readonly string version = "1.0f";
-    //private int userId = UserData.instance.userId;
-    //private string userName = UserData.instance.userName;
+    private int userId;
+    private string userName;
     private ChatClient chatClient;
 
     public RoomManager roomManager;
     public FriendManager friendManager;
+    
+    public StartController startController;
 
     
-    // testing variable
-    private int userId = 41;
-    private string userName = "user2";
+    //// testing variable
+    //private int userId = 42;
+    //private string userName = "ttest";
 
     private void Awake()
     {
+        if(UserData.instance != null)
+        {
+            userId = UserData.instance.userId;
+            userName = UserData.instance.userName;
+        }
+
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = version;
         PhotonNetwork.NickName = userName;
@@ -85,6 +93,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         playerProps["isDowned"] = false;
         playerProps["roomName"] = userName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+        startController.buttonUpdate();
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

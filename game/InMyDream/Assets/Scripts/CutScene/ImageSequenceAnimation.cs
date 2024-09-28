@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class ImageSequenceAnimation : MonoBehaviour
+public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
 {
     public Image[] images; // 여러 개의 이미지를 드래그해서 연결
     public TextMeshProUGUI[] texts; // 여러 개의 TMP 텍스트를 드래그해서 연결
@@ -16,6 +17,12 @@ public class ImageSequenceAnimation : MonoBehaviour
     public GameObject character52; // 캐릭터 오브젝트 5-2
     public GameObject character61; // 캐릭터 오브젝트 6-1
     public GameObject character62; // 캐릭터 오브젝트 6-2
+   
+    
+    public AudioSource nextCutAudio;
+    public AudioSource BGM1;
+    public AudioSource BGM2;
+    
 
     private Coroutine currentFadeInCoroutineImage; // 현재 진행 중인 이미지 페이드 인 코루틴
     private Coroutine currentFadeInCoroutineText; // 현재 진행 중인 텍스트 페이드 인 코루틴
@@ -23,6 +30,7 @@ public class ImageSequenceAnimation : MonoBehaviour
 
     void Start()
     {
+    
         // 모든 이미지를 투명하게 설정 (알파값 0)
         foreach (Image img in images)
         {
@@ -50,92 +58,110 @@ public class ImageSequenceAnimation : MonoBehaviour
 
     void Update()
     {
-        if (isNext)
+        //실제에 사용할 코드
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            SceneManager.LoadScene("Test1");
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            isNext = true;
-        }
-
-        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (currentIndex < images.Length - 1 && currentIndex < texts.Length - 1)
+            if (isNext)
             {
-                // 현재 진행 중인 페이드 인 코루틴을 중단
-                if (currentFadeInCoroutineImage != null)
-                {
-                    StopCoroutine(currentFadeInCoroutineImage);
-                }
-                if (currentFadeInCoroutineText != null)
-                {
-                    StopCoroutine(currentFadeInCoroutineText);
-                }
+                SceneManager.LoadScene("2s_Scene 1");
+            }
 
-                // 3개의 이미지가 보여졌다면 모두 숨기기
-                if (shownImageCount >= 3)
-                {
-                    HideAllImages();
-                    shownImageCount = 0; // 카운트 초기화
-                }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isNext = true;
+            }
+            // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
+            }
+        }
+        // Spacebar가 눌렸을 때 다음 이미지와 텍스트를 나타냄
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    nextCutAudio.Play();
+        //    NextImageSequence();
+        //}
+    }
 
-                // 현재 텍스트를 즉시 사라지게 만듦
-                HideTextImmediately(texts[currentIndex]);
+    [PunRPC]
+    public void NextImageSequence()
+    {
+        if (currentIndex < images.Length - 1 && currentIndex < texts.Length - 1)
+        {
+            // 현재 진행 중인 페이드 인 코루틴을 중단
+            if (currentFadeInCoroutineImage != null)
+            {
+                StopCoroutine(currentFadeInCoroutineImage);
+            }
+            if (currentFadeInCoroutineText != null)
+            {
+                StopCoroutine(currentFadeInCoroutineText);
+            }
 
-                // 4번째 이미지 이후부터는 이전 이미지를 즉시 사라지게 함
-                if (currentIndex >= 3)
-                {
-                    HideImageImmediately(images[currentIndex]); // 이전 이미지 즉시 사라지게 함
-                }
+            // 3개의 이미지가 보여졌다면 모두 숨기기
+            if (shownImageCount >= 3)
+            {
+                HideAllImages();
+                shownImageCount = 0; // 카운트 초기화
+            }
 
-                // 다음 이미지 및 텍스트로 이동
-                currentIndex++;
+            // 현재 텍스트를 즉시 사라지게 만듦
+            HideTextImmediately(texts[currentIndex]);
 
-                currentFadeInCoroutineImage = StartCoroutine(FadeInImage(images[currentIndex])); // 다음 이미지를 페이드 인
-                currentFadeInCoroutineText = StartCoroutine(FadeInText(texts[currentIndex]));   // 다음 텍스트를 페이드 인
-                shownImageCount++; // 표시된 이미지 개수 증가
+            // 4번째 이미지 이후부터는 이전 이미지를 즉시 사라지게 함
+            if (currentIndex >= 3)
+            {
+               
+                HideImageImmediately(images[currentIndex]); // 이전 이미지 즉시 사라지게 함
+            }
 
-                if (currentIndex >= 6)
-                {
-                    isNext = true;
-                }
+            // 다음 이미지 및 텍스트로 이동
+            currentIndex++;
 
-                // 캐릭터가 이미지 4번째(인덱스 3)일 때만 나타나도록 설정
-                if (currentIndex == 3)
-                {
-                    character4.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character4.SetActive(false); // 캐릭터 비활성화
-                }
+            currentFadeInCoroutineImage = StartCoroutine(FadeInImage(images[currentIndex])); // 다음 이미지를 페이드 인
+            currentFadeInCoroutineText = StartCoroutine(FadeInText(texts[currentIndex]));   // 다음 텍스트를 페이드 인
+            shownImageCount++; // 표시된 이미지 개수 증가
 
-                // 캐릭터가 이미지 5번째(인덱스 4)일 때
-                if (currentIndex == 4)
-                {
-                    character51.SetActive(true); // 캐릭터 활성화
-                    character52.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character51.SetActive(false); // 캐릭터 비활성화
-                    character52.SetActive(false); // 캐릭터 비활성화
-                }
+            if (currentIndex >= 6)
+            {
+                isNext = true;
+            }
 
-                // 캐릭터가 이미지 6번째(인덱스 5)일 때
-                if (currentIndex == 5)
-                {
-                    character61.SetActive(true); // 캐릭터 활성화
-                    character62.SetActive(true); // 캐릭터 활성화
-                }
-                else
-                {
-                    character61.SetActive(false); // 캐릭터 비활성화
-                    character62.SetActive(false); // 캐릭터 비활성화
-                }
+            // 캐릭터가 이미지 4번째(인덱스 3)일 때만 나타나도록 설정
+            if (currentIndex == 3)
+            {
+                BGM1.Stop();
+                BGM2.Play();
+                character4.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character4.SetActive(false); // 캐릭터 비활성화
+            }
+
+            // 캐릭터가 이미지 5번째(인덱스 4)일 때
+            if (currentIndex == 4)
+            {
+                character51.SetActive(true); // 캐릭터 활성화
+                character52.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character51.SetActive(false); // 캐릭터 비활성화
+                character52.SetActive(false); // 캐릭터 비활성화
+            }
+
+            // 캐릭터가 이미지 6번째(인덱스 5)일 때
+            if (currentIndex == 5)
+            {
+                character61.SetActive(true); // 캐릭터 활성화
+                character62.SetActive(true); // 캐릭터 활성화
+            }
+            else
+            {
+                character61.SetActive(false); // 캐릭터 비활성화
+                character62.SetActive(false); // 캐릭터 비활성화
             }
         }
     }

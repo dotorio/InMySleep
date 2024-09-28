@@ -37,7 +37,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
                 if(stage == easterStage)
                 {
-                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg_1.transform.position, EasterEgg_1.transform.rotation, 0);
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate("EasterEgg", EasterEgg_1.transform.position, EasterEgg_1.transform.rotation, 0);
 
                     if(instantiatedEasterEgg == null)
                     {
@@ -63,7 +63,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
                 if (stage == easterStage)
                 {
-                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg_2.transform.position, EasterEgg_2.transform.rotation, 0);
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate("EasterEgg", EasterEgg_2.transform.position, EasterEgg_2.transform.rotation, 0);
 
                     if (instantiatedEasterEgg == null)
                     {
@@ -102,8 +102,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
             // 스킨 설정
             Player localPlayer = PhotonNetwork.LocalPlayer;
-
-            photonView.RPC("RPC_ChangeMaterial", 
+            photonView.RPC("RPC_ChangeMaterial",
                 RpcTarget.AllBuffered,
                 localPlayer.ActorNumber,
                 "Player1".Equals(localPlayer.CustomProperties["character"]),

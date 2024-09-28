@@ -10,13 +10,13 @@ public class CatController : MonoBehaviour
     public GameObject bigBomb; // 캐릭터 팔에 연결된 공
     public GameObject ball; // 캐릭터 팔에 연결된 공
     public GameObject redBomb; // 캐릭터 팔에 연결된 공
-    public Transform hand;  // 캐릭터의 손 위치
-    public Transform hand2;  // 캐릭터의 손 위치
-    public Transform hand3;  // 캐릭터의 손 위치
+    public Transform rightHand;  // 캐릭터의 손 위치
+    public Transform leftHand;  // 캐릭터의 손 위치
+    public Transform jumphand;  // 캐릭터의 손 위치
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     private float cnt = 0f;
-    public int phase = 1;
+    public int phase;
     private int randomNumber; // 랜덤 숫자
     private bool isDying = false; // Die1 애니메이션 실행 중 여부
     private int damage = 0;
@@ -258,100 +258,220 @@ public class CatController : MonoBehaviour
     }
 
 
-    void BombThrow()
+    void BombThrow(string dir)
     {
-        //animator.SetBool("isATK", true);
+        Debug.Log(dir);
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bomb, leftHand.position, leftHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bomb, rightHand.position, rightHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(4f);
+        }
+
+        
+    }
+
+    void RedThrow(string dir)
+    {
+        float randomValue;
+
+        // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
+        if (Random.value < 0.5f)
+        {
+            // 1.0f ~ 2.0f 사이의 랜덤 값
+            randomValue = Random.Range(0.6f, 0.8f);
+        }
+        else
+        {
+            // 3.0f ~ 4.0f 사이의 랜덤 값
+            randomValue = Random.Range(1.2f, 1.4f);
+        }
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(redBomb, leftHand.position, leftHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection * randomValue;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection * randomValue;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(10f);
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(redBomb, rightHand.position, rightHand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection * randomValue;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection * randomValue;
+            }
+
+            cnt++;
+
+            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+            bombController.StartDestroyCountdown(10f);
+        }
+    }
+
+    void BallThrow(string dir)
+    {
+        Debug.Log(dir);
+        if (dir == "left")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(ball, leftHand.position, leftHand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection * 1.2f;
+
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection * 1.2f;
+            }
+
+            cnt++;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+        }
+        else
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(ball, rightHand.position, rightHand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection * 1.2f;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection * 1.2f;
+            }
+
+            cnt++;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+        }
+    }
+
+    void BigThrow()
+    {
         // 발사체 생성
-        GameObject projectile = Instantiate(bomb, hand3.position, hand3.rotation);
+        GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
         BombController bombController = projectile.GetComponent<BombController>();
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
         // 발사 방향 계산
         if (cnt % 2 == 0)
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand3.position, player2.transform.position, 20f);
+            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player2.transform.position, 20f);
             rb.velocity = launchDirection;
         }
         else
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand3.position, player1.transform.position, 20f);
+            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player1.transform.position, 20f);
             rb.velocity = launchDirection;
         }
 
         cnt++;
 
-        // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
         bombController.StartDestroyCountdown(4f);
     }
 
-    void RedThrow()
+    private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
     {
-        // 발사체 생성
-        GameObject projectile = Instantiate(cube, hand2.position, hand2.rotation);
-        BombController bombController = projectile.GetComponent<BombController>();
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        // 5초 대기
+        yield return new WaitForSeconds(delay);
 
-        //발사 방향 계산
-        if (cnt % 2 == 0)
+        Renderer renderer = projectile.GetComponent<Renderer>();
+        Material material = renderer.material;
+        Color initialColor = material.color;
+
+        // Alpha 값을 서서히 줄이기
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player2.transform.position * 0.8f, 40f);
-            rb.velocity = launchDirection * 0.8f;
-        }
-        else
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand2.position, player1.transform.position * 0.8f, 40f);
-            rb.velocity = launchDirection * 0.8f;
+            float normalizedTime = t / fadeDuration;
+            material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
+            yield return null; // 다음 프레임까지 대기
         }
 
-        cnt++;
-
-        bombController.StartDestroyCountdown(10f);
+        // 완전히 사라진 후 삭제
+        Destroy(projectile);
     }
-
-    void BallThrow()
-    {
-        // 발사체 생성
-        GameObject projectile = Instantiate(big, hand.position, hand.rotation);
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        // 발사 방향 계산
-        if (cnt % 2 == 0)
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player2.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
-        else
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(hand.position, player1.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
-
-        cnt++;
-
-        //StartCoroutine(FadeOutAndDestroy(projectile, 5f, 1f)); // 코루틴 시작
-    }
-
-    //private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
-    //{
-    //    // 5초 대기
-    //    yield return new WaitForSeconds(delay);
-
-    //    Renderer renderer = projectile.GetComponent<Renderer>();
-    //    Material material = renderer.material;
-    //    Color initialColor = material.color;
-
-    //    // Alpha 값을 서서히 줄이기
-    //    for (float t = 0; t < fadeDuration; t += Time.deltaTime)
-    //    {
-    //        float normalizedTime = t / fadeDuration;
-    //        material.color = new Color(initialColor.r, initialColor.g, initialColor.b, Mathf.Lerp(initialColor.a, 0f, normalizedTime));
-    //        yield return null; // 다음 프레임까지 대기
-    //    }
-
-    //    // 완전히 사라진 후 삭제
-    //    Destroy(projectile);
-    //}
 
 
 
