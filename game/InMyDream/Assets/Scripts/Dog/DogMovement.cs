@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +9,7 @@ using UnityEngine.AI;
 /// 개는 웨이포인트를 따라 이동하고, 이벤트를 처리하며, 부드럽게 회전하고 짖을 수 있습니다.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
-public class DogMovement : MonoBehaviour
+public class DogMovement : MonoBehaviourPunCallbacks
 {
     [Header("이동 설정")]
     [Tooltip("개가 따라갈 웨이포인트 리스트.")]
@@ -34,6 +35,7 @@ public class DogMovement : MonoBehaviour
 
     // 현재 이벤트 위치 저장
     private Vector3 currentEventPosition;
+    private Transform bone;
 
     // 현재 실행 중인 proximity check 코루틴을 추적
     private Coroutine proximityCoroutine;
@@ -77,6 +79,17 @@ public class DogMovement : MonoBehaviour
 
     private void Update()
     {
+        if(bone != null)
+        {
+            float distance = Vector3.Distance(bone.position, transform.position);
+
+            if(distance <= 3f)
+            {
+                bone.GetComponent<DogBone>().ResetPosition();
+                bone = null;
+            }
+        }
+
         // 회전 중이거나 짖는 중일 때는 이동 상태를 업데이트하지 않음
         if (isRotating || isBarking) return;
 
@@ -86,7 +99,7 @@ public class DogMovement : MonoBehaviour
             if (eventTriggered)
             {
                 // 이벤트 도착 시 추가 로직 (예: 이벤트 완료 후 다시 웨이포인트 순찰 시작)
-                Debug.Log("Dog reached event location.");
+                //Debug.Log("Dog reached event location.");
                 eventTriggered = false;
                 MoveToNextWaypoint();
                 return;
@@ -109,12 +122,12 @@ public class DogMovement : MonoBehaviour
     {
         if (waypoints.Count == 0)
         {
-            Debug.LogWarning("DogMovement에 설정된 웨이포인트가 없습니다.");
+            //Debug.LogWarning("DogMovement에 설정된 웨이포인트가 없습니다.");
             return;
         }
 
         agent.destination = waypoints[currentWaypointIndex].position;
-        Debug.Log($"Dog moving to waypoint {currentWaypointIndex}: {waypoints[currentWaypointIndex].position}");
+        //Debug.Log($"Dog moving to waypoint {currentWaypointIndex}: {waypoints[currentWaypointIndex].position}");
         currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count;
     }
 
@@ -146,7 +159,7 @@ public class DogMovement : MonoBehaviour
         MoveDirection rotationDirection = crossProduct.y > 0 ? MoveDirection.RotateLeft : MoveDirection.RotateRight;
 
         animator.SetInteger(moveDirectionHash, (int)rotationDirection);
-        Debug.Log($"Dog starts rotating {(rotationDirection == MoveDirection.RotateLeft ? "left" : "right")}.");
+        //Debug.Log($"Dog starts rotating {(rotationDirection == MoveDirection.RotateLeft ? "left" : "right")}.");
 
         // 회전 시작
         Quaternion initialRotation = transform.rotation;
@@ -164,7 +177,7 @@ public class DogMovement : MonoBehaviour
 
         // 이동 애니메이션으로 전환
         animator.SetInteger(moveDirectionHash, (int)MoveDirection.Moving);
-        Debug.Log("Dog completed rotation and resumes moving.");
+        //Debug.Log("Dog completed rotation and resumes moving.");
 
         agent.isStopped = false;
         isRotating = false;
@@ -228,21 +241,21 @@ public class DogMovement : MonoBehaviour
     public void OnEventTriggered(Vector3 eventPosition)
     {
         // 새로운 이벤트가 발생하면 기존 이벤트를 무시하고 새로운 이벤트를 처리
-        Debug.Log($"New event triggered at position: {eventPosition}");
+        //Debug.Log($"New event triggered at position: {eventPosition}");
 
         // 현재 진행 중인 proximity check 코루틴이 있다면 중단
         if (proximityCoroutine != null)
         {
             StopCoroutine(proximityCoroutine);
             proximityCoroutine = null;
-            Debug.Log("Stopped previous proximity check coroutine.");
+            //Debug.Log("Stopped previous proximity check coroutine.");
         }
 
         // 이벤트 상태 업데이트
         eventTriggered = true;
         currentEventPosition = eventPosition; // 새로운 이벤트 위치 저장
         agent.destination = currentEventPosition;
-        Debug.Log($"Dog moving to new event position: {currentEventPosition}");
+        //Debug.Log($"Dog moving to new event position: {currentEventPosition}");
 
         // 새로운 proximity check 코루틴 시작
         proximityCoroutine = StartCoroutine(CheckProximityToEventLocation(currentEventPosition));
@@ -259,7 +272,7 @@ public class DogMovement : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Dog reached event location.");
+        //Debug.Log("Dog reached event location.");
         eventTriggered = false;
         proximityCoroutine = null; // 코루틴 완료 후 참조 해제
         MoveToNextWaypoint();
@@ -280,6 +293,30 @@ public class DogMovement : MonoBehaviour
                     Gizmos.DrawSphere(waypoint.position, 0.3f);
                 }
             }
+        }
+    }
+
+    public void addPlayer(int playerPhotonID)
+    {
+        photonView.RPC("addPlayerRPC", RpcTarget.AllBuffered, playerPhotonID);
+    }
+
+    [PunRPC]
+    public void addPlayerRPC(int playerPhotonID)
+    {
+        SpotlightPlayerDetector spotlightPlayerDetector = GetComponentInChildren<SpotlightPlayerDetector>();
+        PhotonView playerPhotonView = PhotonView.Find(playerPhotonID);
+
+        spotlightPlayerDetector.addPlayer(playerPhotonView.gameObject);
+    }
+
+    // 개 유인 이벤트
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Grabable"))
+        {
+            bone = other.transform;
+            OnEventTriggered(other.transform.position);
         }
     }
 }

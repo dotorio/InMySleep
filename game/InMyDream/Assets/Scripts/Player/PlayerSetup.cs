@@ -7,7 +7,6 @@ using Cinemachine;
 public class PlayerSetup : MonoBehaviourPun
 {
     public Camera playerCamera;
-    public CinemachineBrain cinemachineBrain;
     public CinemachineVirtualCamera[] virtualCameras;
     public GameObject playerCanvas;
     public float interactDistance = 3f;
@@ -28,9 +27,8 @@ public class PlayerSetup : MonoBehaviourPun
         if (photonView.IsMine)
         {
             cleanName = gameObject.name.Replace("(Clone)", "").Trim();
-            playerCamera.enabled = true;
+            playerCamera = Camera.main;
             playerCamera.cullingMask = LayerMask.GetMask(cleanName + "UI", "Default");
-            cinemachineBrain.enabled = true;
             playerCanvas.SetActive(true);
 
             foreach (var camera in virtualCameras)
@@ -40,9 +38,6 @@ public class PlayerSetup : MonoBehaviourPun
         }
         else
         {
-            playerCamera.enabled = false;
-            playerCamera.cullingMask = LayerMask.GetMask("Default");
-            cinemachineBrain.enabled = false;
             playerCanvas.SetActive(false);
 
             foreach (var camera in virtualCameras)
