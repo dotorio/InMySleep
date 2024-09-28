@@ -95,7 +95,7 @@ function equipSkinCheck() {
 }
 
 function hasNFTCheck() {
-  if (!uStore.user.data.metadataToken || nStore.userNft.length === 0) {
+  if (!uStore.user.data.metamaskToken || nStore.userNft.length === 0) {
     return
   }
   if (sStore.userSkin.choice === "bear") {
@@ -118,7 +118,7 @@ function hasNFTCheck() {
         <button class="disable" v-else alt="equie_diable">착용하기</button>
       </div>
       <div class="equip box-md">
-        <button v-if="uStore.user.data.metadataToken && !hasNFTCheck()" alt="gen_nft" @click="mint()">NFT
+        <button v-if="uStore.user.data.metamaskToken && !hasNFTCheck()" alt="gen_nft" @click="mint()">NFT
           발행</button>
         <button class="disable" v-else alt="gen_nft_disable">NFT 보유</button>
       </div>

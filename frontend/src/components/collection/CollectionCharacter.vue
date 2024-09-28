@@ -92,13 +92,13 @@ onBeforeMount(async () => {
     console.error(error);
   }
 
-  if (!uStore.user.data.metadataToken) {
+  if (!uStore.user.data.metamaskToken) {
     return;
   }
 
   try {
     console.log(uStore.user.data.address);
-    const response = await myNFTs(uStore.user.data.address, uStore.user.data.metadataToken);
+    const response = await myNFTs(uStore.user.data.address, uStore.user.data.metamaskToken);
     nStore.userNft = response.data;
     // if (nftData.value.length > 1) {
     //   nftData.value = prepareNftData(nftData);
@@ -108,6 +108,12 @@ onBeforeMount(async () => {
     //   console.log(rabbit.value.nft);
     // }
   } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "NFT를 불러오는데 실패했습니다. 지갑 연동 상태를 확인해주세요.",
+    });
+    uStore.user.data.metamaskToken = "";
+    uStore.user.data.address = "";
     console.error(error);
   }
   // try {
