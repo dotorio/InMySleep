@@ -139,6 +139,16 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             SetCharacterDowned();
         }
+        else if(other.CompareTag("Battery"))
+        {
+            PhotonView batteryPhotonView = other.GetComponent<PhotonView>();
+            if (batteryPhotonView != null)
+            {
+                StageManager_1_2 stage1Manager = (StageManager_1_2)stageManager;
+
+                stage1Manager.CollectBattery(batteryPhotonView.ViewID);
+            }
+        }
     }
 
     // 캐릭터 이동 처리

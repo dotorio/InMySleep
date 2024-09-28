@@ -13,9 +13,16 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject Client_2;
     public GameObject EasterEgg_1;
     public GameObject EasterEgg_2;
+    public GameObject[] Batterys;
+
+    public GameObject Dogs;
+
+    private int battery;
 
     void Start()
     {
+        battery = 0;
+
         string characterName = (string)PhotonNetwork.LocalPlayer.CustomProperties["character"];
         if (string.IsNullOrEmpty(characterName))
         {
@@ -31,6 +38,8 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
         if(stage == 1)
         {
+            Dogs.SetActive(false);
+
             if(PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_1.transform;
@@ -56,6 +65,11 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         }
         else
         {
+            foreach(var Battery in Batterys)
+            {
+                Battery.SetActive(false);
+            }
+
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_2.transform;
@@ -98,6 +112,44 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             if(controller != null)
             {
                 controller.SetStageManager(this);
+            }
+
+            // 카메라 설정
+            CameraSwitcher camera = instantiatedCharacter.GetComponent<CameraSwitcher>();
+            if(camera != null)
+            {
+                camera.SwitchToFollowCamera();
+            }
+
+
+            // 개 설정
+            if (stage == 2)
+            {
+                foreach (Transform dog in Dogs.transform)
+                {
+                    if (dog == null)
+                    {
+                        Debug.LogError("dog 객체가 null입니다.");
+                        return; // 또는 적절한 대체 로직
+                    }
+
+                    var dogMovement = dog.gameObject.GetComponent<DogMovement>();
+                    if (dogMovement == null)
+                    {
+                        Debug.LogError("SpotlightPlayerDetector가 dog 객체에 없습니다.");
+                        continue; // 다음 dog로 넘어감
+                    }
+
+                    PhotonView playerPhotonView = instantiatedCharacter.GetPhotonView();
+
+                    if (playerPhotonView == null)
+                    {
+                        Debug.LogError("playerPhotonView 객체가 null입니다.");
+                        return; // 또는 적절한 대체 로직
+                    }
+
+                    dogMovement.addPlayer(playerPhotonView.ViewID);
+                }
             }
 
             // 스킨 설정
@@ -157,5 +209,34 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
                 }
             }
         }
+    }
+
+    public int getBattery()
+    {
+        return battery;
+    }
+
+    // 배터리 흭득 시 호출하는 메소드
+    public void CollectBattery(int batteryViewId)
+    {
+        battery++;
+
+        photonView.RPC("SyncBattery", RpcTarget.All, battery, batteryViewId);
+    }
+
+    [PunRPC]
+    void SyncBattery(int newBatteryCount, int batteryViewId)
+    {
+        battery = newBatteryCount;
+        Debug.Log("Battery count synchronized");
+
+        // 전달받은 ViewID로 배터리 오브젝트 찾기
+        PhotonView batteryPhotonView = PhotonView.Find(batteryViewId);
+        if (batteryPhotonView != null)
+        {
+            // 배터리 오브젝트를 모든 클라이언트에서 제거
+            PhotonNetwork.Destroy(batteryPhotonView.gameObject);
+        }
+
     }
 }

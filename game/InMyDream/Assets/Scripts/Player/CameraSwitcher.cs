@@ -5,17 +5,18 @@ using UnityEngine;
 public class CameraSwitcher : MonoBehaviour
 {
     public Cinemachine.CinemachineVirtualCamera followCamera;
-    public Cinemachine.CinemachineVirtualCamera fixedCamera1;
-    public Cinemachine.CinemachineVirtualCamera fixedCamera2;
+    public Cinemachine.CinemachineVirtualCamera fixedCamera;
+    //public Cinemachine.CinemachineVirtualCamera fixedCamera2;
     public ThirdPersonController playerController;
 
     void Start()
     {
         // 기본적으로 이동 카메라 활성화
-        SwitchToFollowCamera();
+        //SwitchToFollowCamera();
     }
     void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SwitchToFollowCamera();
@@ -28,30 +29,32 @@ public class CameraSwitcher : MonoBehaviour
         {
             SwitchToFixedCamera2();
         }
+        */
     }
 
-    void SwitchToFollowCamera()
+    public void SwitchToFollowCamera()
     {
         followCamera.enabled = true;
-        fixedCamera1.enabled = false;
-        fixedCamera2.enabled = false;
+        fixedCamera.enabled = false;
+        //fixedCamera2.enabled = false;
         playerController.SetActiveCamera(followCamera.transform);
     }
 
-    void SwitchToFixedCamera1()
+    public void SwitchToFixedCamera()
     {
         followCamera.enabled = false;
-        fixedCamera1.enabled = true;
-        fixedCamera2.enabled = false;
-        playerController.SetActiveCamera(fixedCamera1.transform);
+        fixedCamera.enabled = true;
+        //fixedCamera2.enabled = false;
+        playerController.SetActiveCamera(fixedCamera.transform);
     }
-
-    void SwitchToFixedCamera2()
+    /*
+    public void SwitchToFixedCamera2()
     {
         followCamera.enabled = false;
         fixedCamera1.enabled = false;
         fixedCamera2.enabled = true;
         playerController.SetActiveCamera(fixedCamera2.transform);
     }
+    */
 }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class SpotlightPlayerDetector : MonoBehaviour
@@ -25,23 +26,7 @@ public class SpotlightPlayerDetector : MonoBehaviour
         {
             Debug.LogError("부모 오브젝트에서 DogMovement 스크립트를 찾을 수 없습니다. DogMovement 컴포넌트가 부모에 있는지 확인하세요.");
         }
-
-        if (players.Count == 0)
-        {
-            GameObject[] playerObjs = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject playerObj in playerObjs)
-            {
-                players.Add(playerObj.transform);
-                playerInViewDict[playerObj.transform] = false; // 초기 감지 상태는 false
-            }
-
-            if (players.Count == 0)
-            {
-                Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 플레이어 오브젝트에 'Player' 태그가 설정되어 있는지 확인하세요.");
-            }
-        }
     }
-
 
     void Update()
     {
@@ -65,6 +50,16 @@ public class SpotlightPlayerDetector : MonoBehaviour
                             playerInViewDict[player] = true;
                             Debug.Log($"{player.name}가 개의 시야에 감지되었습니다!");
                             dogMovement.StartBarking(); // 개가 짖는 동작 실행
+
+                            PhotonView playerPhotonView = player.gameObject.GetComponent<PhotonView>();
+                            if(playerPhotonView != null)
+                            {
+                                if(playerPhotonView.IsMine)
+                                {
+                                    ThirdPersonController controller = player.gameObject.GetComponent<ThirdPersonController>();
+                                    controller.SetCharacterDowned();
+                                }
+                            }
                         }
                     }
                     else
@@ -97,6 +92,13 @@ public class SpotlightPlayerDetector : MonoBehaviour
                 }
             }
         }
+    }
+
+    // 플레이어 추가
+    public void addPlayer(GameObject playerObj)
+    {
+            players.Add(playerObj.transform);
+            playerInViewDict[playerObj.transform] = false; // 초기 감지 상태는 false
     }
 
     // 이 함수는 Scene 뷰에서 감지 범위를 시각화합니다.
