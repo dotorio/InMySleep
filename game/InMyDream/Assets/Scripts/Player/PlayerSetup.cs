@@ -14,6 +14,7 @@ public class PlayerSetup : MonoBehaviourPun
     private Transform objectToInteract = null;
     public float pushForce = 5f;
     public GameObject breakEffectPrefab;
+    public GameObject batteryPrefab;
     public Animator animator;
     private string cleanName;
     private float holdTime = 2f;
@@ -27,7 +28,8 @@ public class PlayerSetup : MonoBehaviourPun
         if (photonView.IsMine)
         {
             cleanName = gameObject.name.Replace("(Clone)", "").Trim();
-            playerCamera = Camera.main;
+            //playerCamera = Camera.main;
+        
             playerCamera.cullingMask = LayerMask.GetMask(cleanName + "UI", "Default");
             playerCanvas.SetActive(true);
 
@@ -98,7 +100,7 @@ public class PlayerSetup : MonoBehaviourPun
                     isPushing = false; // 밀기 중지
                     GetComponent<ThirdPersonController>().isInteracting = false;
 
-                    if (cleanName == "Player1" && Input.GetMouseButtonDown(0) && objectToInteract.CompareTag("Breakable"))
+                    if (cleanName == "Player1Test" && Input.GetMouseButtonDown(0) && objectToInteract.CompareTag("Breakable"))
                     {
                         StartCoroutine(BreakObjectWithDelay(objectToInteract.gameObject, 0.5f));
                     }
@@ -171,6 +173,7 @@ public class PlayerSetup : MonoBehaviourPun
 
     IEnumerator BreakObjectWithDelay(GameObject obj, float delay)
     {
+        Debug.Log("파괴11111");
         BreakObject(obj);
         yield return new WaitForSeconds(delay);
         animator.SetInteger("animation", 1);
@@ -213,8 +216,10 @@ public class PlayerSetup : MonoBehaviourPun
     //     }
     // }
 
-        void BreakObject(GameObject obj)
+     void BreakObject(GameObject obj)
     {
+
+        Debug.Log("파괴22222");
         animator.SetInteger("animation", 20); // 파괴 애니메이션
         GetComponent<ThirdPersonController>().isInteracting = true;
 
@@ -230,11 +235,13 @@ public class PlayerSetup : MonoBehaviourPun
     void DestroyObjectWithEffect(GameObject obj)
     {
         Vector3 position = obj.transform.position;
+        Debug.Log("파괴!!!!!!!");
 
         // 이펙트 생성
         if (breakEffectPrefab != null)
         {
             Instantiate(breakEffectPrefab, position, Quaternion.identity);
+            Instantiate(batteryPrefab, position, Quaternion.identity);
         }
 
         // 오브젝트 제거
