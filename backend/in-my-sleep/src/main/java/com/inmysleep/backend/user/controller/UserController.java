@@ -78,12 +78,4 @@ public class UserController {
 
         return ResponseEntity.ok(apiResponse);
     }
-
-    // 유저가 보유한 스킨 정보
-    @GetMapping("/skins")
-    public ResponseEntity<ApiResponse<Void>> getSkins(@RequestParam String userId) {
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-
-        return ResponseEntity.ok(apiResponse);
-    }
 }

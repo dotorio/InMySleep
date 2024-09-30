@@ -10,4 +10,6 @@ public class UserSkinDto {
     private int userId;
     private int bearSkin;
     private int rabbitSkin;
+    private String bear;
+    private String rabbit;
 }

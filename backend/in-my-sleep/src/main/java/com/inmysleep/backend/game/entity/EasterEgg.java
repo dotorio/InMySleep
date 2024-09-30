@@ -16,9 +16,6 @@ public class EasterEgg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int easterEggId;
 
-    private String name;
-    private String description;
-
     @Column(name = "stage", columnDefinition = "TINYINT")
     private int stage;
     private double posx;

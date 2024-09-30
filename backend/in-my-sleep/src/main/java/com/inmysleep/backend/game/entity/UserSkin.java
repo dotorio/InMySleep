@@ -15,6 +15,6 @@ public class UserSkin {
     private int userSkinId;
 
     private int userId;
-    private int bearSkin;
-    private int rabbitSkin;
+    private int bearSkinMetadata;
+    private int rabbitSkinMetadata;
 }

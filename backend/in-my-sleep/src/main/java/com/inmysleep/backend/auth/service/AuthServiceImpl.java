@@ -4,6 +4,8 @@ import com.inmysleep.backend.api.exception.InvalidDataException;
 import com.inmysleep.backend.api.exception.NotFoundElementException;
 import com.inmysleep.backend.api.security.JwtTokenProvider;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
+import com.inmysleep.backend.game.service.EasterEggService;
+import com.inmysleep.backend.game.service.EasterEggServiceImpl;
 import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
@@ -21,15 +23,17 @@ public class AuthServiceImpl implements AuthService {
     private final HttpSession session;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final EasterEggService easterEggService;
 
-    public AuthServiceImpl(UserRepository userRepository,
+    public AuthServiceImpl(UserRepository userRepository, EasterEggService easterEggService,
                            HttpSession session,
                            PasswordEncoder passwordEncoder,
-                           JwtTokenProvider jwtTokenProvider) {
+                           JwtTokenProvider jwtTokenProvider, EasterEggService easterEggService1) {
         this.userRepository = userRepository;
         this.session = session;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.easterEggService = easterEggService1;
     }
 
     @Override
@@ -43,7 +47,14 @@ public class AuthServiceImpl implements AuthService {
 
         user.setCreatedAt(LocalDateTime.now());
         user.setIsActive(true);
-        userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        // 기본 스킨 정보 추가
+        easterEggService.defaultEasterEgg(savedUser.getUserId());
+        
+        // 기본 스킨 장착 설정
+        easterEggService.setDefaultEasterEgg(savedUser.getUserId());
     }
 
     @Override
