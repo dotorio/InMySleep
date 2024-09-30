@@ -10,6 +10,9 @@ public class GoalManager : MonoBehaviourPunCallbacks
     private bool localPlayerReached = false;
     private bool otherPlayerReached = false;
 
+    // 1 스테이지 조건 걸기 위한 stage manager
+    public StageManager_1_2 stageManager;
+
     private string[] nextScene = {"", "CutScene2", "CutScene3", "CutScene4", "CutScene4", "4_1_4_2stage", "4_2_end_stage"};
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
@@ -40,6 +43,29 @@ public class GoalManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        // 태그는 동일하게 Player로 설정
+        if (other.CompareTag("Player"))
+        {
+            // PhotonView를 사용해 각 플레이어의 ID를 확인
+            PhotonView photonView = other.GetComponent<PhotonView>();
+
+            if (photonView != null)
+            {
+                // 로컬 플레이어 체크
+                if (photonView.IsMine)
+                {
+                    localPlayerReached = false;
+                }
+                else
+                {
+                    otherPlayerReached = false;
+                }
+            }
+        }
+    }
+
     private void CheckIfBothPlayersReached()
     {
         if (localPlayerReached && otherPlayerReached)
@@ -49,6 +75,12 @@ public class GoalManager : MonoBehaviourPunCallbacks
             // 두 플레이어 모두 도착하면 씬 전환 메소드 실행
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
+                if(stage == 1 && stageManager.getBattery() < 2)
+                {
+                    Debug.Log("Need more battery");
+                    return;
+                }
+
                 int roomId = UserData.instance.roomId;
                 if (stage < 4)
                 {
