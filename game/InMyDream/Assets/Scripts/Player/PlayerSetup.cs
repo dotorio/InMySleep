@@ -188,24 +188,26 @@ public class PlayerSetup : MonoBehaviourPun
 
         // 모든 플레이어에게 오브젝트 파괴와 이펙트 출현을 알림
         PhotonView objectPhotonView = obj.GetComponent<PhotonView>();
-        if (objectPhotonView != null && objectPhotonView.IsMine)
+        if (objectPhotonView != null)
         {
             // RPC를 통해 파괴와 이펙트 생성 동기화
-            photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID, obj.transform.position);
+            photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID);
             
         }
     }
 
     [PunRPC]
-    void DestroyObjectWithEffectRPC(int viewID, Vector3 position)
+    void DestroyObjectWithEffectRPC(int viewID)
     {
         // 해당 오브젝트 찾기
         PhotonView objPhotonView = PhotonView.Find(viewID);
+        Vector3 position = objPhotonView.transform.position;
 
         // 이펙트 생성
         if (breakEffectPrefab != null)
         {
             Instantiate(breakEffectPrefab, position, Quaternion.identity);
+            Instantiate(batteryPrefab, position, Quaternion.identity);
         }
            //     // 오브젝트 제거
         if (objPhotonView != null)
