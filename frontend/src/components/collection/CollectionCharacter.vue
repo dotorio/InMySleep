@@ -32,10 +32,16 @@ const bear = ref({
     {
       imageUrl: defaultUrl,
     },
+    {
+      imageUrl: defaultUrl,
+    },
   ]
 });
 const rabbit = ref({
   nft: [
+    {
+      imageUrl: defaultUrl,
+    },
     {
       imageUrl: defaultUrl,
     },
@@ -66,7 +72,6 @@ const nftData = ref([
 onBeforeMount(async () => {
   try {
     const response = await getEquippedSkin(uStore.user.data.userId);
-    console.log(response);
     sStore.userSkin.selectedBearColor = sStore.userSkin.bearColor = response.data[0].attributes.color;
     sStore.userSkin.selectedRabbitColor = sStore.userSkin.rabbitColor = response.data[1].attributes.color;
     // equippedBear.value = response.data[0].attributes.color;
@@ -141,7 +146,6 @@ onBeforeMount(async () => {
 
 function choiceCharacter(character) {
   sStore.userSkin.choice = character;
-  choice.value = character;
 }
 
 function prepareNftData(responseData) {
