@@ -4,7 +4,6 @@ import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { logout } from "@/api/user";
 import { walletAuth } from "@/api/wallet";
-import { ethers } from 'ethers';
 
 const router = useRouter();
 const uStore = useUserStore();
@@ -22,7 +21,7 @@ function logoutFun() {
 
 async function connectWallet() {
 
-  if (uStore.user.address) {
+  if (uStore.user.data.address && uStore.user.data.address !== "" && uStore.user.data.metamaskToken && uStore.user.data.metamaskToken !== "") {
     console.log("Already connected");
     return;
   }
@@ -36,8 +35,6 @@ async function connectWallet() {
     Swal.fire({
       icon: "error",
       title: "MetaMask을 설치해주세요",
-      showConfirmButton: false,
-      timer: 1500,
     });
     return
   }
@@ -57,8 +54,9 @@ async function connectWallet() {
     );
 
     if (response.data.token) {
-      uStore.user.data['token'] = response.data.token;
+      uStore.user.data['metamaskToken'] = response.data.token;
       uStore.user.data['address'] = accounts[0];
+      window.location.reload();
     }
 
     console.log("Connected", accounts);
@@ -99,7 +97,7 @@ async function signMessage(account, message) {
         <span class="bit-t account" @click="router.push({ name: 'signup' })">회원가입</span>
       </div>
       <div v-else>
-        <span v-if="uStore.user.data.token" class="bit-t account connect-wallet">지갑 연동 완료</span>
+        <span v-if="uStore.user.data.metamaskToken" class="bit-t account connect-wallet">지갑 연동 완료</span>
         <span v-else class="bit-t account" @click="connectWallet">지갑 연동</span>
         <span class="bit-t account" @click="logoutFun">로그아웃</span>
       </div>
