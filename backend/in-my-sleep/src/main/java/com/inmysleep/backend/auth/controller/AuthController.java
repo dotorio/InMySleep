@@ -6,9 +6,11 @@ import com.inmysleep.backend.auth.service.AuthService;
 import com.inmysleep.backend.email.config.CustomEmail;
 import com.inmysleep.backend.email.service.MailAuthService;
 import com.inmysleep.backend.email.service.MailService;
+import com.inmysleep.backend.game.service.EasterEggService;
 import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +24,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final MailService mailService;
     private final MailAuthService mailAuthService;
+    private final EasterEggService easterEggService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UserLoginDto>> login(@RequestBody AuthUserDto userDto) {
@@ -47,6 +49,7 @@ public class AuthController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @Transactional
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody AuthUserDto dto) {
         ApiResponse<Void> apiResponse = new ApiResponse<>();
