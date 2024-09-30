@@ -4,16 +4,23 @@ import { FieldPacket } from 'mysql2';
 export const getEquipeedSkinByUserId = async (userId: string): Promise<any> => {
     try {
         const conn = await connectDB();
-        const query = `
-        SELECT m.*
-        FROM user_skin u
-        JOIN metadata m
-            ON (JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.character')) = 'bear'
-                AND JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.color')) = u.bear_skin)
-            OR (JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.character')) = 'rabbit'
-                AND JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.color')) = u.rabbit_skin)
-        WHERE u.user_id = ?;`;
-        const [rows]: [any[], FieldPacket[]] = await conn.query(query, [userId]);
+        const query = `SELECT *
+                        FROM metadata
+                        WHERE id IN (
+                            SELECT bear_skin_metadata FROM user_skin WHERE user_id = ?
+                            UNION
+                            SELECT rabbit_skin_metadata FROM user_skin WHERE user_id = ?
+                        );`;
+        // const query = `
+        // SELECT m.*
+        // FROM user_skin u
+        // JOIN metadata m
+        //     ON (JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.character')) = 'bear'
+        //         AND JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.color')) = u.bear_skin_metadata)
+        //     OR (JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.character')) = 'rabbit'
+        //         AND JSON_UNQUOTE(JSON_EXTRACT(m.attributes, '$.color')) = u.rabbit_skin_metadata)
+        // WHERE u.user_id = ?;`;
+        const [rows]: [any[], FieldPacket[]] = await conn.query(query, [userId, userId]);
         return rows;
     } catch (error) {
         console.error('Error getting skin by user ID and character:', error);
