@@ -68,7 +68,6 @@ async function mint() {
   }
   try {
     const response = await postMint(uStore.user.data.userId, uStore.user.data.address, tokenURI);
-    console.log(response);
     if (response.status === 200) {
       Swal.fire({
         icon: "success",
