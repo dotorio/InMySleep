@@ -301,7 +301,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
     public void AcceptInvite(string roomName)
     {
         // 초대를 수락하면 해당 방으로 이동
-        invitePopup.Close();   
+        invitePopup.Close();
         ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
         playerProps["roomName"] = roomName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
