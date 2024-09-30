@@ -15,6 +15,9 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject EasterEgg_2;
     public GameObject[] Batterys;
 
+    public AudioSource Stage2BGM;
+    public AudioSource Stage21BGM;
+
     public GameObject Dogs;
 
     private int battery;
@@ -65,7 +68,10 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         }
         else
         {
-            foreach(var Battery in Batterys)
+            Stage2BGM.Play();
+            Stage21BGM.Play();
+
+            foreach (var Battery in Batterys)
             {
                 Battery.SetActive(false);
             }

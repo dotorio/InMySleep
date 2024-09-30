@@ -33,6 +33,8 @@ public class DogMovement : MonoBehaviourPunCallbacks
     private bool isRotating = false;
     private bool isBarking = false;
 
+    private AudioSource BarkSound;
+
     // 현재 이벤트 위치 저장
     private Vector3 currentEventPosition;
     private Transform bone;
@@ -66,6 +68,7 @@ public class DogMovement : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        BarkSound = GetComponent<AudioSource>();
         // Rigidbody가 있을 경우 물리 간섭을 피하기 위해 키네마틱으로 설정
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -191,6 +194,7 @@ public class DogMovement : MonoBehaviourPunCallbacks
     /// </summary>
     public void StartBarking()
     {
+        BarkSound.Play();
         if (isBarking) return;
 
         isBarking = true;
