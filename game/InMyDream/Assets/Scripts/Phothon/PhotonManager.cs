@@ -101,6 +101,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     {
         Debug.Log($"Failed to join room: {message}");
 
+        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+        playerProps["roomName"] = userName;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
         PhotonNetwork.JoinLobby();
     }
 
