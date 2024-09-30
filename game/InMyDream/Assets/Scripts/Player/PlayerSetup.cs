@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Cinemachine;
+using UnityEngine.UIElements;
 
 public class PlayerSetup : MonoBehaviourPun
 {
@@ -99,7 +100,7 @@ public class PlayerSetup : MonoBehaviourPun
                     isPushing = false; // 밀기 중지
                     GetComponent<ThirdPersonController>().isInteracting = false;
 
-                    if (cleanName == "Player1Test" && Input.GetMouseButtonDown(0) && objectToInteract.CompareTag("Breakable"))
+                    if (cleanName == "Player1" && Input.GetMouseButtonDown(0) && objectToInteract.CompareTag("Breakable"))
                     {
                         StartCoroutine(BreakObjectWithDelay(objectToInteract.gameObject, 0.5f));
                     }
@@ -192,7 +193,9 @@ public class PlayerSetup : MonoBehaviourPun
         {
             // RPC를 통해 파괴와 이펙트 생성 동기화
             photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID);
-            
+            PhotonNetwork.Instantiate("BreakEffect", obj.transform.position, Quaternion.identity);
+            PhotonNetwork.Instantiate("Battery", obj.transform.position, Quaternion.identity);
+
         }
     }
 
@@ -203,13 +206,7 @@ public class PlayerSetup : MonoBehaviourPun
         PhotonView objPhotonView = PhotonView.Find(viewID);
         Vector3 position = objPhotonView.transform.position;
 
-        // 이펙트 생성
-        if (breakEffectPrefab != null)
-        {
-            Instantiate(breakEffectPrefab, position, Quaternion.identity);
-            Instantiate(batteryPrefab, position, Quaternion.identity);
-        }
-           //     // 오브젝트 제거
+        //     // 오브젝트 제거
         if (objPhotonView != null)
         {
             Destroy(objPhotonView.gameObject);
