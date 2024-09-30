@@ -32,10 +32,16 @@ const bear = ref({
     {
       imageUrl: defaultUrl,
     },
+    {
+      imageUrl: defaultUrl,
+    },
   ]
 });
 const rabbit = ref({
   nft: [
+    {
+      imageUrl: defaultUrl,
+    },
     {
       imageUrl: defaultUrl,
     },
