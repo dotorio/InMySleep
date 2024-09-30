@@ -140,7 +140,6 @@ onBeforeMount(async () => {
 
 function choiceCharacter(character) {
   sStore.userSkin.choice = character;
-  choice.value = character;
 }
 
 function prepareNftData(responseData) {
