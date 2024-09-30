@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 
 public class StageManager_1_2 : MonoBehaviourPun, StageManager
@@ -17,10 +18,12 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
     public AudioSource Stage2BGM;
     public AudioSource Stage21BGM;
+    public TextMeshProUGUI batteryCnt;
+    
 
     public GameObject Dogs;
 
-    private int battery;
+    public int battery;
 
     void Start()
     {
@@ -226,8 +229,8 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public void CollectBattery(int batteryViewId)
     {
         battery++;
-
         photonView.RPC("SyncBattery", RpcTarget.All, battery, batteryViewId);
+        
     }
 
     [PunRPC]
@@ -235,7 +238,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     {
         battery = newBatteryCount;
         Debug.Log("Battery count synchronized");
-
+        batteryCnt.text = "" + battery;
         // 전달받은 ViewID로 배터리 오브젝트 찾기
         PhotonView batteryPhotonView = PhotonView.Find(batteryViewId);
         if (batteryPhotonView != null)
