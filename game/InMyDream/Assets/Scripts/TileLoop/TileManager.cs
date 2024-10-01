@@ -68,7 +68,9 @@ public class InfiniteTileManager : MonoBehaviour
         // 특정 인덱스의 타일 프리팹 선택
         GameObject tile = Instantiate(tilePrefabs[prefabIndex]);
 
-        GameObject spawnPoint = tile.Find("SpawnPoint");
+        //GameObject spawnPoint = tile.Find("SpawnPoint");
+        Transform spawnPoint = tile.transform.Find("SpawnPoint");
+
         if (spawnPoint!=null)
         {
             stageManager.AddSpawnPoint(spawnPoint);
