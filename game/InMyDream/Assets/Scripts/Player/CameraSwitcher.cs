@@ -12,7 +12,7 @@ public class CameraSwitcher : MonoBehaviour
     void Start()
     {
         // 기본적으로 이동 카메라 활성화
-        //SwitchToFollowCamera();
+        SwitchToFollowCamera();
     }
     void Update()
     {
