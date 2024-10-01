@@ -6,6 +6,11 @@ public class Billboard : MonoBehaviour
 {
     public Transform cam; // 카메라 참조
 
+    private void Start()
+    {
+        cam = transform.parent.gameObject.transform;
+    }
+
     void LateUpdate()
     {
         // Canvas가 카메라를 향하도록 회전

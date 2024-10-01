@@ -9,9 +9,10 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
     // 스폰 위치
     public GameObject Master;
     public GameObject Client;
-    private List<Transform> spawnPoints = new List<Transform>();
+    public List<Transform> spawnPoints = new List<Transform>();
 
     // 동적인 스폰 포인트 배정을 위한 변수
+    public InfiniteTileManager tileManager;
     public GameObject robotVaccum;
     public float minDistance = 1f;
 
@@ -60,7 +61,7 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
             // 스킨 설정
             Player localPlayer = PhotonNetwork.LocalPlayer;
 
-            photonView.RPC("RPC_ChangeMaterial", 
+            photonView.RPC("RPC_PlayerSetting", 
                 RpcTarget.AllBuffered,
                 localPlayer.ActorNumber,
                 "Player1".Equals(localPlayer.CustomProperties["character"]),
@@ -68,7 +69,7 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
         }
     }
 
-    void update()
+    void Update()
     {
         CheckGameOver();
     }
@@ -113,7 +114,7 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
     private void ResetScene()
     {
         // 3 스테이지 씬 이름에 따라 변경 필요
-        PhotonNetwork.LoadLevel("3_stage");
+        PhotonNetwork.LoadLevel("3s_Scene");
     }
 
     // 동적으로 스폰 포인트 추가
@@ -151,7 +152,7 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
 
     // 스킨 변경 메소드
     [PunRPC]
-    public void RPC_ChangeMaterial(int targetActorNumber, bool isBear, string material)
+    public void RPC_PlayerSetting(int targetActorNumber, bool isBear, string material)
     {
         string fileName = (isBear ? "Bear" : "Bunny") + material;
 
@@ -165,6 +166,8 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
             {
                 if (pv.Owner.ActorNumber == targetActorNumber)
                 {
+                    tileManager.addPlayer(character);
+
                     Transform mesh = character.transform.GetChild(1);
 
                     if (mesh != null)
