@@ -244,7 +244,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         if (batteryPhotonView != null)
         {
             // 배터리 오브젝트를 모든 클라이언트에서 제거
-            PhotonNetwork.Destroy(batteryPhotonView.gameObject);
+            Destroy(batteryPhotonView.gameObject);
         }
 
     }
