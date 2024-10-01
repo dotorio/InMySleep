@@ -31,15 +31,18 @@ public class FriendListToggle : MonoBehaviour
     void Start()
     {
         // 버튼에 클릭 이벤트 추가
-        toggleButton.onClick.AddListener(ToggleFriendList);
-        searchToggleButton.onClick.AddListener(SearchToggleFriendList);
-        notiToggleButton.onClick.AddListener(ToggleNotiList);
-        searchCloseBtn.onClick.AddListener(SearchToggleFriendList);
-        notiCloseBtn.onClick.AddListener(ToggleNotiList);
+        toggleButton.onClick.AddListener(() => TogglePanel(friendListPanel, ref isPanelVisible, friendList));
+        searchToggleButton.onClick.AddListener(() => TogglePanel(friendSearchListPanel, ref isSearchPanelVisible, friendSearchList));
+        notiToggleButton.onClick.AddListener(() => TogglePanel(NotiListPanel, ref isNotiPanelVisible, notiList));
+        searchCloseBtn.onClick.AddListener(() => TogglePanel(friendSearchListPanel, ref isSearchPanelVisible, friendSearchList));
+        notiCloseBtn.onClick.AddListener(() => TogglePanel(NotiListPanel, ref isNotiPanelVisible, notiList));
+
+        // Canvas에 맞춘 UI 패널의 크기 기준으로 위치 설정
+        float canvasWidth = friendListPanel.parent.GetComponent<RectTransform>().rect.width;
 
         // 패널의 시작 위치 설정 (화면 오른쪽 밖)
-        hiddenPosition = new Vector2(Screen.width / 2 + 650 , friendListPanel.anchoredPosition.y);
-        visiblePosition = new Vector2(Screen.width / 2  - 50, friendListPanel.anchoredPosition.y);
+        hiddenPosition = new Vector2(canvasWidth / 2 + 650, friendListPanel.anchoredPosition.y);
+        visiblePosition = new Vector2(canvasWidth / 2 - 50, friendListPanel.anchoredPosition.y);
 
         // 처음에 패널을 화면 밖에 숨김
         friendListPanel.anchoredPosition = hiddenPosition;
@@ -48,61 +51,41 @@ public class FriendListToggle : MonoBehaviour
 
     }
 
-    public void ToggleFriendList()
+    private void TogglePanel(RectTransform panel, ref bool isVisible, GameObject panelGameObject)
     {
-        // 패널이 보이는 상태인지에 따라 이동 방향 설정
-        if (isPanelVisible)
+        // 열려 있는 다른 패널을 닫기
+        if (panel != friendListPanel && isPanelVisible)
         {
-            StartCoroutine(SlidePanel(friendListPanel, visiblePosition, hiddenPosition));
-            friendList.SetActive(false);
+            StartCoroutine(SlidePanel(friendListPanel, visiblePosition, hiddenPosition, () => friendList.SetActive(false)));
+            isPanelVisible = false;
+        }
+        if (panel != friendSearchListPanel && isSearchPanelVisible)
+        {
+            StartCoroutine(SlidePanel(friendSearchListPanel, visiblePosition, hiddenPosition, () => friendSearchList.SetActive(false)));
+            isSearchPanelVisible = false;
+        }
+        if (panel != NotiListPanel && isNotiPanelVisible)
+        {
+            StartCoroutine(SlidePanel(NotiListPanel, visiblePosition, hiddenPosition, () => notiList.SetActive(false)));
+            isNotiPanelVisible = false;
+        }
+
+        // 패널 열기/닫기
+        if (isVisible)
+        {
+            StartCoroutine(SlidePanel(panel, visiblePosition, hiddenPosition, () => panelGameObject.SetActive(false)));
         }
         else
         {
-            StartCoroutine(SlidePanel(friendListPanel, hiddenPosition, visiblePosition));
+            panel.SetSiblingIndex(panel.parent.childCount - 1);
+            panelGameObject.SetActive(true);
+            StartCoroutine(SlidePanel(panel, hiddenPosition, visiblePosition));
         }
 
-        // 상태 토글
-        isPanelVisible = !isPanelVisible;
+        isVisible = !isVisible;
     }
 
-    public void SearchToggleFriendList()
-    {
-        // 패널이 보이는 상태인지에 따라 이동 방향 설정
-        if (isSearchPanelVisible)
-        {
-            StartCoroutine(SlidePanel(friendSearchListPanel, visiblePosition, hiddenPosition));
-            friendSearchList.SetActive(false);
-        }
-        else
-        {
-            StartCoroutine(SlidePanel(friendSearchListPanel, hiddenPosition, visiblePosition));
-            friendSearchList.SetActive(true);
-        }
-
-        // 상태 토글
-        isSearchPanelVisible = !isSearchPanelVisible;
-    }
-
-    public void ToggleNotiList()
-    {
-        // 패널이 보이는 상태인지에 따라 이동 방향 설정
-        if (isNotiPanelVisible)
-        {
-            StartCoroutine(SlidePanel(NotiListPanel, visiblePosition, hiddenPosition));
-            notiList.SetActive(false);
-        }
-        else
-        {
-            StartCoroutine(SlidePanel(NotiListPanel, hiddenPosition, visiblePosition));
-            notiList.SetActive(true);
-        }
-
-        // 상태 토글
-        isNotiPanelVisible = !isNotiPanelVisible;
-    }
-
-    // 패널을 부드럽게 슬라이딩하는 코루틴
-    IEnumerator SlidePanel(RectTransform panel, Vector2 start, Vector2 end)
+    IEnumerator SlidePanel(RectTransform panel, Vector2 start, Vector2 end, System.Action onComplete = null)
     {
         float elapsedTime = 0;
         float duration = Mathf.Abs(Vector2.Distance(start, end)) / slideSpeed;
@@ -115,5 +98,10 @@ public class FriendListToggle : MonoBehaviour
         }
 
         panel.anchoredPosition = end;
+
+        if (onComplete != null)
+        {
+            onComplete();
+        }
     }
 }
