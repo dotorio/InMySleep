@@ -13,6 +13,7 @@ public class FriendListToggle : MonoBehaviour
     public Button notiToggleButton;
     public Button searchCloseBtn;
     public Button notiCloseBtn;
+    public Button friendListCloseBtn;
     
 
     public GameObject friendList;
@@ -36,6 +37,7 @@ public class FriendListToggle : MonoBehaviour
         notiToggleButton.onClick.AddListener(() => TogglePanel(NotiListPanel, ref isNotiPanelVisible, notiList));
         searchCloseBtn.onClick.AddListener(() => TogglePanel(friendSearchListPanel, ref isSearchPanelVisible, friendSearchList));
         notiCloseBtn.onClick.AddListener(() => TogglePanel(NotiListPanel, ref isNotiPanelVisible, notiList));
+        friendListCloseBtn.onClick.AddListener(() => TogglePanel(friendListPanel, ref isPanelVisible, friendList));
 
         // Canvas에 맞춘 UI 패널의 크기 기준으로 위치 설정
         float canvasWidth = friendListPanel.parent.GetComponent<RectTransform>().rect.width;
