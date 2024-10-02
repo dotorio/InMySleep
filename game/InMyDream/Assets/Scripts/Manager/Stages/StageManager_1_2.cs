@@ -17,6 +17,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject[] Batterys;
     public GameObject missionStage1;
     public GameObject missionStage2;
+    public GameObject portal1;
    
 
     public AudioSource Stage2BGM;
@@ -80,6 +81,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             Stage21BGM.Play();
             missionStage1.SetActive(false);
             missionStage2.SetActive(true);
+            portal1.SetActive(false);
             foreach (var Battery in Batterys)
             {
                 Battery.SetActive(false);
