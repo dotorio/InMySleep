@@ -52,29 +52,25 @@ public class EasterEggServiceImpl implements EasterEggService {
     }
 
     @Override
-    public List<UserSkinDto> getUserSkinInfo(int userId) {
-        List<UserSkin> list = userSkinRepository.findByUserId(userId);
-        List<UserSkinDto> dtos = new ArrayList<>();
-        for (UserSkin us : list) {
-            UserSkinDto dto = new UserSkinDto();
+    public UserSkinDto getUserSkinInfo(int userId) {
+        UserSkin us = userSkinRepository.findByUserId(userId);
+        UserSkinDto dto = new UserSkinDto();
 
-            // 기본 정보 추가
-            dto.setUserId(us.getUserId());
-            dto.setUserSkinId(us.getUserSkinId());
-            dto.setBearSkin(us.getBearSkinMetadata());
-            dto.setRabbitSkin(us.getRabbitSkinMetadata());
+        // 기본 정보 추가
+        dto.setUserId(us.getUserId());
+        dto.setUserSkinId(us.getUserSkinId());
+        dto.setBearSkin(us.getBearSkinMetadata());
+        dto.setRabbitSkin(us.getRabbitSkinMetadata());
 
-            // metadata 참조
-            Metadata bearData = metadataRepository.findById(us.getBearSkinMetadata())
-                    .orElseThrow(() -> new NotFoundElementException("bear skin metadata not found"));
-            Metadata rabbitData = metadataRepository.findById(us.getRabbitSkinMetadata())
-                    .orElseThrow(() -> new NotFoundElementException("rabbit skin metadata not found"));
+        // metadata 참조
+        Metadata bearData = metadataRepository.findById(us.getBearSkinMetadata())
+                .orElseThrow(() -> new NotFoundElementException("bear skin metadata not found"));
+        Metadata rabbitData = metadataRepository.findById(us.getRabbitSkinMetadata())
+                .orElseThrow(() -> new NotFoundElementException("rabbit skin metadata not found"));
 
-            dto.setBear(String.format("%02d", Integer.parseInt(bearData.getAttributes().getColor())));
-            dto.setRabbit(String.format("%02d", Integer.parseInt(rabbitData.getAttributes().getColor())));
-            dtos.add(dto);
-        }
-        return dtos;
+        dto.setBear(String.format("%02d", Integer.parseInt(bearData.getAttributes().getColor())));
+        dto.setRabbit(String.format("%02d", Integer.parseInt(rabbitData.getAttributes().getColor())));
+        return dto;
     }
 
     @Override
@@ -149,22 +145,6 @@ public class EasterEggServiceImpl implements EasterEggService {
             return metadataPage.getContent().get(0);
         } else {
             throw new NotFoundElementException("Random metadata not found.");
-        }
-    }
-
-    // 전체 유저 현재 장착한 스킨 초기화
-    @Transactional
-    public void SetAllUserSkinInfo() {
-        List<User> list = userRepository.findAll();
-        for (User u : list) {
-            List<UserSkin> us = userSkinRepository.findByUserId(u.getUserId());
-            if (us.isEmpty()) {
-                UserSkin uSkin = new UserSkin();
-                uSkin.setUserId(u.getUserId());
-                uSkin.setBearSkinMetadata(1);
-                uSkin.setRabbitSkinMetadata(4);
-                userSkinRepository.save(uSkin);
-            }
         }
     }
 }
