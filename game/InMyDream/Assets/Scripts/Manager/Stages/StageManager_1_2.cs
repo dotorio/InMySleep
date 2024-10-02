@@ -15,6 +15,9 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject EasterEgg_1;
     public GameObject EasterEgg_2;
     public GameObject[] Batterys;
+    public GameObject missionStage1;
+    public GameObject missionStage2;
+   
 
     public AudioSource Stage2BGM;
     public AudioSource Stage21BGM;
@@ -45,8 +48,10 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         if(stage == 1)
         {
             Dogs.SetActive(false);
+            missionStage1.SetActive(true);
+            missionStage2.SetActive(false);
 
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_1.transform;
 
@@ -73,7 +78,8 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         {
             Stage2BGM.Play();
             Stage21BGM.Play();
-
+            missionStage1.SetActive(false);
+            missionStage2.SetActive(true);
             foreach (var Battery in Batterys)
             {
                 Battery.SetActive(false);
