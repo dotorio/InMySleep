@@ -46,7 +46,7 @@ function loginFun() {
           <div class="password box-col">
             <label for="password" class="bit-t">비밀번호</label>
             <input id="password" class="bit-t" type="password" placeholder="비밀번호를 입력해주세요." v-model="password" />
-            <a href="#" class="bit-t password-link">비밀번호를 잊어버리셨나요?</a>
+            <router-link to="/chgpwd" class="bit-t password-link">비밀번호를 잊어버리셨나요?</router-link>
           </div>
           <button class="login-btn bit-t" @click="loginFun">로그인</button>
           <button class="signup-btn bit-t" @click="router.push({ name: 'signup' })">
@@ -62,7 +62,7 @@ function loginFun() {
 <style scoped>
 .background {
   height: 85vh;
-  background-color: aqua;
+  background-color: #D4F1F9;
 }
 
 .login-con {
