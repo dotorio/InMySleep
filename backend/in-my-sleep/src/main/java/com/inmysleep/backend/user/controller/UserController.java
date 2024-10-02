@@ -1,5 +1,6 @@
 package com.inmysleep.backend.user.controller;
 
+import com.inmysleep.backend.api.exception.NotFoundElementException;
 import com.inmysleep.backend.api.response.ApiPageResponse;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.api.response.PageInfo;
@@ -71,11 +72,25 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size);
         Page<UserSearchResultDto> searchResults = userService.searchUsers(username, userId, pageable);
 
-        PageInfo pageInfo =  new PageInfo(size, page, searchResults.getTotalElements(), searchResults.getTotalPages(), searchResults.getNumber());
+        PageInfo pageInfo = new PageInfo(size, page, searchResults.getTotalElements(), searchResults.getTotalPages(), searchResults.getNumber());
 
         ApiPageResponse<List<UserSearchResultDto>> apiResponse = new ApiPageResponse<>();
         apiResponse.setResponseTrue(searchResults.stream().toList(), "유저 검색 결과", pageInfo);
 
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/check-email-user")
+    public ResponseEntity<ApiResponse<Void>> checkEmailUser(@RequestParam String email) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        boolean isUser = userService.isEmailAlreadyInUse(email);
+
+        if (isUser) {
+            apiResponse.setResponseTrue(null, "가입된 유저 입니다.");
+        } else {
+            throw new NotFoundElementException("가입되어 있지 않은 유저입니다.");
+        }
         return ResponseEntity.ok(apiResponse);
     }
 }

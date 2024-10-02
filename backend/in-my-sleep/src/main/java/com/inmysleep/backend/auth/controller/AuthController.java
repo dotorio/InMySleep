@@ -1,5 +1,6 @@
 package com.inmysleep.backend.auth.controller;
 
+import com.inmysleep.backend.api.exception.InvalidDataException;
 import com.inmysleep.backend.api.response.ApiResponse;
 import com.inmysleep.backend.auth.dto.AuthChangeEmailPasswordDto;
 import com.inmysleep.backend.auth.dto.AuthChangePasswordDto;
@@ -89,7 +90,32 @@ public class AuthController {
         if (response) {
             apiResponse.setResponseTrue(null, "인증 성공");
         } else {
-            apiResponse.setResponseFalse(null, "인증 실패");
+            throw new InvalidDataException("인증 실패");
+        }
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/email/verification-chgpw-request")
+    public ResponseEntity<ApiResponse<Void>> sendChgPwMessage(@RequestParam("email") @Valid @CustomEmail String email) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        mailAuthService.sendChangeCodeToEmail(email);
+
+        apiResponse.setResponseTrue(null, "이메일 전송");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/emails/verifications-chgpw")
+    public ResponseEntity<ApiResponse<Void>> verificationChgPwEmail(@RequestParam("email") @Valid @CustomEmail String email,
+                                                                    @RequestParam("code") String authCode) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        boolean response = mailAuthService.verifiedChangePasswordCode(email, authCode);
+
+        if (response) {
+            apiResponse.setResponseTrue(null, "인증 성공");
+        } else {
+            throw new InvalidDataException("인증 실패");
         }
         return ResponseEntity.ok(apiResponse);
     }
