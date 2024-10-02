@@ -15,7 +15,7 @@ public class LoginManager : MonoBehaviour
     public GameObject loginFailPopupPanel;    // 로그인 실패 팝업창 패널
     public Button retryButton;                // 다시 시도 버튼
     public Button closeBtn; 
-    private string loginUrl = "https://j11e107.p.ssafy.io:8000/api/v1/auth/login";  // 서버의 로그인 API URL
+    private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";  // 서버의 로그인 API URL
 
     void Start()
     {
@@ -56,7 +56,7 @@ public class LoginManager : MonoBehaviour
         string jsonData = JsonUtility.ToJson(loginData);
 
         // UnityWebRequest로 HTTP POST 요청을 준비
-        UnityWebRequest request = new UnityWebRequest(loginUrl, "POST");
+        UnityWebRequest request = new UnityWebRequest(url + "auth/login", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -97,6 +97,8 @@ public class LoginManager : MonoBehaviour
                 UserData.instance.userId = response.data.userId;
                 UserData.instance.lastStage = response.data.lastStage;
 
+                StartCoroutine(GetSkinSettings(response.data.userId));
+
                 SceneManager.LoadScene("LobbyScene");
 
                 //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
@@ -117,6 +119,61 @@ public class LoginManager : MonoBehaviour
             }
         }
     }
+
+    // 스킨 정보 불러오기
+    IEnumerator GetSkinSettings(int userId)
+    {
+        // UnityWebRequest로 HTTP GET 요청을 준비
+        UnityWebRequest request = new UnityWebRequest(url + "easter/user-skin-info?userId=" + userId, "GET");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        // 서버로부터 응답을 받을 때까지 대기
+        yield return request.SendWebRequest();
+
+        // 요청 결과 처리
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            // 로그인 실패 시 오류 메시지 표시
+            //errorMessageText.text = "로그인 실패: " + response.message;
+            ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
+
+            // 에러 발생 시 처리
+            Debug.LogError("Error: " + request.error);
+            //errorMessageText.text = "서버 연결 오류: " + request.error;
+        }
+        else
+        {
+            // 응답 성공 시 처리
+            Debug.Log("Response: " + request.downloadHandler.text);
+
+            // 서버로부터 받은 JSON 응답을 파싱
+            ServerResponse2 response = JsonUtility.FromJson<ServerResponse2>(request.downloadHandler.text);
+
+            if (response.success)
+            {
+
+                Debug.Log("스킨 로드 성공");
+                Debug.Log("bear: " + response.data.bear);
+                Debug.Log("rabbit: " + response.data.rabbit);
+                UserData.instance.bear = response.data.bear;
+                UserData.instance.rabbit = response.data.rabbit;
+
+                //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
+                //PlayerPrefs.SetInt("userId", response.data.userId);
+                //PlayerPrefs.SetString("username", response.data.username);
+                //PlayerPrefs.SetString("email", response.data.email);
+                //PlayerPrefs.SetInt("lastStage", response.data.lastStage);
+                //PlayerPrefs.Save();
+            }
+            else
+            {
+                // 로그인 실패 시 오류 메시지 표시
+                errorMessageText.text = "스킨 로드 실패: " + response.message;
+            }
+        }
+    }
+
     void ShowLoginFailPopup()
     {
         loginFailPopupPanel.SetActive(true);  // 팝업창을 활성화
@@ -160,4 +217,24 @@ public class UserInfo
     public string username;    // 유저 이름
     public string email;       // 유저 이메일
     public int lastStage;      // 마지막 스테이지
+}
+
+// 서버로부터 받은 응답 데이터를 나타내는 클래스
+[System.Serializable]
+public class ServerResponse2
+{
+    public bool success;    // 로그인 성공 여부
+    public SkinInfo data;    // 유저 정보가 포함된 "data" 필드
+    public string message;   // 서버에서 반환된 메시지
+}
+
+[System.Serializable]
+public class SkinInfo
+{
+    public int userSkinId;
+    public int userId;
+    public int bearSkin;
+    public int rabbicSkin;
+    public string bear;
+    public string rabbit;
 }
