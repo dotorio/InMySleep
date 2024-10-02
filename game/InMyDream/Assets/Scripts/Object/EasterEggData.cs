@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using TMPro;
 
 public class EasterEggData : MonoBehaviour
 {
     private string character;
-<<<<<<< Updated upstream
-=======
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
-
+    [SerializeField] private GameObject easterEggPanel;
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private Image skinImage;
 
     [System.Serializable]
     public class ServerResponse
@@ -50,6 +52,7 @@ public class EasterEggData : MonoBehaviour
 
     private void Start()
     {
+        easterEggPanel.SetActive(true);
         /*        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
 
                 if (easterData <= 5)
@@ -63,7 +66,6 @@ public class EasterEggData : MonoBehaviour
                     skin = easterData - 5;
                 }*/
     }
->>>>>>> Stashed changes
 
     private void OnTriggerEnter(Collider other)
     {
@@ -77,13 +79,10 @@ public class EasterEggData : MonoBehaviour
     // 임시 코드, api 완성시 수정
     IEnumerator AddEasterEgg()
     {
-        Debug.Log("Start AddEasterEgg");
         // 로그인 정보를 JSON 형식으로 준비
         /*int userId = UserData.instance.userId;*/
-        UserData userData = new UserData(45);
-        string jsonData = JsonUtility.ToJson(userData);
-/*        int userId = 45;
-        string jsonData = $"{{\"userId\":{userId}}}";*/
+        int userId = 45;
+        string jsonData = $"{{\"userId\":{userId}}}";
 
         // UnityWebRequest로 HTTP POST 요청을 준비
         UnityWebRequest request = new UnityWebRequest(addEasterUrl, "POST");
@@ -129,6 +128,10 @@ public class EasterEggData : MonoBehaviour
                 easterEggInfo.attributes = attributes;
                 easterEggInfo.duplicated = response.data.duplicated;
 
+                StartCoroutine(LoadImageFromUrl(easterEggInfo.skinImgUrl));
+
+                yield return new WaitForSeconds(3f);
+                easterEggPanel.SetActive(false);
             }
             else
             {
@@ -136,5 +139,20 @@ public class EasterEggData : MonoBehaviour
             }
         }
         Destroy(gameObject);
+    }
+    private IEnumerator LoadImageFromUrl(string url)
+    {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            skinImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        }
+        else
+        {
+            Debug.LogError("이미지 로드 실패: " + request.error);
+        }
     }
 }
