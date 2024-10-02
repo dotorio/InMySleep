@@ -35,6 +35,31 @@ public class LoginManager : MonoBehaviour
                 inputPassword.Select();  // 비밀번호 입력 필드로 포커스 이동
             }
         }
+
+        // 로그인 창이 활성화된 경우
+        if (loginPanel.activeSelf && !loginFailPopupPanel.activeSelf)
+        {
+            // Enter 키로 로그인 실행
+            if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+            {
+                OnLoginButtonClicked();
+            }
+
+            // ESC 키로 로그인 창 닫기
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                loginPanel.SetActive(false);
+            }
+        }
+
+        // 로그인 실패 팝업이 활성화된 경우 - Enter, ESC로 팝업 닫기
+        if (loginFailPopupPanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                CloseLoginFailPopup();
+            }
+        }
     }
 
 
