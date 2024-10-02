@@ -3,13 +3,15 @@ package com.inmysleep.backend.auth.service;
 import com.inmysleep.backend.api.exception.InvalidDataException;
 import com.inmysleep.backend.api.exception.NotFoundElementException;
 import com.inmysleep.backend.api.security.JwtTokenProvider;
+import com.inmysleep.backend.auth.dto.AuthChangeEmailPasswordDto;
+import com.inmysleep.backend.auth.dto.AuthChangePasswordDto;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.game.service.EasterEggService;
-import com.inmysleep.backend.game.service.EasterEggServiceImpl;
 import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.entity.User;
 import com.inmysleep.backend.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -52,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 기본 스킨 정보 추가
         easterEggService.defaultEasterEgg(savedUser.getUserId());
-        
+
         // 기본 스킨 장착 설정
         easterEggService.setDefaultEasterEgg(savedUser.getUserId());
     }
@@ -82,5 +85,34 @@ public class AuthServiceImpl implements AuthService {
         userInfo.setToken(token);
 
         return userInfo;
+    }
+
+    @Override
+    public void changePassword(AuthChangePasswordDto dto) {
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new NotFoundElementException("User Not Found"));
+
+        // 패스워드 일치 검사
+        if (passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            // 새 비밀번호가 이전 비밀번호와 동일하지 않은지 확인
+            if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
+                throw new InvalidDataException("새로운 비밀번호는 이전 비밀번호와 일치할 수 없습니다.");
+            }
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new InvalidDataException("이전 비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    @Override
+    public void changeEmailPassword(AuthChangeEmailPasswordDto dto) {
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new NotFoundElementException("User Not Found"));
+
+        // 새 비밀번호가 이전 비밀번호와 동일하지 않은지 확인
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new InvalidDataException("새로운 비밀번호는 이전 비밀번호와 일치할 수 없습니다.");
+        }
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
     }
 }
