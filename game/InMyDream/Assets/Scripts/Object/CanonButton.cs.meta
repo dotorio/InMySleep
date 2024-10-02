@@ -3,7 +3,10 @@ guid: 720b6ef82aaefc84c983c3d302bbb496
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - canonObject: {fileID: 2194096670552897416, guid: a93c2122aa24fb546ae838010f1237fb, type: 3}
+  - spark: {fileID: 144796, guid: 0e5ef80beee6f234b9b27568218dbaf1, type: 3}
+  - bomb: {fileID: 1145317116343723565, guid: 4b518fdb609f0e442be4fbeb5459da38, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
