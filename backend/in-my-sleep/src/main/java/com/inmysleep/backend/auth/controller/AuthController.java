@@ -1,12 +1,12 @@
 package com.inmysleep.backend.auth.controller;
 
 import com.inmysleep.backend.api.response.ApiResponse;
+import com.inmysleep.backend.auth.dto.AuthChangeEmailPasswordDto;
+import com.inmysleep.backend.auth.dto.AuthChangePasswordDto;
 import com.inmysleep.backend.auth.dto.AuthUserDto;
 import com.inmysleep.backend.auth.service.AuthService;
 import com.inmysleep.backend.email.config.CustomEmail;
 import com.inmysleep.backend.email.service.MailAuthService;
-import com.inmysleep.backend.email.service.MailService;
-import com.inmysleep.backend.game.service.EasterEggService;
 import com.inmysleep.backend.user.dto.UserLoginDto;
 import com.inmysleep.backend.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +25,6 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
     private final MailAuthService mailAuthService;
-    private final EasterEggService easterEggService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UserLoginDto>> login(@RequestBody AuthUserDto userDto) {
@@ -45,7 +44,7 @@ public class AuthController {
         } else {
             apiResponse.setResponseFalse(null, "세션이 존재하지 않습니다.");
         }
-        
+
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -92,6 +91,25 @@ public class AuthController {
         } else {
             apiResponse.setResponseFalse(null, "인증 실패");
         }
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(@RequestBody AuthChangePasswordDto dto) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        authService.changePassword(dto);
+        apiResponse.setResponseTrue(null, "비밀번호 변경 완료");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 이메일 인증 후 변경
+    @PatchMapping("/change-email-password")
+    public ResponseEntity<ApiResponse<Void>> changeEmailPassword(@RequestBody AuthChangeEmailPasswordDto dto) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        authService.changeEmailPassword(dto);
+        apiResponse.setResponseTrue(null, "비밀번호 변경 완료");
         return ResponseEntity.ok(apiResponse);
     }
 }

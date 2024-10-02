@@ -8,10 +8,8 @@ import java.util.List;
 
 public interface EasterEggService {
     List<EasterEggDto> getAllEasterEgg();
-    List<UserSkinDto> getUserSkinInfo(int userId);
+    UserSkinDto getUserSkinInfo(int userId);
     AddSkinResultDto addUserSkin(int userId);
     void defaultEasterEgg(int userId);
     void setDefaultEasterEgg(int userId);
-
-    void SetAllUserSkinInfo();
 }

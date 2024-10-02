@@ -26,9 +26,9 @@ public class EasterEggController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/skin-list")
-    public ResponseEntity<ApiResponse<List<UserSkinDto>>> getUserSkinList(@RequestParam int userId) {
-        ApiResponse<List<UserSkinDto>> apiResponse = new ApiResponse<>();
+    @GetMapping("/user-skin-info")
+    public ResponseEntity<ApiResponse<UserSkinDto>> getUserSkinList(@RequestParam int userId) {
+        ApiResponse<UserSkinDto> apiResponse = new ApiResponse<>();
         apiResponse.setResponseTrue(easterEggService.getUserSkinInfo(userId), "유저 스킨 정보");
         return ResponseEntity.ok(apiResponse);
     }
@@ -41,13 +41,6 @@ public class EasterEggController {
         ApiResponse<AddSkinResultDto> apiResponse = new ApiResponse<>();
         apiResponse.setResponseTrue(result, message);
 
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    @PostMapping("/default-skin-settings")
-    public ResponseEntity<ApiResponse<Void>> defaultSkinSettings() {
-        ApiResponse<Void> apiResponse = new ApiResponse<>();
-        easterEggService.SetAllUserSkinInfo();
         return ResponseEntity.ok(apiResponse);
     }
 }

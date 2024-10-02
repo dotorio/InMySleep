@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserSkinRepository extends JpaRepository<UserSkin, Long> {
-    List<UserSkin> findByUserId(int userId);
+    UserSkin findByUserId(int userId);
 }
