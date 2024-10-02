@@ -149,6 +149,13 @@ public class ThirdPersonController : MonoBehaviourPun
                 stage1Manager.CollectBattery(batteryPhotonView.ViewID);
             }
         }
+        else if (other.CompareTag("Jump"))
+        {
+            velocity.y = Mathf.Sqrt(5 * -2f * gravity);
+            animator.SetInteger("animation", 9); // 점프 모션
+            isJumping = true;
+            jumpAudio.Play();
+        }
     }
 
     // 캐릭터 이동 처리
