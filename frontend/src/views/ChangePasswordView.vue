@@ -2,34 +2,31 @@
 import Nav from "@/components/Nav.vue";
 import Footer from "@/components/Footer.vue";
 import {
-  emailCheck,
-  usernameCheck,
-  signUp,
-  emailAuth,
-  emailAuthCheck,
+  emailUserAuth,
+  emailChangePasswordCode,
+  emailChangePasswordCodeCheck,
+  changeEmailPassword,
 } from "@/api/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const email = ref("");
-const username = ref("");
 const emailConfirm = ref("");
 const emailAuthNum = ref("");
-const usernameConfirm = ref("");
 const password = ref("");
 const passwordConfirm = ref("");
 
 const emailCheckVal = ref(false);
-const emailAuthVal = ref(false);
-const usernameCheckVal = ref(false);
+const emailAuthVal = ref(false);  // 이메일 인증이 완료된 경우 true
 const passwordConfirmVal = ref(false);
 
-function signUpFun() {
-  if (!emailCheckVal.value || !usernameCheckVal.value) {
+
+function changeFun() {
+  if (!emailCheckVal.value) {
     Swal.fire({
       icon: "error",
-      title: "중복확인을 진행해주세요!",
+      title: "이메일 인증을 진행해주세요!",
     });
     return;
   }
@@ -50,16 +47,16 @@ function signUpFun() {
     return;
   }
 
-  signUp({
+  // 비밀번호 변경 로직을 여기에 추가합니다.
+  changeEmailPassword({
     email: email.value,
-    username: username.value,
     password: password.value,
   })
     .then((res) => {
       console.log(res.data);
       Swal.fire({
         icon: "success",
-        title: "회원가입 완료!",
+        title: "비밀번호 변경 완료!",
       });
       router.replace({ name: "login" });
     })
@@ -72,7 +69,7 @@ function emailAuthFun() {
   const useremail = email.value;
   const authNum = emailAuthNum.value;
 
-  emailAuthCheck(useremail, authNum)
+  emailChangePasswordCodeCheck(useremail, authNum)
     .then((res) => {
       console.log(res.data);
       emailAuthVal.value = true;
@@ -104,44 +101,33 @@ function emailCheckFun() {
     return;
   }
 
-  emailCheck(email.value)
+  emailUserAuth(email.value)
     .then((res) => {
       emailCheckVal.value = true;
-      emailConfirm.value = "사용 가능한 이메일입니다.";
-      console.log("사용 가능 이메일");
-      emailAuth(email.value)
+      emailConfirm.value = "인증 번호를 확인해주세요.";
+      console.log("가입한 유저");
+
+      // 이메일 인증 요청
+      emailChangePasswordCode(email.value)
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          // 이메일 인증에 실패한 경우
+          Swal.fire({
+            icon: "error",
+            text: "이메일 인증에 실패했습니다. 다시 시도해주세요.",
+          });
+          // 상태 초기화
+          emailCheckVal.value = false;
+          emailAuthVal.value = false;
+          emailConfirm.value = "";
         });
     })
     .catch((err) => {
       Swal.fire({
         icon: "error",
-        text: "이미 사용중인 이메일입니다.",
-      });
-    });
-}
-
-function usernameCheckFun() {
-  if (username.value === "") {
-    Swal.fire({
-      icon: "error",
-      text: "닉네임을 입력해주세요.",
-    });
-    return;
-  }
-  usernameCheck(username.value)
-    .then((res) => {
-      usernameCheckVal.value = true;
-      usernameConfirm.value = "사용 가능한 닉네임입니다.";
-    })
-    .catch((err) => {
-      Swal.fire({
-        icon: "error",
-        text: "이미 사용중인 닉네임입니다.",
+        text: "등록되지 않은 유저 입니다.",
       });
     });
 }
@@ -163,11 +149,6 @@ function emailInput() {
   emailAuthVal.value = false;
   emailConfirm.value = "";
 }
-
-function usernameInput() {
-  usernameCheckVal.value = false;
-  usernameConfirm.value = "";
-}
 </script>
 
 <template>
@@ -176,8 +157,9 @@ function usernameInput() {
 
     <div class="background box-md">
       <div class="signup-con box-col box-md">
-        <span class="big-text bit-t">회원가입</span>
+        <span class="big-text bit-t">비밀번호 변경</span>
         <div class="input-con box-col">
+          <!-- 이메일 입력 필드 -->
           <div class="email box-col">
             <div class="flex-align" style="justify-content: space-between">
               <label for="email" class="bit-t">이메일</label>
@@ -203,7 +185,9 @@ function usernameInput() {
               @input="emailInput"
             />
           </div>
-          <div class="username box-col">
+
+          <!-- 이메일 인증 완료 시 인증번호 입력 필드 표시 -->
+          <div class="username box-col" v-if="emailCheckVal">
             <div class="flex-align" style="justify-content: space-between">
               <label for="username" class="bit-t">인증번호</label>
             </div>
@@ -228,33 +212,10 @@ function usernameInput() {
               </div>
             </div>
           </div>
-          <div class="username box-col">
-            <div class="flex-align" style="justify-content: space-between">
-              <label for="username" class="bit-t">닉네임</label>
-              <div class="flex-align">
-                <div class="username-confirm bit-t">
-                  {{ usernameConfirm }}
-                </div>
-                <button
-                  class="check-btn bit-t"
-                  :class="{ check: usernameCheckVal }"
-                  @click="usernameCheckFun"
-                >
-                  중복확인
-                </button>
-              </div>
-            </div>
-            <input
-              id="username"
-              class="bit-t"
-              type="text"
-              placeholder="닉네임을 입력해주세요."
-              v-model="username"
-              @input="usernameInput"
-            />
-          </div>
-          <div class="password box-col">
-            <label for="password" class="bit-t">비밀번호</label>
+
+          <!-- 인증번호 인증 완료 시 비밀번호 입력 필드 표시 -->
+          <div class="password box-col" v-if="emailAuthVal">
+            <label for="password" class="bit-t">새로운 비밀번호</label>
             <input
               id="password"
               class="bit-t"
@@ -262,7 +223,7 @@ function usernameInput() {
               v-model="password"
             />
             <div class="flex-align" style="justify-content: space-between">
-              <label for="password-confirm" class="bit-t">비밀번호 확인</label>
+              <label for="password-confirm" class="bit-t">새로운 비밀번호 확인</label>
               <span
                 class="bit-t"
                 :class="{
@@ -279,7 +240,15 @@ function usernameInput() {
               v-model="passwordConfirm"
             />
           </div>
-          <button class="btn bit-t" @click="signUpFun">회원가입</button>
+
+          <!-- 비밀번호 입력 완료 시 비밀번호 변경 버튼 표시 -->
+          <button
+            class="btn bit-t"
+            v-if="passwordConfirmVal"
+            @click="changeFun"
+          >
+            비밀번호 변경
+          </button>
         </div>
       </div>
     </div>
@@ -295,9 +264,7 @@ function usernameInput() {
 
 .signup-con {
   width: 650px;
-  /* height: 700px; */
   align-items: center;
-  /* background-color: blue; */
 }
 
 .input-con {
@@ -305,7 +272,6 @@ function usernameInput() {
   height: 90%;
   margin-top: 10px;
   padding: 30px 70px;
-
   background-color: white;
   border-radius: 20px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -333,7 +299,6 @@ label {
 .btn {
   height: 50px;
   margin-top: 20px;
-
   border-radius: 10px;
   border-width: 5px;
   border-color: #211d54;
@@ -362,7 +327,6 @@ button {
 }
 
 .email-confirm,
-.username-confirm,
 .isAuth {
   color: rgb(48, 164, 48);
   margin-right: 20px;

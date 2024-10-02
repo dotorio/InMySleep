@@ -11,7 +11,7 @@
 .header-con {
   height: 1000px;
   width: 100%;
-  background-color: aqua;
+  background-color: #D4F1F9;
   position: relative;
   overflow: hidden; /* 이미지가 부모 요소를 벗어날 경우 숨김 처리 */
 }
