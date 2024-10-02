@@ -97,7 +97,7 @@ public class LoginManager : MonoBehaviour
                 UserData.instance.userId = response.data.userId;
                 UserData.instance.lastStage = response.data.lastStage;
 
-                StartCoroutine(GetSkinSettings(response.data.userId));
+                yield return StartCoroutine(GetSkinSettings(response.data.userId));
 
                 SceneManager.LoadScene("LobbyScene");
 
@@ -134,10 +134,6 @@ public class LoginManager : MonoBehaviour
         // 요청 결과 처리
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            // 로그인 실패 시 오류 메시지 표시
-            //errorMessageText.text = "로그인 실패: " + response.message;
-            ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
-
             // 에러 발생 시 처리
             Debug.LogError("Error: " + request.error);
             //errorMessageText.text = "서버 연결 오류: " + request.error;
@@ -158,13 +154,6 @@ public class LoginManager : MonoBehaviour
                 Debug.Log("rabbit: " + response.data.rabbit);
                 UserData.instance.bear = response.data.bear;
                 UserData.instance.rabbit = response.data.rabbit;
-
-                //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
-                //PlayerPrefs.SetInt("userId", response.data.userId);
-                //PlayerPrefs.SetString("username", response.data.username);
-                //PlayerPrefs.SetString("email", response.data.email);
-                //PlayerPrefs.SetInt("lastStage", response.data.lastStage);
-                //PlayerPrefs.Save();
             }
             else
             {
