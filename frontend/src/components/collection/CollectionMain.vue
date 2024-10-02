@@ -1,6 +1,15 @@
 <script setup>
+import { onBeforeMount } from "vue";
 import CollectionCharacter from "@/components/collection/CollectionCharacter.vue";
 import UserInfo from "@/components/collection/UserInfo.vue";
+import { useSkinStore } from "@/stores/skin";
+
+const sStore = useSkinStore();
+
+onBeforeMount(async () => {
+  sStore.userSkin["choice"] = "bear";
+});
+
 </script>
 
 <template>

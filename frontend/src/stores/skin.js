@@ -7,10 +7,10 @@ export const useSkinStore = defineStore(
     const userSkin = ref({
       nickname: "김종덕 만렙",
       choice: "bear",
-      bearColor: "0",
-      selectedBearColor: "0",
-      rabbitColor: "0",
-      selectedRabbitColor: "0",
+      bearMetadata: "0",
+      selectedBearMetadata: "0",
+      rabbitMetadata: "0",
+      selectedRabbitMetadata: "0",
     });
     const userBearSkin = ref([]);
     const userRabbitSkin = ref([]);

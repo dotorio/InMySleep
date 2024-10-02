@@ -10,16 +10,16 @@ const uStore = useUserStore();
 const sStore = useSkinStore();
 const nStore = useNftStore();
 
-function getNftSrc(character, color) {
+function getSkinSrc(character, metadata) {
   // return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
   let hash = "";
-  if (sStore.userBearSkin.length === 0 || sStore.userRabbitSkin === 0) {
+  if (sStore.userBearSkin.length === 0 || sStore.userRabbitSkin.length === 0) {
     return "";
   }
   if (character === "bear") {
-    hash = sStore.userBearSkin.filter((skin) => skin.attributes && skin.attributes.color == color)[0].imageUrl.split("ipfs://")[1];
+    hash = sStore.userBearSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl.split("ipfs://")[1];
   } else if (character === "rabbit") {
-    hash = sStore.userRabbitSkin.filter((skin) => skin.attributes && skin.attributes.color == color)[0].imageUrl.split("ipfs://")[1];
+    hash = sStore.userRabbitSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl.split("ipfs://")[1];
   }
   return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
 }
@@ -29,19 +29,19 @@ async function equipSkin() {
   let selectedColor = "";
   if (sStore.userSkin.choice === "bear") {
     choice = "bear";
-    selectedColor = sStore.userSkin.selectedBearColor;
+    selectedColor = sStore.userSkin.selectedBearMetadata;
   } else if (sStore.userSkin.choice === "rabbit") {
     choice = "rabbit";
-    selectedColor = sStore.userSkin.selectedRabbitColor;
+    selectedColor = sStore.userSkin.selectedRabbitMetadata;
   }
   try {
-    const response = await putEquipSkin(uStore.user.userId, choice, selectedColor);
-    console.log(response);
+    const response = await putEquipSkin(uStore.user.data.userId, choice, selectedColor);
+    console.log(JSON.stringify(response));
     if (response.status === 200) {
       if (choice === "bear") {
-        sStore.userSkin.bearColor = sStore.userSkin.selectedBearColor;
+        sStore.userSkin.bearMetadata = sStore.userSkin.selectedBearMetadata;
       } else if (choice === "rabbit") {
-        sStore.userSkin.rabbitColor = sStore.userSkin.selectedRabbitColor;
+        sStore.userSkin.rabbitMetadata = sStore.userSkin.selectedRabbitMetadata;
       }
       Swal.fire({
         icon: "success",
@@ -62,9 +62,9 @@ async function equipSkin() {
 async function mint() {
   let tokenURI = "";
   if (sStore.userSkin.choice === "bear") {
-    tokenURI = sStore.userBearSkin.filter((skin) => skin.attributes && skin.attributes.color == sStore.userSkin.selectedBearColor)[0].metadataUri;
+    tokenURI = sStore.userBearSkin.filter((skin) => skin.attributes && skin.id == sStore.userSkin.selectedBearMetadata)[0].metadataUri;
   } else if (sStore.userSkin.choice === "rabbit") {
-    tokenURI = sStore.userRabbitSkin.filter((skin) => skin.attributes && skin.attributes.color == sStore.userSkin.selectedRabbitColor)[0].metadataUri;
+    tokenURI = sStore.userRabbitSkin.filter((skin) => skin.attributes && skin.id == sStore.userSkin.selectedRabbitMetadata)[0].metadataUri;
   }
   try {
     const response = await postMint(uStore.user.data.userId, uStore.user.data.address, tokenURI);
@@ -87,9 +87,9 @@ async function mint() {
 
 function equipSkinCheck() {
   if (sStore.userSkin.choice === "bear") {
-    return sStore.userSkin.selectedBearColor !== sStore.userSkin.bearColor;
+    return sStore.userSkin.selectedBearMetadata !== sStore.userSkin.bearMetadata;
   } else if (sStore.userSkin.choice === "rabbit") {
-    return sStore.userSkin.selectedRabbitColor !== sStore.userSkin.rabbitColor;
+    return sStore.userSkin.selectedRabbitMetadata !== sStore.userSkin.rabbitMetadata;
   }
 }
 
@@ -98,9 +98,9 @@ function hasNFTCheck() {
     return
   }
   if (sStore.userSkin.choice === "bear") {
-    return nStore.userNft.some((nft) => nft.attributes.character === 'bear' && nft.attributes.color == sStore.userSkin.selectedBearColor)
+    return nStore.userNft.some((nft) => nft.attributes.character === 'bear' && nft.id == sStore.userSkin.selectedBearMetadata)
   } else if (sStore.userSkin.choice === "rabbit") {
-    return nStore.userNft.some((nft) => nft.attributes.character === 'rabbit' && nft.attributes.color == sStore.userSkin.selectedRabbitColor)
+    return nStore.userNft.some((nft) => nft.attributes.character === 'rabbit' && nft.id == sStore.userSkin.selectedRabbitMetadata)
   }
 }
 </script>
@@ -108,9 +108,10 @@ function hasNFTCheck() {
 <template>
   <div class="user-con box-col">
     <div class="nickname bit-t">{{ sStore.userSkin.nickname }}</div>
-    <img v-if="sStore.userSkin.choice === 'bear'" :src="getNftSrc('bear', sStore.userSkin.selectedBearColor)" alt="곰" />
-    <img v-else-if="sStore.userSkin.choice === 'rabbit'" :src="getNftSrc('rabbit', sStore.userSkin.selectedRabbitColor)"
-      alt="토끼" />
+    <img v-if="sStore.userSkin.choice === 'bear'" :src="getSkinSrc('bear', sStore.userSkin.selectedBearMetadata)"
+      alt="곰" />
+    <img v-else-if="sStore.userSkin.choice === 'rabbit'"
+      :src="getSkinSrc('rabbit', sStore.userSkin.selectedRabbitMetadata)" alt="토끼" />
     <div class="skin-feat">
       <div class="equip box-md">
         <button v-if="equipSkinCheck()" alt="equip" @click="equipSkin()">착용하기</button>

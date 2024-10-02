@@ -1,5 +1,10 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useSkinStore } from "./skin";
+import { useNftStore } from "./nft";
+// import { createPinia, setActivePinia } from 'pinia';
+
+// setActivePinia(createPinia());
 
 export const useUserStore = defineStore(
   "user",
@@ -9,10 +14,10 @@ export const useUserStore = defineStore(
     // const userInfo = ref({
     //   nickname: "김종덕 만렙",
     //   choice: "bear",
-    //   bearColor: "0",
-    //   selectedBearColor: "0",
-    //   rabbitColor: "0",
-    //   selectedRabbitColor: "0",
+    //   bearMetadata: "0",
+    //   selectedBearMetadata: "0",
+    //   rabbitMetadata: "0",
+    //   selectedRabbitMetadata: "0",
     // });
 
     // const userBearSkin = ref([]);
@@ -37,6 +42,14 @@ export const useUserStore = defineStore(
 
     function userLogout() {
       user.value = "";
+
+      const sStore = useSkinStore();
+      const nStore = useNftStore();
+
+      sStore.userSkin = {};
+      sStore.userBearSkin = [];
+      sStore.userRabbitSkin = [];
+      nStore.userNft = "";
     }
 
     return {
