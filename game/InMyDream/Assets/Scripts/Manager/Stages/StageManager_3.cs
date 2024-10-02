@@ -1,24 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using EpicToonFX;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class StageManager_3 : MonoBehaviourPun, StageManager
+public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
 {
     // 스폰 위치
     public GameObject Master;
     public GameObject Client;
+    public GameObject gameoverScreen;
     public List<Transform> spawnPoints = new List<Transform>();
 
     // 동적인 스폰 포인트 배정을 위한 변수
     public InfiniteTileManager tileManager;
     public GameObject robotVaccum;
     public float minDistance = 1f;
+    bool isGameover = false;    
 
     void Start()
     {
         string characterName = (string)PhotonNetwork.LocalPlayer.CustomProperties["character"];
+        Debug.Log((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDowned"]);
+        
         if (string.IsNullOrEmpty(characterName))
         {
             Debug.LogError("캐릭터가 선택되지 않았습니다.");
@@ -71,7 +76,10 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
 
     void Update()
     {
-        CheckGameOver();
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            CheckGameOver();
+        }
     }
 
     // 모든 유저가 쓰러져 있는 상태면 게임 오버되고 3스테이지 다시 시작
@@ -88,9 +96,11 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
             }
         }
         
-        if(allDowned)
+        if(allDowned && !isGameover)
         {
-            ShowGameOverMessage();
+            isGameover = true;
+            //ShowGameOverMessage();
+            Debug.Log("재시작!");
             ResetScene();
         }
     }
@@ -98,6 +108,17 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
     private void ShowGameOverMessage()
     {
         // 스테이지 실패 UI 보여줄 필요 있음
+        gameoverScreen.SetActive(true);
+
+        //foreach (var player in PhotonNetwork.CurrentRoom.Players)
+        //{
+        //    if (!player.Value.CustomProperties.ContainsKey("isDowned") || (bool)player.Value.CustomProperties["isDowned"])
+        //    {
+        //        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+        //        playerProps["isDowned"] = false;
+        //        player.Value.SetCustomProperties(playerProps);
+        //    }
+        //}
 
         // 1초 대기
         StartCoroutine(WaitForSeconds(1f));
@@ -114,7 +135,7 @@ public class StageManager_3 : MonoBehaviourPun, StageManager
     private void ResetScene()
     {
         // 3 스테이지 씬 이름에 따라 변경 필요
-        PhotonNetwork.LoadLevel("3s_Scene");
+        PhotonNetwork.LoadLevel("GameOver");
     }
 
     // 동적으로 스폰 포인트 추가
