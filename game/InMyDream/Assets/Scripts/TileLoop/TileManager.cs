@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class InfiniteTileManager : MonoBehaviour
+public class InfiniteTileManager : MonoBehaviourPunCallbacks
 {
     public StageManager_3 stageManager;
     //public GameObject[] tilePrefabs; // 타일 프리팹 배열 (7개로 설정)
@@ -85,14 +85,9 @@ public class InfiniteTileManager : MonoBehaviour
         // 특정 인덱스의 타일 프리팹 선택
         GameObject tile = PhotonNetwork.Instantiate("Tiles/Tile" + (prefabIndex+1), tilePosition, Quaternion.identity);
 
-        //GameObject spawnPoint = tile.Find("SpawnPoint");
-        Transform spawnPoint = tile.transform.Find("SpawnPoint");
-
-        if (spawnPoint!=null)
-        {
-            stageManager.AddSpawnPoint(spawnPoint);
-        }
-        
+        photonView.RPC("SendSpawnPoint", 
+            RpcTarget.AllBuffered, 
+            tile.GetComponent<PhotonView>().ViewID);
 
         lastSpawnPosition = tile.transform.position; // 마지막 생성된 타일 위치 업데이트
         activeTiles.Enqueue(tile); // 큐에 추가
@@ -113,5 +108,24 @@ public class InfiniteTileManager : MonoBehaviour
     public void addPlayer(GameObject player)
     {
         players.Add(player.transform);
+    }
+
+    [PunRPC]
+    public void SendSpawnPoint(int tileId)
+    {
+        PhotonView tilePhoton = PhotonView.Find(tileId);
+
+        if (tilePhoton != null)
+        {
+            GameObject tile = tilePhoton.gameObject;
+
+            //GameObject spawnPoint = tile.Find("SpawnPoint");
+            Transform spawnPoint = tile.transform.Find("SpawnPoint");
+
+            if (spawnPoint != null)
+            {
+                stageManager.AddSpawnPoint(spawnPoint);
+            }
+        }
     }
 }

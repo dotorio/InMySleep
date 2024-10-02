@@ -194,7 +194,11 @@ public class DogMovement : MonoBehaviourPunCallbacks
     /// </summary>
     public void StartBarking()
     {
-        BarkSound.Play();
+        if (BarkSound != null)
+        {
+            BarkSound.Play();
+        }
+
         if (isBarking) return;
 
         isBarking = true;
