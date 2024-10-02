@@ -23,6 +23,7 @@ public class ThirdPersonController : MonoBehaviourPun
     private bool isDowned = false;
     private StageManager stageManager;
     public float respawnDelay = 3f; // 리스폰 시간 설정
+    public GameObject respawnPopup;
     public CanvasGroup screenDarkness; // 화면 어둡게 하기위한 canvas
 
     public Animator animator;
@@ -370,6 +371,7 @@ public class ThirdPersonController : MonoBehaviourPun
         {
             float fadeDuration = 1f;
             float elapsed = 0f;
+
             while (elapsed < fadeDuration)
             {
                 screenDarkness.alpha = Mathf.Lerp(0, 1, elapsed / fadeDuration);
@@ -377,7 +379,7 @@ public class ThirdPersonController : MonoBehaviourPun
                 yield return null;
             }
         }
-
+        respawnPopup.SetActive(true);
         yield return new WaitForSeconds(respawnDelay);
 
         Transform spawnPoint = stageManager.getSpawnPoint();
@@ -395,7 +397,7 @@ public class ThirdPersonController : MonoBehaviourPun
                 yield return null;
             }
         }
-
+        respawnPopup.SetActive(false);
         isDowned = false;
         ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
         playerProps["isDowned"] = false;
