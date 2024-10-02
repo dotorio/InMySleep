@@ -38,9 +38,9 @@ function changeSkin(selectedSkin) {
     return;
   }
   if (sStore.userSkin.choice === "bear") {
-    sStore.userSkin.selectedBearColor = selectedSkin.attributes.color;
+    sStore.userSkin.selectedBearMetadata = selectedSkin.id;
   } else if (sStore.userSkin.choice === "rabbit") {
-    sStore.userSkin.selectedRabbitColor = selectedSkin.attributes.color;
+    sStore.userSkin.selectedRabbitMetadata = selectedSkin.id;
   }
 }
 </script>

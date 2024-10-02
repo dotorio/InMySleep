@@ -72,10 +72,10 @@ const nftData = ref([
 onBeforeMount(async () => {
   try {
     const response = await getEquippedSkin(uStore.user.data.userId);
-    sStore.userSkin.selectedBearColor = sStore.userSkin.bearColor = response.data[0].attributes.color;
-    sStore.userSkin.selectedRabbitColor = sStore.userSkin.rabbitColor = response.data[1].attributes.color;
-    // equippedBear.value = response.data[0].attributes.color;
-    // equippedRabbit.value = response.data[1].attributes.color;
+    sStore.userSkin.selectedBearMetadata = sStore.userSkin.bearMetadata = response.data[0].id;
+    sStore.userSkin.selectedRabbitMetadata = sStore.userSkin.rabbitMetadata = response.data[1].id;
+    // equippedBear.value = response.data[0].id;
+    // equippedRabbit.value = response.data[1].id;
 
     // if (sStore.userSkin.choice === "bear") {
     //   bear.value.nft[equippedBear.value] = response.data[0];
@@ -102,7 +102,6 @@ onBeforeMount(async () => {
   }
 
   try {
-    console.log(uStore.user.data.address);
     const response = await myNFTs(uStore.user.data.address, uStore.user.data.metamaskToken);
     nStore.userNft = response.data;
     // if (nftData.value.length > 1) {
@@ -161,11 +160,15 @@ function prepareNftData(responseData) {
 }
 
 function filterNftData(nftData) {
+  let bearIndex = 0
+  let rabbitIndex = 0
   nftData.value.forEach((nft) => {
     if (nft.attributes.character.toLowerCase() === "bear") {
-      bear.value.nft[nft.attributes.color] = nft;
+      bear.value.nft[bearIndex] = nft;
+      bearIndex++;
     } else {
-      rabbit.value.nft[nft.attributes.color] = nft;
+      rabbit.value.nft[rabbitIndex] = nft;
+      rabbitIndex++;
     }
   });
 }
