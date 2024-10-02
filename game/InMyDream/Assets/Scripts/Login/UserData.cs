@@ -13,6 +13,8 @@ public class UserData : MonoBehaviour
     public int lastStage;
     public int stage;
     public int roomId;
+    public string bear;
+    public string rabbit;
 
     void Awake()
     {

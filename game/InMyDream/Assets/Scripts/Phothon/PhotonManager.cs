@@ -88,7 +88,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     {
         ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
         playerProps["character"] = "Player1";
-        playerProps["material"] = "00";
+        playerProps["material"] = UserData.instance.bear!=null ? 
+            UserData.instance.bear : "00";
         playerProps["userId"] = userId;
         playerProps["isDowned"] = false;
         playerProps["roomName"] = userName;
