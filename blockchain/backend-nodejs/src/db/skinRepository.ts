@@ -44,7 +44,7 @@ export const putEquipSkin = async (userId: string, character: string, color: str
         const conn = await connectDB();
         const query = `
         UPDATE user_skin
-        SET ${character}_skin = ?
+        SET ${character}_skin_metadata = ?
         WHERE user_id = ?;`;
         const [rows]: [any[], FieldPacket[]] = await conn.query(query, [color, userId]);
         return rows;
