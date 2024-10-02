@@ -25,7 +25,10 @@ EditorBuildSettings:
     guid: 1bd7fae34dadbf94496a8748599dffd0
   - enabled: 1
     path: Assets/Scenes/3s_Scene.unity
-    guid: dcf54394bf587ec4fba5607e3bee5f15
+    guid: b3dfde09d16b93247934e56ee973ff98
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: 861a1ddcc9edcab42bf35a37eba1730a
   - enabled: 1
     path: Assets/Scenes/CutScene4.unity
     guid: 00c63f6617d4fc74b8e11a31b8e2fa10
