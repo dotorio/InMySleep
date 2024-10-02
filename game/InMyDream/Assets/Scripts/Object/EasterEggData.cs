@@ -7,23 +7,6 @@ using UnityEngine.Networking;
 public class EasterEggData : MonoBehaviour
 {
     private string character;
-    private int skin;
-
-    private void Start()
-    {
-        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
-
-        if (easterData <= 5)
-        {
-            character = "Bear";
-            skin = easterData;
-        }
-        else
-        {
-            character = "Bunny";
-            skin = easterData - 5;
-        }
-    }
 
     private void OnTriggerEnter(Collider other)
     {

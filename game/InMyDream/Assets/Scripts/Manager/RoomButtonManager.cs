@@ -21,11 +21,15 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
 
     public void Select1()
     {
-        photonManager.SelectCharacter("Player1", "01");
+        string skin = UserData.instance.bear != null ? 
+            UserData.instance.bear : "00";
+        photonManager.SelectCharacter("Player1", skin);
     }
     public void Select2()
     {
-        photonManager.SelectCharacter("Player2", "04");
+        string skin = UserData.instance.rabbit != null ?
+            UserData.instance.rabbit : "00";
+        photonManager.SelectCharacter("Player2", skin);
     }
 
     public void GetFriendList ()
@@ -111,12 +115,10 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
 
             // 이스터 에그 정보 생성
             int randomStage = Random.Range(1, 5);
-            int randomData = Random.Range(1, 11);
 
             // Room Custom Properties에 이스터 에그 정보 저장
             ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
             customProperties["EasterEggStage"] = randomStage;
-            customProperties["EasterEggData"] = randomData;
             PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
             // 씬 로드
