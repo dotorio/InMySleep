@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Photon.Pun;
 using UnityEngine;
 
-public class CatController : MonoBehaviour
+public class CatController : MonoBehaviourPunCallbacks
 {
     private Animator animator;  // 애니메이터
-    public GameObject bomb; // 캐릭터 팔에 연결된 공
-    public GameObject bigBomb; // 캐릭터 팔에 연결된 공
-    public GameObject ball; // 캐릭터 팔에 연결된 공
-    public GameObject redBomb; // 캐릭터 팔에 연결된 공
+    //public GameObject bomb; // 캐릭터 팔에 연결된 공
+    //public GameObject bigBomb; // 캐릭터 팔에 연결된 공
+    //public GameObject ball; // 캐릭터 팔에 연결된 공
+    //public GameObject redBomb; // 캐릭터 팔에 연결된 공
     public Transform rightHand;  // 캐릭터의 손 위치
     public Transform leftHand;  // 캐릭터의 손 위치
     public Transform jumphand;  // 캐릭터의 손 위치
-    public GameObject player1;  // 플레이어 참조
-    public GameObject player2;  // 플레이어 참조
+    public List<Transform> players;  // 플레이어 참조
+
+    // 쓰러질 때 생성할 목적지
+    public GameObject Goal;
+
     private float cnt = 0f;
     public int phase;
     private int randomNumber; // 랜덤 숫자
@@ -34,7 +38,7 @@ public class CatController : MonoBehaviour
 
     private IEnumerator PlayRandomAnimation()
     {
-        while (true) // 무한 루프
+        while (!isDying && PhotonNetwork.LocalPlayer.IsMasterClient) // 살아 있는 한 무한 루프
         {
             if (phase == 1)
             {
@@ -43,25 +47,25 @@ public class CatController : MonoBehaviour
                 {
                     case 1:
                     case 2:
-                        animator.Play("Victory");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 3:
                     case 4:
-                        animator.Play("rightBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
                     case 5:
-                        animator.Play("rightBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBall");
                         break;
                     case 6:
                     case 7:
-                        animator.Play("leftBomb"); 
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
                     case 8:
-                        animator.Play("leftBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBall");
                         break;
                     case 9:
                     case 10:
-                        animator.Play("BigBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
                         break;
                 }
             }
@@ -72,23 +76,19 @@ public class CatController : MonoBehaviour
                 {
                     case 11:
                     case 12:
-                        animator.Play("Victory");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 13:
                     case 14:
-                        animator.Play("rightBomb");
-                        break;
                     case 15:
                     case 16:
-                        animator.Play("rightBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
                     case 17:
                     case 18:
-                        animator.Play("leftBomb");
-                        break;
                     case 19:
                     case 20:
-                        animator.Play("leftBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
                 }
             }
@@ -99,25 +99,25 @@ public class CatController : MonoBehaviour
                 {
                     case 21:
                     case 22:
-                        animator.Play("Victory");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 23:
                     case 24:
-                        animator.Play("rightBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
                     case 25:
-                        animator.Play("rightRed");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
                         break;
                     case 26:
                     case 27:
-                        animator.Play("leftBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
                     case 28:
-                        animator.Play("leftRed");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftRed");
                         break;
                     case 29:
                     case 30:
-                        animator.Play("BigBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
                         break;
                 }
             }
@@ -125,6 +125,12 @@ public class CatController : MonoBehaviour
             // 현재 재생 중인 애니메이션이 끝날 때까지 대기
             yield return new WaitUntil(() => IsAnimationFinished(randomNumber));
         }
+    }
+
+    [PunRPC]
+    public void AnimationPlay(string motionName)
+    {
+        animator.Play(motionName);
     }
 
     private void SetAnimationSpeed()
@@ -148,35 +154,41 @@ public class CatController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag("Shelf") && !isDying)
+        if (!isDying)
         {
-            animator.Play("Die1");
-            isDying = true;
-
-            BoxCollider shelfCollider = other.GetComponent<BoxCollider>();
-            if (shelfCollider != null)
+            if (other.CompareTag("Shelf"))
             {
-                shelfCollider.center = new Vector3(0, 0, 0);
+                animator.Play("Die1");
+                isDying = true;
+
+                Goal.SetActive(true);
+
+                //BoxCollider shelfCollider = other.GetComponent<BoxCollider>();
+                //if (shelfCollider != null)
+                //{
+                //    shelfCollider.center = new Vector3(0, 0, 0);
+                //}
+                StartCoroutine(WaitForDieAnimationToEnd());
             }
-            StartCoroutine(WaitForDieAnimationToEnd());
-        }
 
-        if (other.CompareTag("Stone") && !isDying) // isDying이 false일 때만 Damage 애니메이션 재생
-        {
-            damage++;
-            if (damage == 3)
+            else if (other.CompareTag("Stone")) 
             {
-                animator.Play("Die2");
-                //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
-                isDying = false; // 애니메이션 실행 상태 초기화
-            }
-            else
-            {
-                animator.Play("Damage");
+                damage++;
+                if (damage == 3)
+                {
+                    animator.Play("Die2");
+                    //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
+                    isDying = true; // 애니메이션 실행 상태 초기화
 
-                isDying = true; // Damage 애니메이션 실행 상태로 변경
-                StartCoroutine(WaitForDamageAnimationToEnd());
+                    Goal.SetActive(true);
+                }
+                else
+                {
+                    animator.Play("Damage");
+
+                    isDying = true; // Damage 애니메이션 실행 상태로 변경
+                    StartCoroutine(WaitForDamageAnimationToEnd());
+                }
             }
         }
     }
@@ -261,195 +273,205 @@ public class CatController : MonoBehaviour
     void BombThrow(string dir)
     {
         Debug.Log(dir);
-        if (dir == "left")
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            // 발사체 생성
-            GameObject projectile = Instantiate(bomb, leftHand.position, leftHand.rotation);
-            BombController bombController = projectile.GetComponent<BombController>();
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
+            if (dir == "left")
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/Bomb", leftHand.position, leftHand.rotation);
+                BombController bombController = projectile.GetComponent<BombController>();
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+
+                // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+                bombController.StartDestroyCountdown(4f);
             }
             else
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/Bomb", rightHand.position, rightHand.rotation);
+                BombController bombController = projectile.GetComponent<BombController>();
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+
+                // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+                bombController.StartDestroyCountdown(4f);
             }
-
-            cnt++;
-
-            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(4f);
         }
-        else
-        {
-            // 발사체 생성
-            GameObject projectile = Instantiate(bomb, rightHand.position, rightHand.rotation);
-            BombController bombController = projectile.GetComponent<BombController>();
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
-            {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection;
-            }
-            else
-            {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection;
-            }
-
-            cnt++;
-
-            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(4f);
-        }
-
-        
     }
 
     void RedThrow(string dir)
     {
-        float randomValue;
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            float randomValue;
 
-        // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
-        if (Random.value < 0.5f)
-        {
-            // 1.0f ~ 2.0f 사이의 랜덤 값
-            randomValue = Random.Range(0.6f, 0.8f);
-        }
-        else
-        {
-            // 3.0f ~ 4.0f 사이의 랜덤 값
-            randomValue = Random.Range(1.2f, 1.4f);
-        }
-        if (dir == "left")
-        {
-            // 발사체 생성
-            GameObject projectile = Instantiate(redBomb, leftHand.position, leftHand.rotation);
-            BombController bombController = projectile.GetComponent<BombController>();
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
+            // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
+            if (Random.value < 0.5f)
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * randomValue;
+                // 1.0f ~ 2.0f 사이의 랜덤 값
+                randomValue = Random.Range(0.6f, 0.8f);
             }
             else
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * randomValue;
+                // 3.0f ~ 4.0f 사이의 랜덤 값
+                randomValue = Random.Range(1.2f, 1.4f);
             }
-
-            cnt++;
-
-            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(10f);
-        }
-        else
-        {
-            // 발사체 생성
-            GameObject projectile = Instantiate(redBomb, rightHand.position, rightHand.rotation);
-            BombController bombController = projectile.GetComponent<BombController>();
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
+            if (dir == "left")
             {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * randomValue;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/RedBomb", leftHand.position, leftHand.rotation);
+                BombController bombController = projectile.GetComponent<BombController>();
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+
+                // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+                bombController.StartDestroyCountdown(10f);
             }
             else
             {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * randomValue;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/RedBomb", rightHand.position, rightHand.rotation);
+                BombController bombController = projectile.GetComponent<BombController>();
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+
+                // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
+                bombController.StartDestroyCountdown(10f);
             }
-
-            cnt++;
-
-            // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-            bombController.StartDestroyCountdown(10f);
         }
     }
 
     void BallThrow(string dir)
     {
         Debug.Log(dir);
-        if (dir == "left")
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            // 발사체 생성
-            GameObject projectile = Instantiate(ball, leftHand.position, leftHand.rotation);
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
+            if (dir == "left")
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 1.2f;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/Ball", leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+
+                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
             }
             else
             {
-                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 1.2f;
+                // 발사체 생성
+                GameObject projectile = PhotonNetwork.Instantiate("Boss/Ball", rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[1].position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[0].position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+
+                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
             }
-
-            cnt++;
-
-            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
-        }
-        else
-        {
-            // 발사체 생성
-            GameObject projectile = Instantiate(ball, rightHand.position, rightHand.rotation);
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            // 발사 방향 계산
-            if (cnt % 2 == 0)
-            {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
-                rb.velocity = launchDirection * 1.2f;
-            }
-            else
-            {
-                Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
-                rb.velocity = launchDirection * 1.2f;
-            }
-
-            cnt++;
-
-            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
         }
     }
 
     void BigThrow()
     {
-        // 발사체 생성
-        GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
-        BombController bombController = projectile.GetComponent<BombController>();
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        // 발사 방향 계산
-        if (cnt % 2 == 0)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player2.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
-        else
-        {
-            Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player1.transform.position, 20f);
-            rb.velocity = launchDirection;
-        }
+            // 발사체 생성
+            GameObject projectile = PhotonNetwork.Instantiate("Boss/BigBomb", jumphand.position, jumphand.rotation);
+            BombController bombController = projectile.GetComponent<BombController>();
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
-        cnt++;
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, players[1].position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, players[0].position, 20f);
+                rb.velocity = launchDirection;
+            }
 
-        bombController.StartDestroyCountdown(4f);
+            cnt++;
+
+            bombController.StartDestroyCountdown(4f);
+        }
     }
 
     private IEnumerator FadeOutAndDestroy(GameObject projectile, float delay, float fadeDuration)
@@ -472,10 +494,6 @@ public class CatController : MonoBehaviour
         // 완전히 사라진 후 삭제
         Destroy(projectile);
     }
-
-
-
-
 
     Vector3 CalculateLaunchDirection(Vector3 player, Vector3 target, float initialAngle)
     {
@@ -510,5 +528,4 @@ public class CatController : MonoBehaviour
             return finalVelocity;
         }
     }
-
 }

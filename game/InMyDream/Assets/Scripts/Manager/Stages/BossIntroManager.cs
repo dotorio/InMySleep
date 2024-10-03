@@ -10,8 +10,13 @@ public class BossIntroManager : MonoBehaviour
 
     void Start()
     {
-        // 오브젝트 활성화를 위한 코루틴 실행
-        StartCoroutine(ActivateObjectAfterDelayRoutine());
+        int stage = UserData.instance.stage;
+
+        if (stage == 4)
+        {
+            // 오브젝트 활성화를 위한 코루틴 실행
+            StartCoroutine(ActivateObjectAfterDelayRoutine());
+        }
     }
 
     IEnumerator ActivateObjectAfterDelayRoutine()
