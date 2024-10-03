@@ -65,6 +65,13 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
                 controller.SetStageManager(this);
             }
 
+            // 카메라 설정
+            CameraSwitcher camera = instantiatedCharacter.GetComponent<CameraSwitcher>();
+            if (camera != null)
+            {
+                camera.SwitchToFollowCamera();
+            }
+
             // 스킨 설정
             Player localPlayer = PhotonNetwork.LocalPlayer;
 

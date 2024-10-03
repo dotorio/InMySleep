@@ -101,6 +101,13 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
                 controller.SetStageManager(this);
             }
 
+            // 카메라 설정
+            CameraSwitcher camera = instantiatedCharacter.GetComponent<CameraSwitcher>();
+            if (camera != null)
+            {
+                camera.SwitchToFollowCamera();
+            }
+
             photonView.RPC("AddPlayer2Boss",
                 RpcTarget.AllBuffered,
                 instantiatedCharacter.GetComponent<PhotonView>().ViewID);
