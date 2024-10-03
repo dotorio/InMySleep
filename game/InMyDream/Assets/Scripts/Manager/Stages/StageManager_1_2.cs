@@ -237,7 +237,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public void CollectBattery(int batteryViewId)
     {
         battery++;
-        photonView.RPC("SyncBattery", RpcTarget.All, battery, batteryViewId);
+        photonView.RPC("SyncBattery", RpcTarget.AllBuffered, battery, batteryViewId);
         
     }
 

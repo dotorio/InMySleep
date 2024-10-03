@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CatController : MonoBehaviourPunCallbacks
 {
     private Animator animator;  // 애니메이터
-    //public GameObject bomb; // 캐릭터 팔에 연결된 공
-    //public GameObject bigBomb; // 캐릭터 팔에 연결된 공
-    //public GameObject ball; // 캐릭터 팔에 연결된 공
-    //public GameObject redBomb; // 캐릭터 팔에 연결된 공
     public Transform rightHand;  // 캐릭터의 손 위치
     public Transform leftHand;  // 캐릭터의 손 위치
     public Transform jumphand;  // 캐릭터의 손 위치
     public List<Transform> players;  // 플레이어 참조
+
+    // 컷신용
+    public GameObject bomb; // 캐릭터 팔에 연결된 공
+    public GameObject bigBomb; // 캐릭터 팔에 연결된 공
+    public GameObject ball; // 캐릭터 팔에 연결된 공
+    public GameObject redBomb; // 캐릭터 팔에 연결된 공
+    public GameObject player1;  // 플레이어 참조
+    public GameObject player2;  // 플레이어 참조
 
     // 쓰러질 때 생성할 목적지
     public GameObject Goal;
@@ -273,7 +278,54 @@ public class CatController : MonoBehaviourPunCallbacks
     void BombThrow(string dir)
     {
         Debug.Log(dir);
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(bomb, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(bomb, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+            }
+        }
+        
+        // 게임 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (dir == "left")
             {
@@ -328,7 +380,66 @@ public class CatController : MonoBehaviourPunCallbacks
 
     void RedThrow(string dir)
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            float randomValue;
+
+            // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
+            if (Random.value < 0.5f)
+            {
+                // 1.0f ~ 2.0f 사이의 랜덤 값
+                randomValue = Random.Range(0.6f, 0.8f);
+            }
+            else
+            {
+                // 3.0f ~ 4.0f 사이의 랜덤 값
+                randomValue = Random.Range(1.2f, 1.4f);
+            }
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(redBomb, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(redBomb, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+            }
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             float randomValue;
 
@@ -397,7 +508,55 @@ public class CatController : MonoBehaviourPunCallbacks
     void BallThrow(string dir)
     {
         Debug.Log(dir);
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(ball, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(ball, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+            }
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (dir == "left")
             {
@@ -449,7 +608,30 @@ public class CatController : MonoBehaviourPunCallbacks
 
     void BigThrow()
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             // 발사체 생성
             GameObject projectile = PhotonNetwork.Instantiate("Boss/BigBomb", jumphand.position, jumphand.rotation);
