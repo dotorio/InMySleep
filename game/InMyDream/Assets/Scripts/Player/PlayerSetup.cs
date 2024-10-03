@@ -16,6 +16,7 @@ public class PlayerSetup : MonoBehaviourPun
     public float pushForce = 5f;
     public GameObject breakEffectPrefab;
     public GameObject batteryPrefab;
+    public GameObject star;
     public Animator animator;
     private string cleanName;
     private float holdTime = 2f;
@@ -194,7 +195,17 @@ public class PlayerSetup : MonoBehaviourPun
             // RPC를 통해 파괴와 이펙트 생성 동기화
             photonView.RPC("DestroyObjectWithEffectRPC", RpcTarget.AllBuffered, obj.GetComponent<PhotonView>().ViewID);
             PhotonNetwork.Instantiate("BreakEffect", obj.transform.position, Quaternion.identity);
-            PhotonNetwork.Instantiate("Battery", obj.transform.position, Quaternion.identity);
+            if (UserData.instance.stage == 1)
+            {
+                PhotonNetwork.Instantiate("Battery", obj.transform.position, Quaternion.identity);
+            } else if (UserData.instance.stage == 3)
+            {
+                StageManager_3 stageManager = FindObjectOfType<StageManager_3>();
+                if (stageManager.isKey)
+                {
+                    PhotonNetwork.Instantiate("Star", obj.transform.position, Quaternion.identity);
+                }
+            }
 
         }
     }
