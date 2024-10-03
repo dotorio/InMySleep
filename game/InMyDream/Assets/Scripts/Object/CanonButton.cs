@@ -1,4 +1,4 @@
-using GLTF.Schema;
+//using GLTF.Schema;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
