@@ -1,4 +1,5 @@
-import { connectDB } from './dbConnection';
+// import { connectDB } from './dbConnection';
+import pool from './dbConnection';
 import { FieldPacket } from 'mysql2';
 
 // export const tmpLogin = async (userId: string, password: string): Promise<any> => {
@@ -18,8 +19,7 @@ import { FieldPacket } from 'mysql2';
 
 export const saveWalletToDB = async (address: string, username: string): Promise<void> => {
     try {
-        const conn = await connectDB();
-        const [rows] = await conn.query('UPDATE user SET wallet_address = ? where username = ?', [address, username]);
+        const [rows] = await pool.query('UPDATE user SET wallet_address = ? where username = ?', [address, username]);
         console.log('Saved wallet to DB:', rows);
     } catch (error) {
         console.error('Error saving wallet to DB:', error);
