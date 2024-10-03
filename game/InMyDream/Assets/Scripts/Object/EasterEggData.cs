@@ -3,18 +3,93 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using TMPro;
+using static UnityEngine.Rendering.DebugUI;
 
 public class EasterEggData : MonoBehaviour
 {
     private string character;
+    private int skin;
+    private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
+    private bool acquireChk = false;
+    [SerializeField] private RectTransform easterEggPanel;
+    [SerializeField] private GameObject easterEgg;
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private Image skinImage;
+    float canvasWidth;
+    Vector2 hiddenPosition;
+    Vector2 visiblePosition;
+
+    [System.Serializable]
+    public class ServerResponse
+    {
+        public bool success;    // 로그인 성공 여부
+        public EasterEggInfo data;    // 유저 정보가 포함된 "data" 필드
+        public string message;   // 서버에서 반환된 메시지
+    }
+
+    [System.Serializable]
+    public class Attributes
+    {
+        public int color;
+        public string character;
+    }
+
+    [System.Serializable]
+    public class EasterEggInfo
+    {
+        public string skinImgUrl;
+        public string description;
+        public Attributes attributes;
+        public bool duplicated;
+    }
+
+    [System.Serializable]
+    public class UserData
+    {
+        public int userId;
+
+        public UserData(int userId)
+        {
+            this.userId = userId;
+        }
+    }
+
+    private void Start()
+    {
+        canvasWidth = easterEggPanel.parent.GetComponent<RectTransform>().rect.width;
+
+        hiddenPosition = new Vector2(500, easterEggPanel.anchoredPosition.y + 30);
+        visiblePosition = new Vector2(100, easterEggPanel.anchoredPosition.y + 30);
+        easterEggPanel.anchoredPosition = hiddenPosition;
+        Debug.Log("canvasWidth" + canvasWidth);
+        Debug.Log("hiddenPosition" + hiddenPosition);
+        /*        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
+
+                if (easterData <= 5)
+                {
+                    character = "Bear";
+                    skin = easterData;
+                }
+                else
+                {
+                    character = "Bunny";
+                    skin = easterData - 5;
+                }*/
+    }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (acquireChk)
+        {
+            return;
+        }
+
         if (other.CompareTag("Player"))
         {
-            //StartCoroutine(AddEasterEgg());
+            StartCoroutine(AddEasterEgg());
             Debug.Log("이스터 에그 획득 성공");
-            Destroy(gameObject);
         }
     }
 
@@ -22,25 +97,23 @@ public class EasterEggData : MonoBehaviour
     IEnumerator AddEasterEgg()
     {
         // 로그인 정보를 JSON 형식으로 준비
-        LoginData loginData = new LoginData("a", "a");
-        string jsonData = JsonUtility.ToJson(loginData);
+        /*int userId = UserData.instance.userId;*/
+        int userId = 45;
+        string jsonData = $"{{\"userId\":{userId}}}";
 
         // UnityWebRequest로 HTTP POST 요청을 준비
-        UnityWebRequest request = new UnityWebRequest("a", "POST");
+        UnityWebRequest request = new UnityWebRequest(addEasterUrl, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
         // 서버로부터 응답을 받을 때까지 대기
-        yield return request.SendWebRequest();
 
+        yield return request.SendWebRequest();
         // 요청 결과 처리
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            // 로그인 실패 시 오류 메시지 표시
-            //errorMessageText.text = "로그인 실패: " + response.message;
-            //ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
 
             // 에러 발생 시 처리
             Debug.LogError("Error: " + request.error);
@@ -56,35 +129,84 @@ public class EasterEggData : MonoBehaviour
 
             if (response.success)
             {
+                acquireChk = true;
+                GetComponent<Renderer>().enabled = false;
+                Debug.Log("이스터에그 획득 성공");
+                Debug.Log("skinImgUrl: " + response.data.skinImgUrl);
+                Debug.Log("description: " + response.data.description);
+                Debug.Log("attributes: " + response.data.attributes.character);
+                Debug.Log("attributes: " + response.data.attributes.color);
+                Debug.Log("duplicated: " + response.data.duplicated);
+                EasterEggInfo easterEggInfo = new EasterEggInfo();
+                easterEggInfo.skinImgUrl = response.data.skinImgUrl;
+                easterEggInfo.description = response.data.description;
+                Attributes attributes = new Attributes();
+                attributes.character = response.data.attributes.character;
+                attributes.color = response.data.attributes.color;
+                easterEggInfo.attributes = attributes;
+                easterEggInfo.duplicated = response.data.duplicated;
 
-                Debug.Log("로그인 성공");
-                Debug.Log("username: " + response.data.username);
-                Debug.Log("userId: " + response.data.userId);
-                Debug.Log("email: " + response.data.email);
-                Debug.Log("lastStage: " + response.data.lastStage);
-                UserData.instance.email = response.data.email;
-                UserData.instance.userName = response.data.username;
-                UserData.instance.userId = response.data.userId;
-                UserData.instance.lastStage = response.data.lastStage;
+                descriptionText.text = response.data.description;
+                StartCoroutine(LoadImageFromUrl(easterEggInfo.skinImgUrl));
 
-                //SceneManager.LoadScene("LobbyScene");
+                easterEgg.SetActive(true);
 
-                //// 로그인 성공 시 사용자 정보 저장 등 처리 (PlayerPrefs 사용)
-                //PlayerPrefs.SetInt("userId", response.data.userId);
-                //PlayerPrefs.SetString("username", response.data.username);
-                //PlayerPrefs.SetString("email", response.data.email);
-                //PlayerPrefs.SetInt("lastStage", response.data.lastStage);
-                //PlayerPrefs.Save();
+                StartCoroutine(SlidePanel(easterEggPanel, hiddenPosition, visiblePosition, 800f));
 
-                // 로그인 성공 시 팝업창 닫기 또는 다른 씬으로 전환
-                //loginPanel.SetActive(false);
+                yield return new WaitForSeconds(3f);
+
+                StartCoroutine(SlidePanel(easterEggPanel, visiblePosition, hiddenPosition, 380f, () => easterEgg.SetActive(false)));
+
+                yield return new WaitForSeconds(4f);
+                //easterEggPanel.SetActive(false);
             }
             else
             {
-                // 로그인 실패 시 오류 메시지 표시
-                //errorMessageText.text = "로그인 실패: " + response.message;
-                //ShowLoginFailPopup();  // 로그인 실패 팝업창 띄우기
+                Debug.Log("이스터에그 획득 실패");
             }
+        }
+        Destroy(gameObject);
+    }
+    private IEnumerator LoadImageFromUrl(string url)
+    {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            Image imageComponent = skinImage.GetComponent<Image>();
+            if (imageComponent != null)
+            {
+                imageComponent.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            }
+            else
+            {
+                Debug.LogError("Image 컴포넌트를 찾을 수 없습니다.");
+            }
+        }
+        else
+        {
+            Debug.LogError("이미지 로드 실패: " + request.error);
+        }
+    }
+    IEnumerator SlidePanel(RectTransform panel, Vector2 start, Vector2 end, float slideSpeed, System.Action onComplete = null)
+    {
+        float elapsedTime = 0;
+        float duration = Mathf.Abs(Vector2.Distance(start, end)) / slideSpeed;
+
+        while (elapsedTime < duration)
+        {
+            panel.anchoredPosition = Vector2.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        panel.anchoredPosition = end;
+
+        if (onComplete != null)
+        {
+            onComplete();
         }
     }
 }
