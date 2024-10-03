@@ -23,8 +23,9 @@ function imgUrl(nft) {
   if (!nft.imageUrl) {
     return "";
   }
-  const hash = nft.imageUrl.split("ipfs://")[1];
-  return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
+  // const hash = nft.imageUrl.split("ipfs://")[1];
+  const url = nft.imageUrl;
+  return new URL(`${url}`, import.meta.url).href;
 }
 
 function changeSkin(selectedSkin) {

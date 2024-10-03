@@ -12,16 +12,16 @@ const nStore = useNftStore();
 
 function getSkinSrc(character, metadata) {
   // return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
-  let hash = "";
+  let url = "";
   if (sStore.userBearSkin.length === 0 || sStore.userRabbitSkin.length === 0) {
     return "";
   }
   if (character === "bear") {
-    hash = sStore.userBearSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl.split("ipfs://")[1];
+    url = sStore.userBearSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl;
   } else if (character === "rabbit") {
-    hash = sStore.userRabbitSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl.split("ipfs://")[1];
+    url = sStore.userRabbitSkin.filter((skin) => skin.id && skin.id == metadata)[0].imageUrl;
   }
-  return new URL(`${VITE_VUE_IPFS_URL}${hash}`, import.meta.url).href;
+  return new URL(`${url}`, import.meta.url).href;
 }
 
 async function equipSkin() {
@@ -142,6 +142,10 @@ function hasNFTCheck() {
 
 img {
   height: 70%;
+  margin-left: 100px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  width: 540px;
 }
 
 .equip {
