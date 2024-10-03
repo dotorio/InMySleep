@@ -18,8 +18,7 @@ public class SpecialObject : MonoBehaviour
     void Start()
     {
         stageManager = FindObjectOfType<StageManager_3>();
-        isKey = stageManager.RandomInt();
-
+        isKey = Random.Range(0, 4);
 
         if (stageManager != null)
         {
@@ -32,6 +31,12 @@ public class SpecialObject : MonoBehaviour
 
         
     }
+
+    //public int RandomInt()
+    //{
+    //    int randomIndex = Random.Range(0, 4);
+    //    return randomIndex;
+    //}
 
     private void OnTriggerEnter(Collider other)
     {

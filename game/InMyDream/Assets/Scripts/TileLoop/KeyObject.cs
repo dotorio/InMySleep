@@ -1,6 +1,8 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class KeyObject : MonoBehaviour
 {
@@ -25,14 +27,14 @@ public class KeyObject : MonoBehaviour
     }
     void OnDestroy()
     {
+        Debug.Log("당첨:" + specialObject.isKey + ", 현재:" + keyNum);
         // 오브젝트가 파괴될 때 호출되는 함수
         if (specialObject.isKey == keyNum)
         {
-            stageManager.isKey = true;
-        }
-        else
-        {
-            stageManager.isKey = false;
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                PhotonNetwork.Instantiate("Star", gameObject.transform.position, Quaternion.identity);
+            }
         }
     }
 }
