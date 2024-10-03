@@ -18,12 +18,14 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
     public GameObject robotVaccum;
     public float minDistance = 1f;
     bool isGameover = false;    
+    public bool isKey = false;
+
 
     void Start()
     {
         string characterName = (string)PhotonNetwork.LocalPlayer.CustomProperties["character"];
-        Debug.Log((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDowned"]);
-        
+        //Debug.Log((bool)PhotonNetwork.LocalPlayer.CustomProperties["isDowned"]);
+        Debug.Log(UserData.instance.stage);
         if (string.IsNullOrEmpty(characterName))
         {
             Debug.LogError("캐릭터가 선택되지 않았습니다.");
@@ -82,6 +84,11 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
         }
     }
 
+    public int RandomInt()
+    {
+        int randomIndex = Random.Range(0, 4);
+        return randomIndex;
+    }
     // 모든 유저가 쓰러져 있는 상태면 게임 오버되고 3스테이지 다시 시작
     private void CheckGameOver()
     {
@@ -104,6 +111,8 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
             ResetScene();
         }
     }
+
+
 
     private void ShowGameOverMessage()
     {
