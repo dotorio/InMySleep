@@ -169,6 +169,26 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
         #endif
     }
 
+    // 방 나가기 버튼
+    public void RoomExit()
+    {
+        // 방 나가기 버튼을 눌렀을 때 호출
+        Debug.Log("RoomExit 함수 호출됨");
+
+        // 오류가 발생할 경우를 대비한 에러 노티 닫기
+        ErrorNotiClose();
+
+        // PhotonNetwork를 사용하여 방 나가기 처리
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom(); // 현재 방에서 나가기
+        }
+        else
+        {
+            Debug.LogWarning("현재 방에 있지 않습니다.");
+        }
+    }
+
     void ErrorNotiClose()
     {
         errorNoti.SetActive(false);
