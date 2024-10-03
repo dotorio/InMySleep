@@ -61,7 +61,7 @@ public class InfiniteTileManager : MonoBehaviourPunCallbacks
                 else if (spawnedTileCount < 20)
                 {
                     // 20번째 타일까지 랜덤한 타일 생성 (6번, 7번 타일 제외)
-                    int tileIndex = Random.Range(3, 3);
+                    int tileIndex = Random.Range(1, 1);
                     SpawnTile(tileIndex);
                 }
 
