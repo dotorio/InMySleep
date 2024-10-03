@@ -36,7 +36,7 @@ public class VacuumMovement : MonoBehaviour
                 currentSpeed -= reducedSpeedFactor;
             }
 
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
     }
     void RepeatFunction()
