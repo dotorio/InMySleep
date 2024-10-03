@@ -73,6 +73,18 @@ public class LoginManager : MonoBehaviour
         StartCoroutine(LoginRequest(email, password));
     }
 
+    // "비밀번호 찾기" 버튼 클릭 시 호출
+    public void OnForgotPasswordButtonClick()
+    { 
+        Application.OpenURL("https://j11e107.p.ssafy.io/chgpwd");
+    }
+
+    // "회원가입" 버튼 클릭 시 호출
+    public void OnSignUpButtonClick()
+    {
+        Application.OpenURL("https://j11e107.p.ssafy.io/signup");
+    }
+
     // 로그인 요청을 처리하는 코루틴 함수
     IEnumerator LoginRequest(string email, string password)
     {
