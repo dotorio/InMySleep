@@ -12,6 +12,7 @@ public class EasterEggData : MonoBehaviour
     private string character;
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
+    private bool acquireChk = false;
     [SerializeField] private RectTransform easterEggPanel;
     [SerializeField] private GameObject easterEgg;
     [SerializeField] private TextMeshProUGUI descriptionText;
@@ -59,8 +60,8 @@ public class EasterEggData : MonoBehaviour
     {
         canvasWidth = easterEggPanel.parent.GetComponent<RectTransform>().rect.width;
 
-        hiddenPosition = new Vector2(500, easterEggPanel.anchoredPosition.y - 50);
-        visiblePosition = new Vector2(-60, easterEggPanel.anchoredPosition.y - 50);
+        hiddenPosition = new Vector2(500, easterEggPanel.anchoredPosition.y + 30);
+        visiblePosition = new Vector2(100, easterEggPanel.anchoredPosition.y + 30);
         easterEggPanel.anchoredPosition = hiddenPosition;
         Debug.Log("canvasWidth" + canvasWidth);
         Debug.Log("hiddenPosition" + hiddenPosition);
@@ -80,6 +81,11 @@ public class EasterEggData : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (acquireChk)
+        {
+            return;
+        }
+
         if (other.CompareTag("Player"))
         {
             StartCoroutine(AddEasterEgg());
@@ -123,7 +129,8 @@ public class EasterEggData : MonoBehaviour
 
             if (response.success)
             {
-
+                acquireChk = true;
+                GetComponent<Renderer>().enabled = false;
                 Debug.Log("이스터에그 획득 성공");
                 Debug.Log("skinImgUrl: " + response.data.skinImgUrl);
                 Debug.Log("description: " + response.data.description);
