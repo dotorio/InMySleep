@@ -19,7 +19,7 @@ public class StageController : MonoBehaviour
         lastStage = UserData.instance.lastStage - 1;
 
         // 1스테이지 시작
-        UserData.instance.stage = 1;
+        UserData.instance.stage = 4;
 
         UpdateStageObjects(); // 초기 스테이지 설정
         UnlockStages(); // 스테이지 락 해제
