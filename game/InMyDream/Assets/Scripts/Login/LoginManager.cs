@@ -35,6 +35,31 @@ public class LoginManager : MonoBehaviour
                 inputPassword.Select();  // 비밀번호 입력 필드로 포커스 이동
             }
         }
+
+        // 로그인 창이 활성화된 경우
+        if (loginPanel.activeSelf && !loginFailPopupPanel.activeSelf)
+        {
+            // Enter 키로 로그인 실행
+            if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+            {
+                OnLoginButtonClicked();
+            }
+
+            // ESC 키로 로그인 창 닫기
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                loginPanel.SetActive(false);
+            }
+        }
+
+        // 로그인 실패 팝업이 활성화된 경우 - Enter, ESC로 팝업 닫기
+        if (loginFailPopupPanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                CloseLoginFailPopup();
+            }
+        }
     }
 
 
@@ -46,6 +71,18 @@ public class LoginManager : MonoBehaviour
 
         // 입력한 정보를 서버로 전송하여 로그인 요청
         StartCoroutine(LoginRequest(email, password));
+    }
+
+    // "비밀번호 찾기" 버튼 클릭 시 호출
+    public void OnForgotPasswordButtonClick()
+    { 
+        Application.OpenURL("https://j11e107.p.ssafy.io/chgpwd");
+    }
+
+    // "회원가입" 버튼 클릭 시 호출
+    public void OnSignUpButtonClick()
+    {
+        Application.OpenURL("https://j11e107.p.ssafy.io/signup");
     }
 
     // 로그인 요청을 처리하는 코루틴 함수

@@ -10,13 +10,13 @@ public class UILoginBtn : MonoBehaviour
     
     public void Init()
     {
-        // ·Î±×ÀÎ ÆË¾÷¿¡¼­ x Å¬¸¯ ½Ã ´Ý±â
+        // ë¡œê·¸ì¸ íŒì—…ì—ì„œ x í´ë¦­ ì‹œ ë‹«ê¸°
         this.uiPopupLogin.btnClose.onClick.AddListener(() =>
         {
             this.uiPopupLogin.Close();
         });
         
-        // ·Î±×ÀÎ ¹öÆ° Å¬¸¯½Ã ·Î±×ÀÎ ÆË¾÷ ¿­±â
+        // ë¡œê·¸ì¸ ë²„íŠ¼ í´ë¦­ì‹œ ë¡œê·¸ì¸ íŒì—… ì—´ê¸°
         this.btn.onClick.AddListener(() =>
         {
             this.uiPopupLogin.Open();
