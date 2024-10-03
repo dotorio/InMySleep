@@ -84,11 +84,6 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
         }
     }
 
-    public int RandomInt()
-    {
-        int randomIndex = Random.Range(0, 4);
-        return randomIndex;
-    }
     // 모든 유저가 쓰러져 있는 상태면 게임 오버되고 3스테이지 다시 시작
     private void CheckGameOver()
     {

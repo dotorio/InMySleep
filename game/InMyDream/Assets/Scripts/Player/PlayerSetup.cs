@@ -198,14 +198,18 @@ public class PlayerSetup : MonoBehaviourPun
             if (UserData.instance.stage == 1)
             {
                 PhotonNetwork.Instantiate("Battery", obj.transform.position, Quaternion.identity);
-            } else if (UserData.instance.stage == 3)
-            {
-                StageManager_3 stageManager = FindObjectOfType<StageManager_3>();
-                if (stageManager.isKey)
-                {
-                    PhotonNetwork.Instantiate("Star", obj.transform.position, Quaternion.identity);
-                }
             }
+            //else if (UserData.instance.stage == 3)
+            //{
+                
+            //    //StageManager_3 stageManager = FindObjectOfType<StageManager_3>();
+                
+                
+            //    //if (stageManager.isKey)
+            //    //{
+            //    //    PhotonNetwork.Instantiate("Star", obj.transform.position, Quaternion.identity);
+            //    //}
+            //}
 
         }
     }
