@@ -122,7 +122,8 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
             // 씬 로드
-            PhotonNetwork.LoadLevel("CutScene1");
+            int stage = UserData.instance.stage;
+            PhotonNetwork.LoadLevel("CutScene" + stage);
         }
     }
 

@@ -92,7 +92,32 @@ public class InfiniteTileManager : MonoBehaviourPunCallbacks
         lastSpawnPosition = tile.transform.position; // 마지막 생성된 타일 위치 업데이트
         activeTiles.Enqueue(tile); // 큐에 추가
 
+        // 이스터 에그
+        if(prefabIndex == 6)
+        {
+            Transform easterEgg = tile.transform.Find("EasterEgg");
+
+            int easterStage = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggStage"];
+            if(easterStage == UserData.instance.stage)
+            {
+                photonView.RPC("SetEasterEgg", 
+                    RpcTarget.AllBuffered, 
+                    easterEgg.GetComponent<PhotonView>().ViewID);
+            }
+        }
+
         spawnedTileCount++; // 타일 카운트 증가
+    }
+
+    [PunRPC]
+    public void SetEasterEgg(int easterEggId)
+    {
+        PhotonView easterEggPhoton = PhotonView.Find(easterEggId);
+
+        if(easterEggPhoton != null)
+        {
+            easterEggPhoton.gameObject.SetActive(true);
+        }
     }
 
     void RemoveOldTile()
