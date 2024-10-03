@@ -5,15 +5,20 @@ using Photon.Pun;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
+using static UnityEngine.Rendering.DebugUI;
 
 public class EasterEggData : MonoBehaviour
 {
     private string character;
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
-    [SerializeField] private GameObject easterEggPanel;
+    [SerializeField] private RectTransform easterEggPanel;
+    [SerializeField] private GameObject easterEgg;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Image skinImage;
+    float canvasWidth;
+    Vector2 hiddenPosition;
+    Vector2 visiblePosition;
 
     [System.Serializable]
     public class ServerResponse
@@ -52,7 +57,13 @@ public class EasterEggData : MonoBehaviour
 
     private void Start()
     {
-        easterEggPanel.SetActive(true);
+        canvasWidth = easterEggPanel.parent.GetComponent<RectTransform>().rect.width;
+
+        hiddenPosition = new Vector2(500, easterEggPanel.anchoredPosition.y - 50);
+        visiblePosition = new Vector2(-60, easterEggPanel.anchoredPosition.y - 50);
+        easterEggPanel.anchoredPosition = hiddenPosition;
+        Debug.Log("canvasWidth" + canvasWidth);
+        Debug.Log("hiddenPosition" + hiddenPosition);
         /*        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
 
                 if (easterData <= 5)
@@ -128,10 +139,19 @@ public class EasterEggData : MonoBehaviour
                 easterEggInfo.attributes = attributes;
                 easterEggInfo.duplicated = response.data.duplicated;
 
+                descriptionText.text = response.data.description;
                 StartCoroutine(LoadImageFromUrl(easterEggInfo.skinImgUrl));
 
+                easterEgg.SetActive(true);
+
+                StartCoroutine(SlidePanel(easterEggPanel, hiddenPosition, visiblePosition, 800f));
+
                 yield return new WaitForSeconds(3f);
-                easterEggPanel.SetActive(false);
+
+                StartCoroutine(SlidePanel(easterEggPanel, visiblePosition, hiddenPosition, 380f, () => easterEgg.SetActive(false)));
+
+                yield return new WaitForSeconds(4f);
+                //easterEggPanel.SetActive(false);
             }
             else
             {
@@ -148,11 +168,38 @@ public class EasterEggData : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            skinImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            Image imageComponent = skinImage.GetComponent<Image>();
+            if (imageComponent != null)
+            {
+                imageComponent.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            }
+            else
+            {
+                Debug.LogError("Image 컴포넌트를 찾을 수 없습니다.");
+            }
         }
         else
         {
             Debug.LogError("이미지 로드 실패: " + request.error);
+        }
+    }
+    IEnumerator SlidePanel(RectTransform panel, Vector2 start, Vector2 end, float slideSpeed, System.Action onComplete = null)
+    {
+        float elapsedTime = 0;
+        float duration = Mathf.Abs(Vector2.Distance(start, end)) / slideSpeed;
+
+        while (elapsedTime < duration)
+        {
+            panel.anchoredPosition = Vector2.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        panel.anchoredPosition = end;
+
+        if (onComplete != null)
+        {
+            onComplete();
         }
     }
 }
