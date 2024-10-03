@@ -19,17 +19,22 @@ public class VacuumMovement : MonoBehaviour
     {
         // 물체를 Z축 양의 방향으로 일정한 속도로 계속 움직임
         transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
-        Debug.Log("현재 속도: " + currentSpeed);
-        Debug.Log("현재 시간: " + Time.deltaTime);
-        Debug.Log("Time.timeScale: " + Time.timeScale);
-        Debug.Log("Update 함수가 호출되었습니다.");
+        //Debug.Log("현재 속도: " + currentSpeed);
+        //Debug.Log("현재 시간: " + Time.deltaTime);
+        //Debug.Log("Time.timeScale: " + Time.timeScale);
+        //Debug.Log("Update 함수가 호출되었습니다.");
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
         {
-            currentSpeed -= reducedSpeedFactor;
+            if (other.CompareTag("TileObject"))
+            {
+                currentSpeed -= reducedSpeedFactor;
+            }
+
+            Destroy(other.gameObject);
         }
     }
 

@@ -15,6 +15,12 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
     public GameObject Client_3;
     public GameObject EasterEgg;
 
+    // 2 페이즈 물체 설정
+    public GameObject JumpMap;
+    public GameObject Disappearable;
+    public GameObject Boss1;
+    public GameObject Boss2;
+
     void Start()
     {
         string characterName = (string)PhotonNetwork.LocalPlayer.CustomProperties["character"];
@@ -43,6 +49,15 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
         }
         else
         {
+            // 점프맵 생성
+            JumpMap.SetActive(true);
+
+            // 벽 제거
+            Disappearable.SetActive(false);
+
+            // 보스 생성
+            Boss2.SetActive(true);
+
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_2.transform;
@@ -86,6 +101,10 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
                 controller.SetStageManager(this);
             }
 
+            photonView.RPC("AddPlayer2Boss",
+                RpcTarget.AllBuffered,
+                instantiatedCharacter.GetComponent<PhotonView>().ViewID);
+
             // 스킨 설정
             Player localPlayer = PhotonNetwork.LocalPlayer;
 
@@ -94,6 +113,18 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
                 localPlayer.ActorNumber,
                 "Player1".Equals(localPlayer.CustomProperties["character"]),
                 (string)localPlayer.CustomProperties["material"]);
+        }
+    }
+
+    [PunRPC]
+    public void AddPlayer2Boss(int playerPhotonId)
+    {
+        PhotonView playerPhoton = PhotonView.Find(playerPhotonId);
+
+        if (playerPhoton != null)
+        {
+            Boss1.GetComponent<CatController>().players.Add(playerPhoton.transform);
+            Boss2.GetComponent<CatController>().players.Add(playerPhoton.transform);
         }
     }
 

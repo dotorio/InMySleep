@@ -14,8 +14,19 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
     public GameObject errorNoti;
     public Button errorNotiBtn;
     public TMP_Text errorText;
+    public TMP_Text errorTitle;
+    public TMP_Text errorBtn;
     public GameObject friendList;
-    
+
+    // 종료 버튼
+    public GameObject exitNoti;
+    public Button exitYesBtn;
+    public Button exitNoBtn;
+    public TMP_Text exitText;
+    public TMP_Text exitTitle;
+    public TMP_Text exitYesText;
+    public TMP_Text exitNoText;
+
 
     private string url = "https://j11e107.p.ssafy.io:8000/api/v1/";
 
@@ -59,6 +70,8 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
                 errorNoti.SetActive(true);
                 errorNotiBtn.onClick.AddListener(ErrorNotiClose);
                 errorText.text = "인원이 부족합니다.";
+                errorBtn.text = "확인";
+                errorTitle.text = "오류";
                 return;
             }
 
@@ -107,6 +120,8 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
                 errorNoti.SetActive(true);
                 errorNotiBtn.onClick.AddListener(ErrorNotiClose);
                 errorText.text = "캐릭터가 중복됩니다.";
+                errorBtn.text = "확인";
+                errorTitle.text = "오류";
                 return;
             }
 
@@ -122,8 +137,36 @@ public class RoomButtonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
             // 씬 로드
-            PhotonNetwork.LoadLevel("CutScene1");
+            int stage = UserData.instance.stage;
+            PhotonNetwork.LoadLevel("CutScene" + stage);
         }
+    }
+
+    // 게임 종료 버튼
+    public void ExitGame()
+    {
+        exitNoti.SetActive(true);
+        exitTitle.text = "종료";
+        exitText.text = "게임을 종료하시겠습니까?";
+        exitYesText.text = "네";
+        exitNoText.text = "아니요";
+        exitYesBtn.onClick.AddListener(ExitGameEvent);
+        exitNoBtn.onClick.AddListener(() => exitNoti.SetActive(false));
+    }
+
+    // 알림 창 닫기 및 게임 종료 함수
+    public void ExitGameEvent()
+    {
+        errorNoti.SetActive(false); // 알림 창 닫기
+
+        // 게임 종료 처리
+        #if UNITY_EDITOR
+        // 유니티 에디터에서 실행 중일 경우 플레이 모드 중지
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        // 빌드된 게임에서는 실제로 게임 종료
+        Application.Quit();
+        #endif
     }
 
     void ErrorNotiClose()
