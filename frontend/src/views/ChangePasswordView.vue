@@ -34,7 +34,7 @@ function changeFun() {
   if (!passwordConfirmVal.value) {
     Swal.fire({
       icon: "error",
-      title: "비밀번호가 다릅니다",
+      title: "비밀번호가 다릅니다.",
     });
     return;
   }
@@ -47,7 +47,7 @@ function changeFun() {
     return;
   }
 
-  // 비밀번호 변경 로직을 여기에 추가합니다.
+  // 비밀번호 변경
   changeEmailPassword({
     email: email.value,
     password: password.value,
@@ -62,6 +62,11 @@ function changeFun() {
     })
     .catch((err) => {
       console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "알림",
+        text: err.response.data.message || "비밀번호 변경 중 에러가 발생했습니다.",
+      });
     });
 }
 
