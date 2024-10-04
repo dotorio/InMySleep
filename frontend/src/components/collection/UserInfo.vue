@@ -141,11 +141,11 @@ function hasNFTCheck() {
 }
 
 img {
-  height: 70%;
-  margin-left: 100px;
-  margin-top: 20px;
-  margin-bottom: 50px;
-  width: 540px;
+  height: 68%;
+  margin-left: 5%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  width: 90%;
 }
 
 .equip {
