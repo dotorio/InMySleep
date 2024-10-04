@@ -52,23 +52,23 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 1:
                     case 2:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 3:
                     case 4:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
-                        break;
                     case 5:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 6:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
+                        break;
                     case 7:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBall");
                         break;
                     case 8:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
                     case 9:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBall");
+                        break;
                     case 10:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
                         break;
@@ -81,15 +81,15 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 11:
                     case 12:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 13:
                     case 14:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
+                        break;
                     case 15:
                     case 16:
+                    case 17:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
-                    case 17:
                     case 18:
                     case 19:
                     case 20:
@@ -104,16 +104,16 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 21:
                     case 22:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 23:
                     case 24:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 25:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
                     case 26:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
+                        break;
                     case 27:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
@@ -229,39 +229,39 @@ public class CatController : MonoBehaviourPunCallbacks
         {
             case 1:
             case 2:
-            case 11:
-            case 12:
-            case 21:
-            case 22:
-                return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
             case 3:
             case 4:
+            case 5:
+            case 11:
+            case 12:
             case 13:
             case 14:
+            case 21:
+            case 22:
             case 23:
             case 24:
-                return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
-            case 5:
+                return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
+            case 6:
             case 15:
             case 16:
-                return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
-            case 6:
-            case 7:
             case 17:
-            case 18:
-            case 26:
-            case 27:
-                return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
+            case 25:
+                return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
+            case 7:
+                return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
             case 8:
+            case 18:
             case 19:
             case 20:
-                return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
+            case 27:
+                return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
             case 9:
+                return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
             case 10:
             case 29:
             case 30:
                 return stateInfo.IsName("BigBomb") && stateInfo.normalizedTime >= 1f;
-            case 25:
+            case 26:
                 return stateInfo.IsName("rightRed") && stateInfo.normalizedTime >= 1f;
             case 28:
                 return stateInfo.IsName("leftRed") && stateInfo.normalizedTime >= 1f;
@@ -579,7 +579,9 @@ public class CatController : MonoBehaviourPunCallbacks
 
                 cnt++;
 
-                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+                photonView.RPC("FadeOutAndDestroyRPC",
+                    RpcTarget.AllBuffered,
+                    projectile.GetComponent<PhotonView>().ViewID);
             }
             else
             {
@@ -601,7 +603,9 @@ public class CatController : MonoBehaviourPunCallbacks
 
                 cnt++;
 
-                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+                photonView.RPC("FadeOutAndDestroyRPC", 
+                    RpcTarget.AllBuffered, 
+                    projectile.GetComponent<PhotonView>().ViewID);
             }
         }
     }
@@ -653,6 +657,19 @@ public class CatController : MonoBehaviourPunCallbacks
             cnt++;
 
             bombController.StartDestroyCountdown(4f);
+        }
+    }
+
+    [PunRPC]
+    public void FadeOutAndDestroyRPC(int ballId)
+    {
+        PhotonView ballPhoton = PhotonView.Find(ballId);
+
+        if (ballPhoton != null)
+        {
+            GameObject projectile = ballPhoton.gameObject;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f));
         }
     }
 

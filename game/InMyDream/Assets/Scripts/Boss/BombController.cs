@@ -52,31 +52,25 @@ public class BombController : MonoBehaviourPunCallbacks
         // 발사체가 제거된 위치에 폭발 효과 생성
         GameObject projectile = PhotonNetwork.Instantiate("Boss/Explosion", projectilePosition, Quaternion.identity);
 
-        photonView.RPC("DestroyEffect",
-            RpcTarget.AllBuffered,
-            projectile.GetComponent<PhotonView>().ViewID);
-
-        photonView.RPC("DestroyBomb",
-            RpcTarget.AllBuffered,
+        photonView.RPC("HandleExplosion", 
+            RpcTarget.AllBuffered, 
+            projectile.GetComponent<PhotonView>().ViewID, 
             photonView.ViewID);
+
     }
 
     [PunRPC]
-    public void DestroyEffect(int effectId)
+    public void HandleExplosion(int effectId, int bombId)
     {
+        // DestroyEffect 부분
         PhotonView effectPhoton = PhotonView.Find(effectId);
-
-        if(effectPhoton != null)
+        if (effectPhoton != null)
         {
-            Destroy(effectPhoton.gameObject, 1f);
+            Destroy(effectPhoton.gameObject, 0.5f);
         }
-    }
 
-    [PunRPC]
-    public void DestroyBomb(int bombId)
-    {
+        // DestroyBomb 부분
         PhotonView bombPhoton = PhotonView.Find(bombId);
-
         if (bombPhoton != null)
         {
             Destroy(bombPhoton.gameObject);

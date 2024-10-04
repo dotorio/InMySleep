@@ -21,6 +21,9 @@ public class DogMovement : MonoBehaviourPunCallbacks
     [Tooltip("이벤트 위치 근처에 도착했다고 판단하는 거리.")]
     public float closeEnoughDistance = 0.5f;
 
+    [Tooltip("이벤트 발생시 표시할 이펙트")]
+    public GameObject EventEffect;
+
     [Header("짖기 설정")]
     [Tooltip("개가 짖는 시간.")]
     public float barkingDuration = 3.0f;
@@ -265,6 +268,12 @@ public class DogMovement : MonoBehaviourPunCallbacks
         agent.destination = currentEventPosition;
         //Debug.Log($"Dog moving to new event position: {currentEventPosition}");
 
+        // 이벤트 상태 시각화 이펙트
+        if(EventEffect != null)
+        {
+            EventEffect.SetActive(true);
+        }
+
         // 새로운 proximity check 코루틴 시작
         proximityCoroutine = StartCoroutine(CheckProximityToEventLocation(currentEventPosition));
     }
@@ -283,6 +292,13 @@ public class DogMovement : MonoBehaviourPunCallbacks
         //Debug.Log("Dog reached event location.");
         eventTriggered = false;
         proximityCoroutine = null; // 코루틴 완료 후 참조 해제
+
+        // 이벤트 상태 시각화 이펙트
+        if (EventEffect != null)
+        {
+            EventEffect.SetActive(false);
+        }
+
         MoveToNextWaypoint();
     }
 
