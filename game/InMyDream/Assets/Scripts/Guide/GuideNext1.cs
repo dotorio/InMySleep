@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-public class GuideNext2 : MonoBehaviourPunCallbacks
+public class GuideNext1 : MonoBehaviourPunCallbacks
 {
     public Image[] images; // 여러 개의 이미지를 드래그해서 연결
     public TextMeshProUGUI[] texts; // 여러 개의 TMP 텍스트를 드래그해서 연결
