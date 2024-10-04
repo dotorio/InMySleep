@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CatController : MonoBehaviourPunCallbacks
 {
     private Animator animator;  // 애니메이터
-    //public GameObject bomb; // 캐릭터 팔에 연결된 공
-    //public GameObject bigBomb; // 캐릭터 팔에 연결된 공
-    //public GameObject ball; // 캐릭터 팔에 연결된 공
-    //public GameObject redBomb; // 캐릭터 팔에 연결된 공
     public Transform rightHand;  // 캐릭터의 손 위치
     public Transform leftHand;  // 캐릭터의 손 위치
     public Transform jumphand;  // 캐릭터의 손 위치
     public List<Transform> players;  // 플레이어 참조
+
+    // 컷신용
+    public GameObject bomb; // 캐릭터 팔에 연결된 공
+    public GameObject bigBomb; // 캐릭터 팔에 연결된 공
+    public GameObject ball; // 캐릭터 팔에 연결된 공
+    public GameObject redBomb; // 캐릭터 팔에 연결된 공
+    public GameObject player1;  // 플레이어 참조
+    public GameObject player2;  // 플레이어 참조
 
     // 쓰러질 때 생성할 목적지
     public GameObject Goal;
@@ -47,23 +52,23 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 1:
                     case 2:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 3:
                     case 4:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
-                        break;
                     case 5:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 6:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
+                        break;
                     case 7:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBall");
                         break;
                     case 8:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBall");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
                     case 9:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBall");
+                        break;
                     case 10:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
                         break;
@@ -76,15 +81,15 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 11:
                     case 12:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 13:
                     case 14:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
+                        break;
                     case 15:
                     case 16:
+                    case 17:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
-                    case 17:
                     case 18:
                     case 19:
                     case 20:
@@ -99,16 +104,16 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 21:
                     case 22:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
-                        break;
                     case 23:
                     case 24:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
                     case 25:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
                         break;
                     case 26:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
+                        break;
                     case 27:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
                         break;
@@ -224,39 +229,39 @@ public class CatController : MonoBehaviourPunCallbacks
         {
             case 1:
             case 2:
-            case 11:
-            case 12:
-            case 21:
-            case 22:
-                return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
             case 3:
             case 4:
+            case 5:
+            case 11:
+            case 12:
             case 13:
             case 14:
+            case 21:
+            case 22:
             case 23:
             case 24:
-                return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
-            case 5:
+                return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
+            case 6:
             case 15:
             case 16:
-                return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
-            case 6:
-            case 7:
             case 17:
-            case 18:
-            case 26:
-            case 27:
-                return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
+            case 25:
+                return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
+            case 7:
+                return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
             case 8:
+            case 18:
             case 19:
             case 20:
-                return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
+            case 27:
+                return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
             case 9:
+                return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
             case 10:
             case 29:
             case 30:
                 return stateInfo.IsName("BigBomb") && stateInfo.normalizedTime >= 1f;
-            case 25:
+            case 26:
                 return stateInfo.IsName("rightRed") && stateInfo.normalizedTime >= 1f;
             case 28:
                 return stateInfo.IsName("leftRed") && stateInfo.normalizedTime >= 1f;
@@ -273,7 +278,54 @@ public class CatController : MonoBehaviourPunCallbacks
     void BombThrow(string dir)
     {
         Debug.Log(dir);
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(bomb, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(bomb, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection;
+                }
+
+                cnt++;
+            }
+        }
+        
+        // 게임 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (dir == "left")
             {
@@ -328,7 +380,66 @@ public class CatController : MonoBehaviourPunCallbacks
 
     void RedThrow(string dir)
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            float randomValue;
+
+            // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
+            if (Random.value < 0.5f)
+            {
+                // 1.0f ~ 2.0f 사이의 랜덤 값
+                randomValue = Random.Range(0.6f, 0.8f);
+            }
+            else
+            {
+                // 3.0f ~ 4.0f 사이의 랜덤 값
+                randomValue = Random.Range(1.2f, 1.4f);
+            }
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(redBomb, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(redBomb, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * randomValue;
+                }
+
+                cnt++;
+            }
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             float randomValue;
 
@@ -397,7 +508,55 @@ public class CatController : MonoBehaviourPunCallbacks
     void BallThrow(string dir)
     {
         Debug.Log(dir);
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            if (dir == "left")
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(ball, leftHand.position, leftHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+            }
+            else
+            {
+                // 발사체 생성
+                GameObject projectile = Instantiate(ball, rightHand.position, rightHand.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+                // 발사 방향 계산
+                if (cnt % 2 == 0)
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player2.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+                else
+                {
+                    Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, player1.transform.position, 20f);
+                    rb.velocity = launchDirection * 1.2f;
+                }
+
+                cnt++;
+            }
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (dir == "left")
             {
@@ -420,7 +579,9 @@ public class CatController : MonoBehaviourPunCallbacks
 
                 cnt++;
 
-                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+                photonView.RPC("FadeOutAndDestroyRPC",
+                    RpcTarget.AllBuffered,
+                    projectile.GetComponent<PhotonView>().ViewID);
             }
             else
             {
@@ -442,14 +603,39 @@ public class CatController : MonoBehaviourPunCallbacks
 
                 cnt++;
 
-                StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f)); // 코루틴 시작
+                photonView.RPC("FadeOutAndDestroyRPC", 
+                    RpcTarget.AllBuffered, 
+                    projectile.GetComponent<PhotonView>().ViewID);
             }
         }
     }
 
     void BigThrow()
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        // 컷신용 코드
+        if (SceneManager.GetActiveScene().name == "CutScene4")
+        {
+            // 발사체 생성
+            GameObject projectile = Instantiate(bigBomb, jumphand.position, jumphand.rotation);
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            // 발사 방향 계산
+            if (cnt % 2 == 0)
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player2.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+            else
+            {
+                Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, player1.transform.position, 20f);
+                rb.velocity = launchDirection;
+            }
+
+            cnt++;
+        }
+
+        // 게임용 코드
+        else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             // 발사체 생성
             GameObject projectile = PhotonNetwork.Instantiate("Boss/BigBomb", jumphand.position, jumphand.rotation);
@@ -471,6 +657,19 @@ public class CatController : MonoBehaviourPunCallbacks
             cnt++;
 
             bombController.StartDestroyCountdown(4f);
+        }
+    }
+
+    [PunRPC]
+    public void FadeOutAndDestroyRPC(int ballId)
+    {
+        PhotonView ballPhoton = PhotonView.Find(ballId);
+
+        if (ballPhoton != null)
+        {
+            GameObject projectile = ballPhoton.gameObject;
+
+            StartCoroutine(FadeOutAndDestroy(projectile, 20f, 1f));
         }
     }
 

@@ -65,6 +65,13 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
                 controller.SetStageManager(this);
             }
 
+            // 카메라 설정
+            CameraSwitcher camera = instantiatedCharacter.GetComponent<CameraSwitcher>();
+            if (camera != null)
+            {
+                camera.SwitchToFollowCamera();
+            }
+
             // 스킨 설정
             Player localPlayer = PhotonNetwork.LocalPlayer;
 
@@ -84,11 +91,6 @@ public class StageManager_3 : MonoBehaviourPunCallbacks, StageManager
         }
     }
 
-    public int RandomInt()
-    {
-        int randomIndex = Random.Range(0, 4);
-        return randomIndex;
-    }
     // 모든 유저가 쓰러져 있는 상태면 게임 오버되고 3스테이지 다시 시작
     private void CheckGameOver()
     {
