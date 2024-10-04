@@ -13,6 +13,8 @@ public class EasterEggData : MonoBehaviour
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
     private bool acquireChk = false;
+    private GameObject canvas;
+    private Transform easterEggPanelTransform;
     private GameObject easterEggPanel;
     private RectTransform easterEggPanelRect;
     private TextMeshProUGUI descriptionText;
@@ -47,26 +49,7 @@ public class EasterEggData : MonoBehaviour
 
     private void Start()
     {
-        GameObject canvas = GameObject.Find("EasterEggCanvas");
-        if (canvas != null)
-        {
-            Transform panelTransform = canvas.transform.Find("Panel");
-            if (panelTransform != null)
-            {
-                easterEggPanel = panelTransform.gameObject;
-                easterEggPanelRect = easterEggPanel.GetComponent<RectTransform>();
-                skinImage = panelTransform.Find("ItemIcon").GetComponent<Image>();
-                descriptionText = panelTransform.Find("Label").GetComponent<TextMeshProUGUI>();
-            }
-        }
-
-        canvasWidth = easterEggPanelRect.parent.GetComponent<RectTransform>().rect.width;
-
-        hiddenPosition = new Vector2(500, easterEggPanelRect.anchoredPosition.y + 30);
-        visiblePosition = new Vector2(100, easterEggPanelRect.anchoredPosition.y + 30);
-        easterEggPanelRect.anchoredPosition = hiddenPosition;
-        Debug.Log("canvasWidth" + canvasWidth);
-        Debug.Log("hiddenPosition" + hiddenPosition);
+        canvas = GameObject.Find("EasterEggCanvas");
         /*        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
 
                 if (easterData <= 5)
@@ -83,6 +66,7 @@ public class EasterEggData : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("TriggerEnter");
         if (acquireChk)
         {
             return;
@@ -146,6 +130,26 @@ public class EasterEggData : MonoBehaviour
                 attributes.color = response.data.attributes.color;
                 easterEggInfo.attributes = attributes;
                 easterEggInfo.duplicated = response.data.duplicated;
+
+                if (canvas != null)
+                {
+                    easterEggPanelTransform = canvas.transform.Find("Panel");
+                    if (easterEggPanelTransform != null)
+                    {
+                        easterEggPanel = easterEggPanelTransform.gameObject;
+                        easterEggPanelRect = easterEggPanel.GetComponent<RectTransform>();
+                        skinImage = easterEggPanelTransform.Find("ItemIcon").GetComponent<Image>();
+                        descriptionText = easterEggPanelTransform.Find("Label").GetComponent<TextMeshProUGUI>();
+                    }
+
+                    canvasWidth = easterEggPanelRect.parent.GetComponent<RectTransform>().rect.width;
+
+                    hiddenPosition = new Vector2(500, easterEggPanelRect.anchoredPosition.y + 30);
+                    visiblePosition = new Vector2(100, easterEggPanelRect.anchoredPosition.y + 30);
+                    easterEggPanelRect.anchoredPosition = hiddenPosition;
+                    Debug.Log("canvasWidth" + canvasWidth);
+                    Debug.Log("hiddenPosition" + hiddenPosition);
+                }
 
                 descriptionText.text = response.data.description;
                 StartCoroutine(LoadImageFromUrl(easterEggInfo.skinImgUrl));
