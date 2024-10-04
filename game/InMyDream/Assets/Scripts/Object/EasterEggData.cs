@@ -45,17 +45,6 @@ public class EasterEggData : MonoBehaviour
         public bool duplicated;
     }
 
-    [System.Serializable]
-    public class UserData
-    {
-        public int userId;
-
-        public UserData(int userId)
-        {
-            this.userId = userId;
-        }
-    }
-
     private void Start()
     {
         canvasWidth = easterEggPanel.parent.GetComponent<RectTransform>().rect.width;
@@ -97,8 +86,7 @@ public class EasterEggData : MonoBehaviour
     IEnumerator AddEasterEgg()
     {
         // 로그인 정보를 JSON 형식으로 준비
-        /*int userId = UserData.instance.userId;*/
-        int userId = 45;
+        int userId = UserData.instance.userId;
         string jsonData = $"{{\"userId\":{userId}}}";
 
         // UnityWebRequest로 HTTP POST 요청을 준비
