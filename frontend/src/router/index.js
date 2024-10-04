@@ -13,8 +13,12 @@ const onlyAuthUser = (to, from, next) => {
   if (user.value) {
     next();
   } else {
-    alert("로그인이 필요한 기능입니다.");
-    next({ name: "login" });
+    Swal.fire({
+      icon: "error",
+      title: "로그인이 필요한 기능입니다.",
+    }).then(() => {
+      next({ name: "login" });
+    });
   }
 };
 
