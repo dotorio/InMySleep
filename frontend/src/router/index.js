@@ -3,7 +3,20 @@ import HomeView from "@/views/HomeView.vue";
 import CollectionView from "@/views/CollectionView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LoginView from "@/views/LoginView.vue";
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 import ChangePasswordView from "@/views/ChangePasswordView.vue";
+
+const onlyAuthUser = (to, from, next) => {
+  const ustore = useUserStore();
+  const { user } = storeToRefs(ustore);
+  if (user.value) {
+    next();
+  } else {
+    alert("로그인이 필요한 기능입니다.");
+    next({ name: "login" });
+  }
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +30,7 @@ const router = createRouter({
       path: "/collection",
       name: "collection",
       component: CollectionView,
+      beforeEnter: onlyAuthUser,
     },
     {
       path: "/signup",
