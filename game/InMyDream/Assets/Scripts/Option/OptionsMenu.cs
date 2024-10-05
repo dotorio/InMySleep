@@ -9,8 +9,6 @@ public class OptionsMenu : MonoBehaviour
     public Slider volumeSlider; // 볼륨 슬라이더
     public AudioMixer audioMixer; // 오디오 믹서
 
-    public Button closeButton;
-
     private const string VolumeKey = "MasterVolume"; // PlayerPrefs에 사용할 키
 
     void Start()
@@ -48,12 +46,6 @@ public class OptionsMenu : MonoBehaviour
         {
             volumeSlider.onValueChanged.AddListener(delegate { SetVolume(); });
         }
-
-        // 닫기 버튼에 대한 리스너 설정
-        if (closeButton != null)
-        {
-            closeButton.onClick.AddListener(CloseOptionsMenu);
-        }
     }
 
     // 볼륨 변경 함수
@@ -70,12 +62,6 @@ public class OptionsMenu : MonoBehaviour
             PlayerPrefs.Save(); // 즉시 저장
             Debug.Log("Volume saved: " + volume);
         }
-    }
-
-    // 옵션 메뉴 닫기 함수
-    private void CloseOptionsMenu()
-    {
-        gameObject.SetActive(false);
     }
 
     // 옵션 메뉴가 비활성화될 때 PlayerPrefs를 저장

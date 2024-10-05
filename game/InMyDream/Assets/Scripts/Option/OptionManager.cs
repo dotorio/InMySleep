@@ -75,6 +75,7 @@ public class OptionManager : MonoBehaviour
     {
         if (optionCanvas != null)
         {
+            Debug.Log("캔버스 토글");
             bool isActive = optionCanvas.activeSelf;
             optionCanvas.SetActive(!isActive);
         }
