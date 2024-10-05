@@ -78,6 +78,8 @@ public class OptionManager : MonoBehaviour
             Debug.Log("캔버스 토글");
             bool isActive = optionCanvas.activeSelf;
             optionCanvas.SetActive(!isActive);
+
+            exitNoti.SetActive(false);
         }
     }
 
@@ -160,5 +162,7 @@ public class OptionManager : MonoBehaviour
         {
             Debug.LogWarning("현재 방에 있지 않습니다.");
         }
+
+        ToggleOptionCanvas();
     }
 }
