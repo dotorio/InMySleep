@@ -52,7 +52,7 @@ public class ImageSequenceAnimation5 : MonoBehaviourPunCallbacks
         {
             if (isNext)
             {
-                SceneManager.LoadScene("4s_Scene");
+                SceneManager.LoadScene("Guide5");
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

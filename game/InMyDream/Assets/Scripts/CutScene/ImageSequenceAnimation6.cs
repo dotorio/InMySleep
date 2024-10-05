@@ -52,7 +52,7 @@ public class ImageSequenceAnimation6 : MonoBehaviourPunCallbacks
         {
             if (isNext)
             {
-                SceneManager.LoadScene("4s_Scene");
+                SceneManager.LoadScene("LobbyScene");
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -66,10 +66,6 @@ public class ImageSequenceAnimation6 : MonoBehaviourPunCallbacks
                 photonView.RPC("NextImageSequence", RpcTarget.AllBuffered); // 모든 클라이언트에게 RPC 호출
             }
         }
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    NextImageSequence();
-        //}
     }
 
     [PunRPC]

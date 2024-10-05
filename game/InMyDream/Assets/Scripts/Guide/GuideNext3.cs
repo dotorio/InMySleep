@@ -51,7 +51,7 @@ public class GuideNext3 : MonoBehaviourPunCallbacks
         {
             if (isNext)
             {
-                SceneManager.LoadScene("2s_Scene");
+                SceneManager.LoadScene("3s_Scene");
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
