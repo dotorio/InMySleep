@@ -92,6 +92,7 @@ public class EasterEggData : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
+        Debug.Log(jsonData);
 
         // 서버로부터 응답을 받을 때까지 대기
 
@@ -99,9 +100,8 @@ public class EasterEggData : MonoBehaviour
         // 요청 결과 처리
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-
             // 에러 발생 시 처리
-            Debug.LogError("Error: " + request.error);
+            Debug.LogError("Error: " + request.error + "\n" + request.downloadHandler.text);
             //errorMessageText.text = "서버 연결 오류: " + request.error;
         }
         else
@@ -138,13 +138,13 @@ public class EasterEggData : MonoBehaviour
                     {
                         easterEggPanel = easterEggPanelTransform.gameObject;
                         easterEggPanelRect = easterEggPanel.GetComponent<RectTransform>();
-                        skinImage = easterEggPanelTransform.Find("ItemIcon").GetComponent<Image>();
+                        skinImage = easterEggPanelTransform.Find("Content/Reward_Items/ItemIcon").GetComponent<Image>();
                         descriptionText = easterEggPanelTransform.Find("Label").GetComponent<TextMeshProUGUI>();
                     }
 
                     canvasWidth = easterEggPanelRect.parent.GetComponent<RectTransform>().rect.width;
 
-                    hiddenPosition = new Vector2(500, easterEggPanelRect.anchoredPosition.y + 30);
+                    hiddenPosition = new Vector2(-500, easterEggPanelRect.anchoredPosition.y + 30);
                     visiblePosition = new Vector2(100, easterEggPanelRect.anchoredPosition.y + 30);
                     easterEggPanelRect.anchoredPosition = hiddenPosition;
                     Debug.Log("canvasWidth" + canvasWidth);
