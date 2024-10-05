@@ -15,6 +15,13 @@ public class OptionsMenu : MonoBehaviour
 
     void Start()
     {
+        // 자식 Canvas의 Sorting Order를 조정하여 다른 UI보다 앞에 오게 설정
+        Canvas childCanvas = GetComponentInChildren<Canvas>();
+        if (childCanvas != null)
+        {
+            childCanvas.sortingOrder = 10;
+        }
+
         // PlayerPrefs에 저장된 볼륨 값이 있는지 확인
         if (PlayerPrefs.HasKey(VolumeKey))
         {
