@@ -20,6 +20,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
     public GameObject Disappearable;
     public GameObject Boss1;
     public GameObject Boss2;
+    public GameObject BossUI;
 
     void Start()
     {
@@ -57,6 +58,9 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
 
             // 보스 생성
             Boss2.SetActive(true);
+
+            // 보스 등장 UI 제거
+            BossUI.SetActive(false);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {

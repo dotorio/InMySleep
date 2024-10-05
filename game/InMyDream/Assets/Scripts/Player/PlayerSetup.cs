@@ -31,7 +31,7 @@ public class PlayerSetup : MonoBehaviourPun
         {
             cleanName = gameObject.name.Replace("(Clone)", "").Trim();
             playerCamera = Camera.main;
-            playerCamera.cullingMask = LayerMask.GetMask(cleanName + "UI", "Default", "Dog", "obstacles");
+            playerCamera.cullingMask = LayerMask.GetMask(cleanName + "UI", "Default", "Dog", "obstacles", "Bomb");
             playerCanvas.SetActive(true);
 
             foreach (var camera in virtualCameras)

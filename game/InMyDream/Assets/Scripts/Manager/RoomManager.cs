@@ -10,6 +10,7 @@ public class RoomManager : MonoBehaviourPun
     public Transform[] spawnPoints;
     public GameObject arrowPositionMaster; // 1번 위치의 화살표
     public GameObject arrowPositionGuest; // 2번 위치의 화살표
+
     // 캐릭터 생성
     public void CreatePlayer()
     {

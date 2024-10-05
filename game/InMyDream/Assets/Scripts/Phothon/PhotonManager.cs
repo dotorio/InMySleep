@@ -36,19 +36,25 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         PhotonNetwork.GameVersion = version;
         PhotonNetwork.NickName = userName;
         //PhotonNetwork.LocalPlayer.IsMasterClient = true;
+        
+        // 이미 방에 있을 경우 ConnectUsingSettings 호출하지 않음
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
 
-        PhotonNetwork.ConnectUsingSettings();
-
-        ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
-        playerProps["roomName"] = userName;
-        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+        // 이미 방에 있을 경우 방 생성 또는 방 참여 로직 스킵
+        if (!PhotonNetwork.InRoom)
+        {
+            ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+            playerProps["roomName"] = userName;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+        }
 
         chatClient = new ChatClient(this);
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
             "1.0",
             new Photon.Chat.AuthenticationValues(userName));
-
-
     }
 
 
@@ -57,6 +63,18 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         if(chatClient != null)
         {
             chatClient.Service();
+        }
+        if(UserData.instance.stage == 7)
+        {
+            UserData.instance.stage = 1;
+
+            ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
+            playerProps["character"] = PhotonNetwork.LocalPlayer.CustomProperties["character"];
+            playerProps["material"] = PhotonNetwork.LocalPlayer.CustomProperties["material"];
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+
+            startController.buttonUpdate();
+            roomExitController.roomExitButtonUpdate();
         }
     }
 
@@ -67,21 +85,25 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     public override void OnJoinedLobby()
     {
-        string roomName = (string) PhotonNetwork.LocalPlayer.CustomProperties["roomName"];
-
-        if (roomName == userName)
+        // 이미 방에 있는 경우 방을 다시 생성하거나 참여하지 않음
+        if (!PhotonNetwork.InRoom)
         {
-            RoomOptions ro = new RoomOptions();
-            ro.MaxPlayers = 2;
-            ro.IsOpen = true;
-            ro.IsVisible = true;
-            ro.EmptyRoomTtl = 0; // 방이 비었을 경우 바로 방 삭제
+            string roomName = (string)PhotonNetwork.LocalPlayer.CustomProperties["roomName"];
 
-            PhotonNetwork.CreateRoom(roomName, ro);
-        }
-        else
-        {
-            PhotonNetwork.JoinRoom(roomName);
+            if (roomName == userName)
+            {
+                RoomOptions ro = new RoomOptions();
+                ro.MaxPlayers = 2;
+                ro.IsOpen = true;
+                ro.IsVisible = true;
+                ro.EmptyRoomTtl = 0; // 방이 비었을 경우 바로 방 삭제
+
+                PhotonNetwork.CreateRoom(roomName, ro);
+            }
+            else
+            {
+                PhotonNetwork.JoinRoom(roomName);
+            }
         }
     }
 
@@ -89,12 +111,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     {
         ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
         playerProps["character"] = "Player1";
-        playerProps["material"] = UserData.instance.bear!=null ? 
+        playerProps["material"] = UserData.instance.bear != null ?
             UserData.instance.bear : "00";
         playerProps["userId"] = userId;
         playerProps["isDowned"] = false;
         playerProps["roomName"] = userName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
+
         startController.buttonUpdate();
         roomExitController.roomExitButtonUpdate();
     }

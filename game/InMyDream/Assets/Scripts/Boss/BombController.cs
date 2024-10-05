@@ -24,7 +24,7 @@ public class BombController : MonoBehaviourPunCallbacks
             }
             else if (CompareTag("Stone") && other.CompareTag("Boss"))
             {
-                Explode();
+                Explode2();
             }
         }
     }
@@ -55,6 +55,23 @@ public class BombController : MonoBehaviourPunCallbacks
         photonView.RPC("HandleExplosion", 
             RpcTarget.AllBuffered, 
             projectile.GetComponent<PhotonView>().ViewID, 
+            photonView.ViewID);
+
+    }
+
+    private void Explode2()
+    {
+        hasExploded = true;
+
+        // 발사체의 현재 위치 저장
+        Vector3 projectilePosition = transform.position;
+
+        // 발사체가 제거된 위치에 폭발 효과 생성
+        GameObject projectile = PhotonNetwork.Instantiate("Boss/UserExplosion", projectilePosition, Quaternion.identity);
+
+        photonView.RPC("HandleExplosion",
+            RpcTarget.AllBuffered,
+            projectile.GetComponent<PhotonView>().ViewID,
             photonView.ViewID);
 
     }

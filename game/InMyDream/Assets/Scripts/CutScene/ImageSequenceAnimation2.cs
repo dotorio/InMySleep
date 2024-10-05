@@ -62,7 +62,7 @@ public class ImageSequenceAnimation2 : MonoBehaviourPunCallbacks
         {
             if (isNext)
             {
-                SceneManager.LoadScene("2s_Scene");
+                SceneManager.LoadScene("Guide2");
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

@@ -38,7 +38,20 @@ public class CatController : MonoBehaviourPunCallbacks
         animator = GetComponent<Animator>();
         originalSpeed = animator.speed;
         StartCoroutine(PlayRandomAnimation());
+    }
+
+    private void Update()
+    {
         SetAnimationSpeed();
+
+        if (damage >= 3)
+        {
+            animator.Play("Die2");
+            //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
+            isDying = true; // 애니메이션 실행 상태 초기화
+
+            Goal.SetActive(true);
+        }
     }
 
     private IEnumerator PlayRandomAnimation()
@@ -104,25 +117,21 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     case 21:
                     case 22:
-                    case 23:
-                    case 24:
                         photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "Victory");
                         break;
+                    case 23:
+                    case 24:
                     case 25:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightBomb");
-                        break;
                     case 26:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
-                        break;
                     case 27:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftBomb");
-                        break;
                     case 28:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftRed");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
                         break;
                     case 29:
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "rightRed");
+                        break;
                     case 30:
-                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "BigBomb");
+                        photonView.RPC("AnimationPlay", RpcTarget.AllBuffered, "leftRed");
                         break;
                 }
             }
@@ -178,24 +187,27 @@ public class CatController : MonoBehaviourPunCallbacks
 
             else if (other.CompareTag("Stone")) 
             {
-                damage++;
-                if (damage == 3)
+                if (PhotonNetwork.LocalPlayer.IsMasterClient)
                 {
-                    animator.Play("Die2");
-                    //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
-                    isDying = true; // 애니메이션 실행 상태 초기화
+                    damage++;
+                    photonView.RPC("SyncDamage", RpcTarget.AllBuffered, damage);
 
-                    Goal.SetActive(true);
-                }
-                else
-                {
-                    animator.Play("Damage");
+                    if(damage <3)
+                    {
+                        animator.Play("Damage");
 
-                    isDying = true; // Damage 애니메이션 실행 상태로 변경
-                    StartCoroutine(WaitForDamageAnimationToEnd());
+                        isDying = true; // Damage 애니메이션 실행 상태로 변경
+                        StartCoroutine(WaitForDamageAnimationToEnd());
+                    }
                 }
             }
         }
+    }
+
+    [PunRPC]
+    public void SyncDamage(int newDamage)
+    {
+        damage = newDamage;
     }
 
     private IEnumerator WaitForDamageAnimationToEnd()
@@ -238,14 +250,11 @@ public class CatController : MonoBehaviourPunCallbacks
             case 14:
             case 21:
             case 22:
-            case 23:
-            case 24:
                 return stateInfo.IsName("Victory") && stateInfo.normalizedTime >= 1f;
             case 6:
             case 15:
             case 16:
             case 17:
-            case 25:
                 return stateInfo.IsName("rightBomb") && stateInfo.normalizedTime >= 1f;
             case 7:
                 return stateInfo.IsName("rightBall") && stateInfo.normalizedTime >= 1f;
@@ -253,17 +262,20 @@ public class CatController : MonoBehaviourPunCallbacks
             case 18:
             case 19:
             case 20:
-            case 27:
                 return stateInfo.IsName("leftBomb") && stateInfo.normalizedTime >= 1f;
             case 9:
                 return stateInfo.IsName("leftBall") && stateInfo.normalizedTime >= 1f;
             case 10:
-            case 29:
-            case 30:
-                return stateInfo.IsName("BigBomb") && stateInfo.normalizedTime >= 1f;
+            case 23:
+            case 24:
+            case 25:
             case 26:
-                return stateInfo.IsName("rightRed") && stateInfo.normalizedTime >= 1f;
+            case 27:
             case 28:
+                return stateInfo.IsName("BigBomb") && stateInfo.normalizedTime >= 1f;
+            case 29:
+                return stateInfo.IsName("rightRed") && stateInfo.normalizedTime >= 1f;
+            case 30:
                 return stateInfo.IsName("leftRed") && stateInfo.normalizedTime >= 1f;
             case 31:
                 return stateInfo.IsName("Damage") && stateInfo.normalizedTime >= 1f;
@@ -441,19 +453,6 @@ public class CatController : MonoBehaviourPunCallbacks
         // 게임용 코드
         else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            float randomValue;
-
-            // 1.0f ~ 2.0f 또는 3.0f ~ 4.0f 범위에서 랜덤 값 선택
-            if (Random.value < 0.5f)
-            {
-                // 1.0f ~ 2.0f 사이의 랜덤 값
-                randomValue = Random.Range(0.6f, 0.8f);
-            }
-            else
-            {
-                // 3.0f ~ 4.0f 사이의 랜덤 값
-                randomValue = Random.Range(1.2f, 1.4f);
-            }
             if (dir == "left")
             {
                 // 발사체 생성
@@ -465,18 +464,18 @@ public class CatController : MonoBehaviourPunCallbacks
                 if (cnt % 2 == 0)
                 {
                     Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[1].position, 20f);
-                    rb.velocity = launchDirection * randomValue;
+                    rb.velocity = launchDirection;
                 }
                 else
                 {
                     Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[0].position, 20f);
-                    rb.velocity = launchDirection * randomValue;
+                    rb.velocity = launchDirection;
                 }
 
                 cnt++;
 
                 // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-                bombController.StartDestroyCountdown(10f);
+                bombController.StartDestroyCountdown(20f);
             }
             else
             {
@@ -489,18 +488,18 @@ public class CatController : MonoBehaviourPunCallbacks
                 if (cnt % 2 == 0)
                 {
                     Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[1].position, 20f);
-                    rb.velocity = launchDirection * randomValue;
+                    rb.velocity = launchDirection;
                 }
                 else
                 {
                     Vector3 launchDirection = CalculateLaunchDirection(rightHand.position, players[0].position, 20f);
-                    rb.velocity = launchDirection * randomValue;
+                    rb.velocity = launchDirection;
                 }
 
                 cnt++;
 
                 // 4초 후에 발사체를 제거하고 폭발 효과를 해당 위치에 생성
-                bombController.StartDestroyCountdown(10f);
+                bombController.StartDestroyCountdown(20f);
             }
         }
     }
@@ -647,11 +646,21 @@ public class CatController : MonoBehaviourPunCallbacks
             {
                 Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, players[1].position, 20f);
                 rb.velocity = launchDirection;
+
+                if (phase == 3)
+                {
+                    rb.velocity *= 1.1f;
+                }
             }
             else
             {
                 Vector3 launchDirection = CalculateLaunchDirection(jumphand.position, players[0].position, 20f);
                 rb.velocity = launchDirection;
+
+                if(phase == 3)
+                {
+                    rb.velocity *= 1.1f;
+                }
             }
 
             cnt++;
