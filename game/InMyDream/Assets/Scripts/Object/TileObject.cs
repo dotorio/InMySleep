@@ -28,6 +28,8 @@ public class TileObject : MonoBehaviour
                 if (targetObject != null && targetObject.GetComponent<Rigidbody>() == null)
                 {
                     targetObject.AddComponent<Rigidbody>();
+                    Rigidbody rb = targetObject.GetComponent<Rigidbody>();
+                    rb.mass = 100;
                     Debug.Log("Rigidbody가 추가되었습니다.");
                 }
 

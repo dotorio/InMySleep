@@ -13,10 +13,12 @@ public class EasterEggData : MonoBehaviour
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
     private bool acquireChk = false;
-    [SerializeField] private RectTransform easterEggPanel;
-    [SerializeField] private GameObject easterEgg;
-    [SerializeField] private TextMeshProUGUI descriptionText;
-    [SerializeField] private Image skinImage;
+    private GameObject canvas;
+    private Transform easterEggPanelTransform;
+    private GameObject easterEggPanel;
+    private RectTransform easterEggPanelRect;
+    private TextMeshProUGUI descriptionText;
+    private Image skinImage;
     float canvasWidth;
     Vector2 hiddenPosition;
     Vector2 visiblePosition;
@@ -45,26 +47,9 @@ public class EasterEggData : MonoBehaviour
         public bool duplicated;
     }
 
-    [System.Serializable]
-    public class UserData
-    {
-        public int userId;
-
-        public UserData(int userId)
-        {
-            this.userId = userId;
-        }
-    }
-
     private void Start()
     {
-        canvasWidth = easterEggPanel.parent.GetComponent<RectTransform>().rect.width;
-
-        hiddenPosition = new Vector2(500, easterEggPanel.anchoredPosition.y + 30);
-        visiblePosition = new Vector2(100, easterEggPanel.anchoredPosition.y + 30);
-        easterEggPanel.anchoredPosition = hiddenPosition;
-        Debug.Log("canvasWidth" + canvasWidth);
-        Debug.Log("hiddenPosition" + hiddenPosition);
+        canvas = GameObject.Find("EasterEggCanvas");
         /*        int easterData = (int)PhotonNetwork.CurrentRoom.CustomProperties["EasterEggData"];
 
                 if (easterData <= 5)
@@ -81,6 +66,7 @@ public class EasterEggData : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("TriggerEnter");
         if (acquireChk)
         {
             return;
@@ -97,8 +83,7 @@ public class EasterEggData : MonoBehaviour
     IEnumerator AddEasterEgg()
     {
         // 로그인 정보를 JSON 형식으로 준비
-        /*int userId = UserData.instance.userId;*/
-        int userId = 45;
+        int userId = UserData.instance.userId;
         string jsonData = $"{{\"userId\":{userId}}}";
 
         // UnityWebRequest로 HTTP POST 요청을 준비
@@ -146,16 +131,36 @@ public class EasterEggData : MonoBehaviour
                 easterEggInfo.attributes = attributes;
                 easterEggInfo.duplicated = response.data.duplicated;
 
+                if (canvas != null)
+                {
+                    easterEggPanelTransform = canvas.transform.Find("Panel");
+                    if (easterEggPanelTransform != null)
+                    {
+                        easterEggPanel = easterEggPanelTransform.gameObject;
+                        easterEggPanelRect = easterEggPanel.GetComponent<RectTransform>();
+                        skinImage = easterEggPanelTransform.Find("ItemIcon").GetComponent<Image>();
+                        descriptionText = easterEggPanelTransform.Find("Label").GetComponent<TextMeshProUGUI>();
+                    }
+
+                    canvasWidth = easterEggPanelRect.parent.GetComponent<RectTransform>().rect.width;
+
+                    hiddenPosition = new Vector2(500, easterEggPanelRect.anchoredPosition.y + 30);
+                    visiblePosition = new Vector2(100, easterEggPanelRect.anchoredPosition.y + 30);
+                    easterEggPanelRect.anchoredPosition = hiddenPosition;
+                    Debug.Log("canvasWidth" + canvasWidth);
+                    Debug.Log("hiddenPosition" + hiddenPosition);
+                }
+
                 descriptionText.text = response.data.description;
                 StartCoroutine(LoadImageFromUrl(easterEggInfo.skinImgUrl));
 
-                easterEgg.SetActive(true);
+                easterEggPanel.SetActive(true);
 
-                StartCoroutine(SlidePanel(easterEggPanel, hiddenPosition, visiblePosition, 800f));
+                StartCoroutine(SlidePanel(easterEggPanelRect, hiddenPosition, visiblePosition, 800f));
 
                 yield return new WaitForSeconds(3f);
 
-                StartCoroutine(SlidePanel(easterEggPanel, visiblePosition, hiddenPosition, 380f, () => easterEgg.SetActive(false)));
+                StartCoroutine(SlidePanel(easterEggPanelRect, visiblePosition, hiddenPosition, 380f, () => easterEggPanel.SetActive(false)));
 
                 yield return new WaitForSeconds(4f);
                 //easterEggPanel.SetActive(false);

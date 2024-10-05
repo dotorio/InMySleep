@@ -20,7 +20,7 @@ public class PlayerRespawn : MonoBehaviour
         // 3초 동안 시간이 흐르는 것을 텍스트에 반영
         while (currentTime < duration)
         {
-            Debug.Log("시간아~~");
+            //Debug.Log("시간아~~");
             currentTime += Time.deltaTime; // 델타 타임만큼 시간 추가
             timerText.text = currentTime.ToString("F2") + " 초"; // 소수점 두 자리까지 표시
             yield return null; // 다음 프레임까지 대기

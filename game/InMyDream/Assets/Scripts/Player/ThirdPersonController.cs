@@ -607,7 +607,7 @@ public class ThirdPersonController : MonoBehaviourPun
             Vector3 slopeDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
 
             // 미끄러지는 속도 설정
-            float slideSpeed = 6.0f;
+            float slideSpeed = 8.0f;
 
             // 미끄러지는 방향으로 캐릭터를 이동
             velocity = slopeDirection * slideSpeed;
@@ -617,7 +617,7 @@ public class ThirdPersonController : MonoBehaviourPun
     // 미끄러짐 멈춤을 지연시키는 코루틴
     IEnumerator DelayedStopSliding()
     {
-        yield return new WaitForSeconds(1f); // 1초 대기
+        yield return new WaitForSeconds(2f); // 2초 대기
         isSliding = false;
         velocity = Vector3.zero; // 속도를 0으로 설정하여 멈춤
     }

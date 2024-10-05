@@ -17,6 +17,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     public FriendManager friendManager;
     
     public StartController startController;
+    public RoomExitController roomExitController;
 
     
     //// testing variable
@@ -95,8 +96,21 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         playerProps["roomName"] = userName;
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
         startController.buttonUpdate();
-
+        roomExitController.roomExitButtonUpdate();
     }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        // 누군가 방에 들어오면 방장과 참가자 모두 버튼을 업데이트
+        roomExitController.roomExitButtonUpdate();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        // 누군가 방에서 나가면 방장과 참가자 모두 버튼을 업데이트
+        roomExitController.roomExitButtonUpdate();
+    }
+
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {

@@ -12,14 +12,15 @@ public class VacuumMovement : MonoBehaviour
     {
         // 초기 속도를 기본 속도로 설정
         currentSpeed = moveSpeed;
-        Debug.Log("Start 함수가 호출되었습니다.");
+        // 2번째 인자는 처음 실행까지의 대기 시간(초), 3번째 인자는 반복 주기(초)
+        InvokeRepeating("RepeatFunction", 0f, 10f);
     }
 
     void Update()
     {
         // 물체를 Z축 양의 방향으로 일정한 속도로 계속 움직임
         transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
-        //Debug.Log("현재 속도: " + currentSpeed);
+        Debug.Log("현재 속도: " + currentSpeed);
         //Debug.Log("현재 시간: " + Time.deltaTime);
         //Debug.Log("Time.timeScale: " + Time.timeScale);
         //Debug.Log("Update 함수가 호출되었습니다.");
@@ -31,18 +32,20 @@ public class VacuumMovement : MonoBehaviour
         {
             if (other.CompareTag("TileObject"))
             {
+                Debug.Log("속도 느림!!");
                 currentSpeed -= reducedSpeedFactor;
             }
 
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
+        }
+    }
+    void RepeatFunction()
+    {
+        // 5초마다 실행되는 코드
+        if (currentSpeed < 4)
+        {
+            currentSpeed = 4;
         }
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-        {
-            currentSpeed += reducedSpeedFactor;
-        }
-    }
 }

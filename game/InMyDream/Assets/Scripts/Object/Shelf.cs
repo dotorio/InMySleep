@@ -15,7 +15,7 @@ public class Shelf : MonoBehaviourPun
 
     private void Start()
     {
-        health = 3;
+        health = 5;
     }
     private void Update()
     {

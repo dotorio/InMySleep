@@ -237,12 +237,13 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public void CollectBattery(int batteryViewId)
     {
         battery++;
-        photonView.RPC("SyncBattery", RpcTarget.All, battery, batteryViewId);
-        
+        Debug.Log(photonView.ViewID);
+        Debug.Log(gameObject.GetComponent<PhotonView>().ViewID);
+        photonView.RPC("SyncBattery", RpcTarget.AllBuffered, battery, batteryViewId);
     }
 
     [PunRPC]
-    void SyncBattery(int newBatteryCount, int batteryViewId)
+    public void SyncBattery(int newBatteryCount, int batteryViewId)
     {
         battery = newBatteryCount;
         Debug.Log("Battery count synchronized");
@@ -254,6 +255,5 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
             // 배터리 오브젝트를 모든 클라이언트에서 제거
             Destroy(batteryPhotonView.gameObject);
         }
-
     }
 }
