@@ -21,6 +21,8 @@ public class OptionManager : MonoBehaviour
     public TMP_Text exitYesText;
     public TMP_Text exitNoText;
 
+    public RoomExitHandler roomExitHandler;
+
     void Start()
     {
         // OptionCanvas가 할당되지 않았다면 경고 메시지 출력
@@ -148,15 +150,16 @@ public class OptionManager : MonoBehaviour
 #endif
     }
 
+    // RoomExitHandler의 방 나가기 기능 호출
     public void RoomExitEvent()
     {
-        // 방 나가기 버튼을 눌렀을 때 호출
         Debug.Log("RoomExitEvent 함수 호출됨");
 
         // PhotonNetwork를 사용하여 방 나가기 처리
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LeaveRoom(); // 현재 방에서 나가기
+            // RoomExitHandler에서 방 나가기와 상대방 알림을 처리
+            roomExitHandler.RoomExitEvent();
         }
         else
         {
