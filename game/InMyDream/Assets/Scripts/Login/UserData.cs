@@ -15,6 +15,7 @@ public class UserData : MonoBehaviour
     public int roomId;
     public string bear;
     public string rabbit;
+    public bool isGaming;
 
     void Awake()
     {

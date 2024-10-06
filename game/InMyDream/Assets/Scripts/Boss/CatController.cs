@@ -612,7 +612,11 @@ public class CatController : MonoBehaviourPunCallbacks
 
     void BigThrow()
     {
-        jumpSound.Play();
+        if (jumpSound != null)
+        {
+
+            jumpSound.Play();
+        }
         // 컷신용 코드
         if (SceneManager.GetActiveScene().name == "CutScene4")
         {

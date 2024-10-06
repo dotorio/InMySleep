@@ -53,8 +53,14 @@ public class Shelf : MonoBehaviourPun
         if(other.CompareTag("Grabable") && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             health--;
-            damageSound.Play();
+            if (damageSound != null)
+            {
+                damageSound.Play();
+            }
+
             photonView.RPC("SyncHealth", RpcTarget.AllBuffered, health);
+            photonView.RPC("SyncBallEffect", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().ViewID);
+            PhotonNetwork.Instantiate("BallEffect", other.transform.position, Quaternion.identity);
         }
     }
 
@@ -62,5 +68,15 @@ public class Shelf : MonoBehaviourPun
     public void SyncHealth(int newHealth)
     {
         health = newHealth;
+    }
+
+    [PunRPC]
+    public void SyncBallEffect(int ballID)
+    {
+        PhotonView ball = PhotonView.Find(ballID);
+        if (ball != null)
+        {
+            Destroy(ball.gameObject);
+        }
     }
 }

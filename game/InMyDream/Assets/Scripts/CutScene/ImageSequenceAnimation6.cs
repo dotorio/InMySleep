@@ -52,7 +52,7 @@ public class ImageSequenceAnimation6 : MonoBehaviourPunCallbacks
         {
             if (isNext)
             {
-                SceneManager.LoadScene("LobbyScene");
+                SceneManager.LoadScene("GameClear");
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
