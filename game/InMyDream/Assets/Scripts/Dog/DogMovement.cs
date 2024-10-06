@@ -11,6 +11,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class DogMovement : MonoBehaviourPunCallbacks
 {
+    
+
     [Header("이동 설정")]
     [Tooltip("개가 따라갈 웨이포인트 리스트.")]
     public List<Transform> waypoints = new List<Transform>();
@@ -36,7 +38,7 @@ public class DogMovement : MonoBehaviourPunCallbacks
     private bool isRotating = false;
     private bool isBarking = false;
 
-    private AudioSource BarkSound;
+    public AudioSource BarkSound;
 
     // 현재 이벤트 위치 저장
     private Vector3 currentEventPosition;
