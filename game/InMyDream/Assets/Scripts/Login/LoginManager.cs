@@ -133,6 +133,7 @@ public class LoginManager : MonoBehaviour
                 UserData.instance.userName = response.data.username;
                 UserData.instance.userId = response.data.userId;
                 UserData.instance.lastStage = response.data.lastStage;
+                UserData.instance.isGaming = false;
 
                 yield return StartCoroutine(GetSkinSettings(response.data.userId));
 

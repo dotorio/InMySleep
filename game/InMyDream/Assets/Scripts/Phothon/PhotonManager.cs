@@ -64,9 +64,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         {
             chatClient.Service();
         }
-        if(UserData.instance.stage == 7)
+        if(UserData.instance.isGaming)
         {
-            UserData.instance.stage = 1;
+            UserData.instance.isGaming = false;
 
             ExitGames.Client.Photon.Hashtable playerProps = new ExitGames.Client.Photon.Hashtable();
             playerProps["character"] = PhotonNetwork.LocalPlayer.CustomProperties["character"];

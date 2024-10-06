@@ -20,6 +20,6 @@ public class GameClearManager : MonoBehaviour
 
     void GameClear ()
     {
-        PhotonNetwork.LoadLevel("LobbyScene");
+        SceneManager.LoadScene("LobbyScene");
     }
 }
