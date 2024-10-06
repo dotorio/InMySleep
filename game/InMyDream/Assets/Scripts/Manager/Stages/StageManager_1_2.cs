@@ -18,10 +18,11 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
     public GameObject missionStage1;
     public GameObject missionStage2;
     public GameObject portal1;
-   
 
+    public AudioSource Stage1BGM;
     public AudioSource Stage2BGM;
     public AudioSource Stage21BGM;
+    public AudioSource Stage22BGM;
     public TextMeshProUGUI batteryCnt;
     
 
@@ -48,6 +49,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
 
         if(stage == 1)
         {
+            Stage1BGM.Play();
             Dogs.SetActive(false);
             missionStage1.SetActive(true);
             missionStage2.SetActive(false);
@@ -79,6 +81,7 @@ public class StageManager_1_2 : MonoBehaviourPun, StageManager
         {
             Stage2BGM.Play();
             Stage21BGM.Play();
+            Stage22BGM.Play();
             missionStage1.SetActive(false);
             missionStage2.SetActive(true);
             portal1.SetActive(false);

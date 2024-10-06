@@ -32,6 +32,8 @@ public class ThirdPersonController : MonoBehaviourPun
     // 물건 던지기 관련 변수
     public Transform throwPosition; // 물건을 던질 위치
     public GameObject objectToThrow; // 던질 물체
+    public AudioSource GrabBGM;
+    public AudioSource ThrowBGM;
     public float throwForce = 10f; // 던질 힘
     private GameObject heldObject = null; // 들고 있는 물체
     private bool canPickUp = true; // 물체를 주울 수 있는지 여부
@@ -132,6 +134,7 @@ public class ThirdPersonController : MonoBehaviourPun
                 if(!grabableObject.isHeld)
                 {
                     PickUpObject(other.gameObject);
+                    GrabBGM.Play();
                 }
                 else
                 {
@@ -303,6 +306,7 @@ public class ThirdPersonController : MonoBehaviourPun
             if (heldObject != null && Input.GetMouseButtonDown(0))
             {
                 ThrowObject();
+                ThrowBGM.Play();
             }
 
         }

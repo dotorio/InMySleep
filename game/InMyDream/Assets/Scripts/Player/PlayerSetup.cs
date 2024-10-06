@@ -22,6 +22,7 @@ public class PlayerSetup : MonoBehaviourPun
     private float holdTime = 2f;
     private float holdTimer = 0f;
     private bool isPushing = false; // 캐릭터가 물체를 밀고 있는지 여부
+    public AudioSource PushBGM;
     public float moveSpeed = 3f; // 캐릭터가 물체를 밀 때의 이동 속도
     private Vector3 initialObjectPosition; // 물체의 초기 위치 저장
 
