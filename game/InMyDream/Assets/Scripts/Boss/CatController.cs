@@ -20,6 +20,7 @@ public class CatController : MonoBehaviourPunCallbacks
     public GameObject redBomb; // 캐릭터 팔에 연결된 공
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
+    public AudioSource jumpSound;
 
     // 쓰러질 때 생성할 목적지
     public GameObject Goal;
@@ -611,6 +612,7 @@ public class CatController : MonoBehaviourPunCallbacks
 
     void BigThrow()
     {
+        jumpSound.Play();
         // 컷신용 코드
         if (SceneManager.GetActiveScene().name == "CutScene4")
         {

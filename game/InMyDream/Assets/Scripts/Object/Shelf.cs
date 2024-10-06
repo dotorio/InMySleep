@@ -6,6 +6,7 @@ using UnityEngine;
 public class Shelf : MonoBehaviourPun
 {
     public int health;
+    public AudioSource damageSound; // 데미지 시 소리
     public AudioClip destructionSound; // 파괴 시 소리
     public GameObject destructionEffect; // 파괴 시 이펙트
 
@@ -52,6 +53,7 @@ public class Shelf : MonoBehaviourPun
         if(other.CompareTag("Grabable") && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             health--;
+            damageSound.Play();
             photonView.RPC("SyncHealth", RpcTarget.AllBuffered, health);
         }
     }
