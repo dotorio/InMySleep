@@ -11,28 +11,190 @@ public class SkinGenerator : MonoBehaviour
     public string savePath = "Screenshots";
     public int width;
     public int height;
-    public Camera camera;
+
     private Material[] bearMaterials;
     private Material[] bunnyMaterials;
+    private Material[] faces;
+
+    private GameObject[] Character;
+    private GameObject[] BackPack;
+    private GameObject[] CrossBag;
+    private GameObject[] Scarf;
+
+    private GameObject[] Glasses;
+    private GameObject[] Hat;
+    private GameObject[] Mustache;
+
+    private GameObject[] instantiatedPrefabs = new GameObject[100];
+    private int instantiatedIndex = 0;
+    
     private Color baseColor;
-    private int[] grade = { 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 };
+    //private int[] grade = { 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 };
+
     private int captureIndex = 0;
 
     void Start()
     {
-        camera.aspect = (float)width / (float)height;
+        //camera.aspect = (float)width / (float)height;
+        
         LoadMaterials();
+        LoadPrefabs();
+        //LoadGrade();
 
-        StartCoroutine(CaptureScreenshots());
+        StartCoroutine(StartCapture());
+        Debug.Log("모든 스크린샷 촬영 완료");
     }
 
     void LoadMaterials()
     {
-        bearMaterials = Resources.LoadAll<Material>("Bear");
-        bunnyMaterials = Resources.LoadAll<Material>("Bunny");
+        bearMaterials = Resources.LoadAll<Material>("Skin/Bear");
+        bunnyMaterials = Resources.LoadAll<Material>("Skin/Bunny");
+        faces = Resources.LoadAll<Material>("Skin/Face");
 
         Debug.Log($"Bear Materials Loaded: {bearMaterials.Length}");
         Debug.Log($"Bunny Materials Loaded: {bunnyMaterials.Length}");
+        Debug.Log($"Face Materials Loaded: {faces.Length}");
+    }
+
+    void LoadPrefabs()
+    {
+        Character = Resources.LoadAll<GameObject>("Skin/Character");
+        BackPack = Resources.LoadAll<GameObject>("Skin/BackPack");
+        CrossBag = Resources.LoadAll<GameObject>("Skin/CrossBag");
+        Glasses = Resources.LoadAll<GameObject>("Skin/Glasses");
+        Hat = Resources.LoadAll<GameObject>("Skin/Hat");
+        Mustache = Resources.LoadAll<GameObject>("Skin/Mustache");
+        Scarf = Resources.LoadAll<GameObject>("Skin/Scarf");
+
+        Debug.Log($"Character Prefabs Loaded: {Character.Length}");
+        Debug.Log($"BackPack Prefabs Loaded: {BackPack.Length}");
+        Debug.Log($"CrossBag Prefabs Loaded: {CrossBag.Length}");
+        Debug.Log($"Glasses Prefabs Loaded: {Glasses.Length}");
+        Debug.Log($"Hat Prefabs Loaded: {Hat.Length}");
+        Debug.Log($"Mustache Prefabs Loaded: {Mustache.Length}");
+        Debug.Log($"Scarf Prefabs Loaded: {Scarf.Length}");
+    }
+
+    IEnumerator StartCapture()
+    {
+        Instantiate(Character[0], GameObject.Find("Character").transform);
+        List<System.Array> categories = new List<System.Array>{
+            bearMaterials,
+            faces,
+            BackPack,
+            CrossBag,
+            Scarf,
+            Glasses,
+            Hat,
+            Mustache,
+        };
+        yield return StartCoroutine(captureCombinations(0, new List<System.Object>(), categories));
+        Destroy(GameObject.Find("Bear"));
+
+        Instantiate(Character[1], GameObject.Find("Character").transform);
+        categories = new List<System.Array>{
+            bunnyMaterials,
+            faces,
+            BackPack,
+            CrossBag,
+            Scarf,
+            Glasses,
+            Hat,
+            Mustache,
+        };
+        yield return StartCoroutine(captureCombinations(0, new List<System.Object>(), categories));
+        Destroy(GameObject.Find("Bunny"));
+    }
+
+    IEnumerator captureCombinations(int index, List<System.Object> currentCombination, List<System.Array> categories)
+    {
+
+        if (index >= categories.Count)
+        {
+            for (int i = 0; i < instantiatedIndex; i++) {
+                if (instantiatedPrefabs[i] != null) {
+                    Destroy(instantiatedPrefabs[i]);
+                }
+            } 
+            instantiatedIndex = 0;
+            ApplyCombination(currentCombination);
+            BgColorPicker();
+            yield return new WaitForEndOfFrame();
+            // Screenshot();
+            yield break;
+        }
+
+        var currentCategory = categories[index];
+        foreach (var item in currentCategory)
+        {
+            currentCombination.Add(item);
+            yield return captureCombinations(index + 1, currentCombination, categories);
+
+            currentCombination.RemoveAt(currentCombination.Count - 1);
+        }
+    }
+
+    void ApplyCombination(List<System.Object> combination)
+    {
+        int index = 0;
+
+        if (combination[index] is Material material) {
+            ApplyMaterial(material);
+            index++;
+        }
+
+        if (combination[index] is Material face) {
+            ApplyFace(face);
+            index++;
+        }
+
+        for (; index < combination.Count; index++)
+        {
+            if (combination[index] is GameObject accessory)
+            {
+                ApplyAccessory(accessory, index);
+            }
+        }
+    }
+
+    void ApplyMaterial(Material material)
+    {
+        Renderer skinRenderer = GameObject.Find($"Skin").GetComponent<Renderer>();
+        skinRenderer.material = material;
+    }
+
+    void ApplyFace(Material face)
+    {
+        Renderer faceRenderer = GameObject.Find($"Face01").GetComponent<Renderer>();
+        faceRenderer.material = face;
+    }
+
+    void ApplyAccessory(GameObject accessory, int index)
+    {
+        string locatorName = GetLocatorName(index);
+        Transform locator = GameObject.Find($"{locatorName}").transform;
+        instantiatedPrefabs[instantiatedIndex] = Instantiate(accessory, locator);
+        instantiatedIndex++;
+    }
+
+    string GetLocatorName(int index) {
+        switch (index)
+        {
+            case 2:
+                return "Accessories_locator";
+            case 3:
+                return "Accessories_locator";
+            case 4:
+                return "Accessories_locator";
+            case 5:
+                return "Head_Accessories_locator";
+            case 6:
+                return "Head_Accessories_locator";
+            case 7:
+                return "Head_Accessories_locator";
+            default:
+                return "Head_Accessories_locator";
+        }
     }
 
     void BgColorPicker()
@@ -85,73 +247,11 @@ public class SkinGenerator : MonoBehaviour
         line4.color = generatedColors[2];
     }
 
-    IEnumerator CaptureScreenshots()
-    {
-        GameObject character = GameObject.Find("Character");
-        Transform bearTransform = character.transform.Find("Bear");
-        GameObject bearObject = bearTransform.gameObject;
-        bearObject.SetActive(true);
-        foreach (var material in bearMaterials)
-        {
-            yield return CaptureForMaterial(material, "Bear");
-            captureIndex++;
-        }
-        bearObject.SetActive(false);
 
-        Transform bunnyTransform = character.transform.Find("Bunny");
-        GameObject bunnyObject = bunnyTransform.gameObject;
-        bunnyObject.SetActive(true);
-        foreach (var material in bunnyMaterials)
-        {
-            yield return CaptureForMaterial(material, "Bunny");
-            captureIndex++;
-        }
-        bunnyObject.SetActive(false);
-        Debug.Log("모든 스크린샷 촬영 완료");
-    }
-
-    IEnumerator CaptureForMaterial(Material material, string character)
-    {
-        Renderer skinRenderer = GameObject.Find($"{character}Skin").GetComponent<Renderer>();
-
-        skinRenderer.material = material;
-        yield return new WaitForEndOfFrame();
-
-        BgColorPicker();
-
-        SetGradeImage();
-
-        Screenshot(material.name);
-
-        yield return null;
-    }
-
-    void SetGradeImage()
-    {
-        Image gradeImage = GameObject.Find("Grade").GetComponent<Image>();
-        string gradeFilePath = "";
-        if (grade[captureIndex] == 1)
-        {
-            gradeFilePath = "grade/figma_star1";
-        }
-        else if (grade[captureIndex] == 2)
-        {
-            gradeFilePath = "grade/figma_star2";
-        }
-        else if (grade[captureIndex] == 3)
-        {
-            gradeFilePath = "grade/figma_star3";
-        }
-
-        Sprite gradeSprite = Resources.Load<Sprite>(gradeFilePath);
-        if (gradeSprite != null)
-        {
-            gradeImage.sprite = gradeSprite;
-        }
-    }
 
     void Screenshot(string materialName)
     {
+        Camera camera = Camera.main;
         RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
         camera.targetTexture = rt;
         Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGBA32, false);
@@ -168,7 +268,7 @@ public class SkinGenerator : MonoBehaviour
             System.IO.Directory.CreateDirectory(directoryPath);
         }
         string rgb = $"{(int)(baseColor.r * 255)}_{(int)(baseColor.g * 255)}_{(int)(baseColor.b * 255)}";
-        string filePath = $"{directoryPath}/{materialName}_RGB{rgb}_Grade{grade[captureIndex]}.png";
+        string filePath = $"{directoryPath}/{materialName}_RGB{rgb}.png";
 
         byte[] bytes = screenShot.EncodeToPNG();
         System.IO.File.WriteAllBytes(filePath, bytes);
@@ -179,4 +279,29 @@ public class SkinGenerator : MonoBehaviour
 
         Debug.Log($"Screenshot saved to: {filePath}");
     }
+
+
+    //void SetGradeImage()
+    //{
+    //    Image gradeImage = GameObject.Find("Skin/Grade").GetComponent<Image>();
+    //    string gradeFilePath = "";
+    //    if (grade[captureIndex] == 1)
+    //    {
+    //        gradeFilePath = "grade/figma_star1";
+    //    }
+    //    else if (grade[captureIndex] == 2)
+    //    {
+    //        gradeFilePath = "grade/figma_star2";
+    //    }
+    //    else if (grade[captureIndex] == 3)
+    //    {
+    //        gradeFilePath = "grade/figma_star3";
+    //    }
+
+    //    Sprite gradeSprite = Resources.Load<Sprite>(gradeFilePath);
+    //    if (gradeSprite != null)
+    //    {
+    //        gradeImage.sprite = gradeSprite;
+    //    }
+    //}
 }
