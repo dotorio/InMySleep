@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Photon.Pun;
 using UnityEngine;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class CatController : MonoBehaviourPunCallbacks
@@ -32,6 +33,12 @@ public class CatController : MonoBehaviourPunCallbacks
     private int damage = 0;
     private float originalSpeed;
 
+    // 스테이지4 미션 UI
+    public TextMeshProUGUI missionText1;
+    public TextMeshProUGUI missionText2;
+
+
+
     // Start는 첫 프레임 업데이트 전에 호출됩니다.
     void Start()
     {
@@ -50,7 +57,7 @@ public class CatController : MonoBehaviourPunCallbacks
             animator.Play("Die2");
             //yield return new WaitUntil(() => IsAnimationFinished(7)); // '5'로 설정하여 Die1 애니메이션 확인
             isDying = true; // 애니메이션 실행 상태 초기화
-
+            missionText2.text = "완료";
             Goal.SetActive(true);
         }
     }
@@ -175,6 +182,7 @@ public class CatController : MonoBehaviourPunCallbacks
             {
                 animator.Play("Die1");
                 isDying = true;
+                missionText1.text = "완료";
 
                 Goal.SetActive(true);
 

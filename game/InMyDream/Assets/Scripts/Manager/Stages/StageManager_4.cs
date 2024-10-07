@@ -21,6 +21,10 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
     public GameObject Boss1;
     public GameObject Boss2;
     public GameObject BossUI;
+    public GameObject BossSound;
+
+    public GameObject Mission1;
+    public GameObject Mission2;
 
     void Start()
     {
@@ -39,6 +43,10 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
 
         if (stage == 4)
         {
+            
+            Mission1.SetActive(true);
+            Mission2.SetActive(false);
+
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 point = Master_1.transform;
@@ -50,6 +58,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
         }
         else
         {
+
             // 점프맵 생성
             JumpMap.SetActive(true);
 
@@ -58,9 +67,12 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
 
             // 보스 생성
             Boss2.SetActive(true);
-
             // 보스 등장 UI 제거
             BossUI.SetActive(false);
+            BossSound.SetActive(false);
+
+            Mission1.SetActive(false);
+            Mission2.SetActive(true);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
