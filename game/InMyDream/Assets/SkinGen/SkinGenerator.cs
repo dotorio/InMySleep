@@ -2,6 +2,7 @@ using Photon.Pun.Demo.SlotRacer.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -77,84 +78,88 @@ public class SkinGenerator : MonoBehaviour
 
     IEnumerator StartCapture()
     {
-        Instantiate(Character[0], GameObject.Find("Character").transform);
+
+/*        Instantiate(Character[0], GameObject.Find("Character").transform);
         List<System.Array> categories = new List<System.Array>{
             bearMaterials,
             faces,
-            BackPack,
-            CrossBag,
-            Scarf,
-            Glasses,
-            Hat,
-            Mustache,
+            AddNoneOption(BackPack),
+            // AddNoneOption(CrossBag),
+            // AddNoneOption(Scarf),
+            AddNoneOption(Glasses),
+            AddNoneOption(Hat),
+            // AddNoneOption(Mustache),
         };
-        yield return StartCoroutine(captureCombinations(0, new List<System.Object>(), categories));
-        Destroy(GameObject.Find("Bear"));
+        yield return StartCoroutine(captureCombinations(0, categories));
+        Destroy(GameObject.Find("Bear"));*/
 
         Instantiate(Character[1], GameObject.Find("Character").transform);
-        categories = new List<System.Array>{
+        List<System.Array>  categories = new List<System.Array>{
             bunnyMaterials,
             faces,
-            BackPack,
-            CrossBag,
-            Scarf,
-            Glasses,
-            Hat,
-            Mustache,
+            AddNoneOption(BackPack),
+            // AddNoneOption(CrossBag),
+            // AddNoneOption(Scarf),
+            AddNoneOption(Glasses),
+            AddNoneOption(Hat),
+            // AddNoneOption(Mustache),
         };
-        yield return StartCoroutine(captureCombinations(0, new List<System.Object>(), categories));
+        yield return StartCoroutine(captureCombinations(0, categories));
         Destroy(GameObject.Find("Bunny"));
     }
 
-    IEnumerator captureCombinations(int index, List<System.Object> currentCombination, List<System.Array> categories)
+    System.Array AddNoneOption(System.Array originalArray)
+    {
+        // 기존 배열에 null을 추가하여 새로운 배열을 만듦
+        List<System.Object> extendedList = new List<System.Object>(originalArray.Cast<System.Object>());
+        extendedList.Insert(0, null); // 맨 앞에 null 추가 (적용 안 함을 표현)
+        return extendedList.ToArray();
+    }
+
+    IEnumerator captureCombinations(int index, List<System.Array> categories)
     {
 
         if (index >= categories.Count)
         {
-            for (int i = 0; i < instantiatedIndex; i++) {
-                if (instantiatedPrefabs[i] != null) {
-                    Destroy(instantiatedPrefabs[i]);
-                }
-            } 
-            instantiatedIndex = 0;
-            ApplyCombination(currentCombination);
             BgColorPicker();
             yield return new WaitForEndOfFrame();
-            // Screenshot();
+            Screenshot();
             yield break;
         }
 
         var currentCategory = categories[index];
         foreach (var item in currentCategory)
         {
-            currentCombination.Add(item);
-            yield return captureCombinations(index + 1, currentCombination, categories);
-
-            currentCombination.RemoveAt(currentCombination.Count - 1);
+            Boolean isPrefab = false;
+            isPrefab = ApplyCombination(item, index);
+            yield return captureCombinations(index + 1, categories);
+            if (isPrefab) {
+                Destroy(instantiatedPrefabs[instantiatedIndex - 1]);
+                instantiatedIndex--;
+            }
         }
     }
 
-    void ApplyCombination(List<System.Object> combination)
+    Boolean ApplyCombination(System.Object item, int index)
     {
-        int index = 0;
 
-        if (combination[index] is Material material) {
+        if (index == 0 && item is Material material) {
             ApplyMaterial(material);
-            index++;
+            return false;
         }
 
-        if (combination[index] is Material face) {
+        if (index == 1 && item is Material face) {
             ApplyFace(face);
-            index++;
+            return false;
         }
 
-        for (; index < combination.Count; index++)
+        if (item is GameObject accessory)
         {
-            if (combination[index] is GameObject accessory)
-            {
-                ApplyAccessory(accessory, index);
-            }
+            ApplyAccessory(accessory, index);
+            return true;
         }
+
+        return false;
     }
 
     void ApplyMaterial(Material material)
@@ -182,16 +187,16 @@ public class SkinGenerator : MonoBehaviour
         {
             case 2:
                 return "Accessories_locator";
-            case 3:
+/*            case 3:
                 return "Accessories_locator";
             case 4:
-                return "Accessories_locator";
-            case 5:
+                return "Accessories_locator";*/
+            case 3:
                 return "Head_Accessories_locator";
-            case 6:
+            case 4:
                 return "Head_Accessories_locator";
-            case 7:
-                return "Head_Accessories_locator";
+/*            case 7:
+                return "Head_Accessories_locator";*/
             default:
                 return "Head_Accessories_locator";
         }
@@ -249,7 +254,7 @@ public class SkinGenerator : MonoBehaviour
 
 
 
-    void Screenshot(string materialName)
+    void Screenshot()
     {
         Camera camera = Camera.main;
         RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
@@ -268,7 +273,7 @@ public class SkinGenerator : MonoBehaviour
             System.IO.Directory.CreateDirectory(directoryPath);
         }
         string rgb = $"{(int)(baseColor.r * 255)}_{(int)(baseColor.g * 255)}_{(int)(baseColor.b * 255)}";
-        string filePath = $"{directoryPath}/{materialName}_RGB{rgb}.png";
+        string filePath = $"{directoryPath}/_RGB{rgb}.png";
 
         byte[] bytes = screenShot.EncodeToPNG();
         System.IO.File.WriteAllBytes(filePath, bytes);
