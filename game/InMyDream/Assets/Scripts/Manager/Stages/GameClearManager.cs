@@ -10,6 +10,9 @@ public class GameClearManager : MonoBehaviour
     public Button clearBtn;
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         // 방장이 클리어 버튼 클릭 시 로비로 이동
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {

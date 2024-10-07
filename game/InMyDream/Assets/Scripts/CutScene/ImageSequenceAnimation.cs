@@ -32,6 +32,9 @@ public class ImageSequenceAnimation : MonoBehaviourPunCallbacks
     {
         
         UserData.instance.isGaming = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         // 모든 이미지를 투명하게 설정 (알파값 0)
         foreach (Image img in images)
         {
