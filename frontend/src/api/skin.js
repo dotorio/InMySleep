@@ -19,10 +19,10 @@ export function getSkinList(userId) {
   });
 }
 
-export function putEquipSkin(userId, character, color) {
+export function putEquipSkin(userId, character, metadataId) {
   return axios({
     url: `${baseURL}/equip`,
     method: "put",
-    data: { userId, character, color },
+    data: { userId, character, metadataId },
   });
 }

@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import CollectionNft from "@/components/collection/CollectionNft.vue";
-import { myNFTs } from "@/api/nft";
-import { getEquippedSkin, getSkinList } from "@/api/skin";
 import { useUserStore } from "@/stores/user";
 import { useSkinStore } from "@/stores/skin";
 import { useNftStore } from "@/stores/nft";
@@ -11,168 +9,13 @@ const uStore = useUserStore();
 const sStore = useSkinStore();
 const nStore = useNftStore();
 
-// const choice = ref("bear");
-// const equippedBear = ref(0);
-// const equippedRabbit = ref(0);
-const defaultUrl = "none";
-const bear = ref({
-  nft: [
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-  ]
+defineProps({
+  nftData: Object,
 });
-const rabbit = ref({
-  nft: [
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-    {
-      imageUrl: defaultUrl,
-    },
-  ]
-});
-const nftData = ref([
-  {
-    id: 0,
-    description: "",
-    attributes: {},
-    imageUrl: "",
-    metadataUri: "",
-  }
-]);
-
-onBeforeMount(async () => {
-  try {
-    const response = await getEquippedSkin(uStore.user.data.userId);
-    sStore.userSkin.selectedBearMetadata = sStore.userSkin.bearMetadata = response.data[0].id;
-    sStore.userSkin.selectedRabbitMetadata = sStore.userSkin.rabbitMetadata = response.data[1].id;
-    // equippedBear.value = response.data[0].id;
-    // equippedRabbit.value = response.data[1].id;
-
-    // if (sStore.userSkin.choice === "bear") {
-    //   bear.value.nft[equippedBear.value] = response.data[0];
-    // } else {
-    //   rabbit.value.nft[equippedRabbit.value] = response.data[1];
-    // }
-  } catch (error) {
-    console.error(error);
-  }
-
-  try {
-    const response = await getSkinList(uStore.user.data.userId);
-    nftData.value = response.data;
-    nftData.value = prepareNftData(response.data);
-    filterNftData(nftData);
-    sStore.userBearSkin = bear.value.nft;
-    sStore.userRabbitSkin = rabbit.value.nft;
-  } catch (error) {
-    console.error(error);
-  }
-
-  if (!uStore.user.data.metamaskToken) {
-    return;
-  }
-
-  try {
-    const response = await myNFTs(uStore.user.data.address, uStore.user.data.metamaskToken);
-    nStore.userNft = response.data;
-    // if (nftData.value.length > 1) {
-    //   nftData.value = prepareNftData(nftData);
-    //   console.log(nftData.value);
-    //   filterNftData(nftData);
-    //   console.log(bear.value.nft);
-    //   console.log(rabbit.value.nft);
-    // }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "NFT를 불러오는데 실패했습니다. 지갑 연동 상태를 확인해주세요.",
-    });
-    uStore.user.data.metamaskToken = "";
-    uStore.user.data.address = "";
-    console.error(error);
-  }
-  // try {
-  //   const response = await myNFTs(uStore.user.wallet_address, uStore.user.token);
-  //   nftData.value = response.data;
-  //   console.log(nftData.value);
-  //   if (nftData.value.length > 1) {
-  //     nftData.value = prepareNftData(nftData);
-  //     console.log(nftData.value);
-  //     filterNftData(nftData);
-  //     console.log(bear.value.nft);
-  //     console.log(rabbit.value.nft);
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  // }
-})
-
-// const bear = {
-//   nft: ["bear1", "bear2", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "bear3", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6"],
-// };
-// const rabbit = {
-//   nft: ["rabbit1", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6", "rabbit2", "rabbit3"],
-// };
 
 function choiceCharacter(character) {
   sStore.userSkin.choice = character;
 }
-
-function prepareNftData(responseData) {
-  return responseData.map((nft) => {
-    return {
-      id: nft.id,
-      description: nft.description,
-      attributes: nft.attributes,
-      imageUrl: nft.image_url,
-      metadataUri: nft.metadata_uri,
-    };
-  });
-}
-
-function filterNftData(nftData) {
-  let bearIndex = 0
-  let rabbitIndex = 0
-  nftData.value.forEach((nft) => {
-    if (nft.attributes.character.toLowerCase() === "bear") {
-      bear.value.nft[bearIndex] = nft;
-      bearIndex++;
-    } else {
-      rabbit.value.nft[rabbitIndex] = nft;
-      rabbitIndex++;
-    }
-  });
-}
-
 </script>
 
 <template>
@@ -185,7 +28,7 @@ function filterNftData(nftData) {
         <img src="/src/assets/collection/rabbit.svg" alt="토끼" :class="choice === 'rabbit' ? 'active' : ''" />
       </div>
     </div>
-    <CollectionNft :nft-data="sStore.userSkin.choice === 'bear' ? bear : rabbit" />
+    <CollectionNft :nft-data="nftData" />
   </div>
 </template>
 

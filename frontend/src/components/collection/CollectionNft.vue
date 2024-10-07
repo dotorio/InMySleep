@@ -16,9 +16,6 @@ function nftHover(index) {
   nftIndex.value = index;
 }
 
-// function imgUrl(nft) {
-//   return new URL(`/src/assets/collection/nft/${nft}.svg`, import.meta.url).href;
-// }
 function imgUrl(nft) {
   if (!nft.imageUrl) {
     return "";
@@ -26,13 +23,11 @@ function imgUrl(nft) {
   if (nft.imageUrl === "none") {
     return new URL(`/src/assets/collection/nft/lock-nft.svg`, import.meta.url).href;
   }
-  // const hash = nft.imageUrl.split("ipfs://")[1];
   const url = nft.imageUrl;
   return new URL(`${url}`, import.meta.url).href;
 }
 
 function changeSkin(selectedSkin) {
-  console.log(selectedSkin);
   if (!selectedSkin.attributes) {
     Swal.fire({
       icon: "error",
