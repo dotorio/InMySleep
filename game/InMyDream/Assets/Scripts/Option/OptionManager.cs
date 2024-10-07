@@ -82,6 +82,19 @@ public class OptionManager : MonoBehaviour
             optionCanvas.SetActive(!isActive);
 
             exitNoti.SetActive(false);
+
+            // 마우스 설정
+            if (!optionCanvas.activeSelf && UserData.instance.isGaming)
+            {
+                // ESC로 창을 닫은 경우 -> 마우스 감춤
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            } 
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
     }
 
