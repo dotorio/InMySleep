@@ -20,6 +20,9 @@ public class FriendListToggle : MonoBehaviour
     public GameObject friendSearchList;
     public GameObject notiList;
 
+    // 친구 요청 알림 아이콘
+    public RectTransform notiListLight;
+
     public float slideSpeed = 500f;        // 슬라이드 속도
     private bool isPanelVisible = false;   // 초대 목록 패널이 보이는지 여부
     private bool isSearchPanelVisible = false;   //  검색 패널이 보이는지 여부
@@ -82,6 +85,12 @@ public class FriendListToggle : MonoBehaviour
             panel.SetSiblingIndex(panel.parent.childCount - 1);
             panelGameObject.SetActive(true);
             StartCoroutine(SlidePanel(panel, hiddenPosition, visiblePosition));
+
+            // 우편함 열리면 알림 끄기
+            if (panel == NotiListPanel)
+            {
+                HideNotiListLight();
+            }
         }
 
         isVisible = !isVisible;
@@ -106,4 +115,23 @@ public class FriendListToggle : MonoBehaviour
             onComplete();
         }
     }
+
+    // 알림 아이콘을 켜기
+    public void ShowNotiListLight()
+    {
+        if (!notiListLight.gameObject.activeSelf)
+        {
+            notiListLight.gameObject.SetActive(true);  // 활성화
+        }
+    }
+
+    // 알림 아이콘을 끄기
+    public void HideNotiListLight()
+    {
+        if (notiListLight.gameObject.activeSelf)
+        {
+            notiListLight.gameObject.SetActive(false);  // 비활성화
+        }
+    }
+
 }

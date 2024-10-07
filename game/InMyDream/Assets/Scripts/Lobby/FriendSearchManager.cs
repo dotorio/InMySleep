@@ -107,13 +107,13 @@ public class FriendSearchManager : MonoBehaviour
                 GameObject newFriendItem = Instantiate(friendItemPrefab, contentPanel);  // 프리팹 생성
                 newFriendItem.transform.Find("UsernameText").GetComponent<TextMeshProUGUI>().text = friend.username;  // 친구 이름 설정
                 Button requestBtn = newFriendItem.transform.Find("RequestBtn").GetComponent<Button>();
-                requestBtn.onClick.AddListener(() => requestFriend(friend.userId));
+                requestBtn.onClick.AddListener(() => requestFriend(friend.userId, friend.username));
             }
         }
     }
 
-    void requestFriend (int userId)
+    void requestFriend (int userId, string username)
     {
-        StartCoroutine(friendManager.AddFriend(userId));
+        StartCoroutine(friendManager.AddFriend(userId, username));
     }
 }

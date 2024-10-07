@@ -19,7 +19,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
     public StartController startController;
     public RoomExitController roomExitController;
 
-    
+    public GameObject buttonManager;
+    private FriendListToggle friendListToggle;  // FriendListToggle의 참조
+
+
     //// testing variable
     //private int userId = 42;
     //private string userName = "ttest";
@@ -55,6 +58,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
             "1.0",
             new Photon.Chat.AuthenticationValues(userName));
+
+        // buttonManager에서 FriendListToggle 컴포넌트 가져오기
+        friendListToggle = buttonManager.GetComponent<FriendListToggle>();
     }
 
 
@@ -200,25 +206,31 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
         Debug.Log("Disconnected from Photon Chat");
     }
 
-    // 개인 메세지(친구 초대)가 왔을 때 실행되는 메소드
+    // 개인 메세지(친구 초대 또는 친구 요청)가 왔을 때 실행되는 메소드
     public void OnPrivateMessage(string sender, object message, string channelName)
     {
-        // 메시지를 바로 초대로 처리 (다른 메시지 유형이 없으므로 바로 처리 가능)
-        string roomName = message.ToString().Replace("Invitation: ", "");
-        Debug.Log($"Received invitation to room: {roomName} from {sender}");
+        string messageText = message.ToString();
 
-        if (sender != userName)
+        if (messageText.StartsWith("Invitation: "))
         {
-            // 초대 수락 여부를 묻는 UI 호출 (예시: 팝업)
-            friendManager.ShowInvitationPopup(roomName);
+            // 초대 메시지 처리
+            string roomName = messageText.Replace("Invitation: ", "");
+            Debug.Log($"Received invitation to room: {roomName} from {sender}");
+
+            if (sender != userName)
+            {
+                // 초대 수락 여부를 묻는 UI 호출
+                friendManager.ShowInvitationPopup(roomName);
+            }
         }
+        else if (messageText.StartsWith("FriendRequest: "))
+        {
+            // 친구 요청 메시지 처리
+            Debug.Log($"Received friend request from {sender}");
 
-        // 초대를 받은 사람이 자신일 경우에만 팝업을 띄움
-        //if (sender != UserData.instance.userName) // 초대 메시지를 보낸 사람이 본인이 아닌 경우
-        //{
-        //    ShowInvitationPopup(roomName); // 팝업 띄우기
-        //}
-
+            // 알림 아이콘 표시
+            friendListToggle.ShowNotiListLight();
+        }
     }
 
     // 초대 보내는 함수
@@ -229,6 +241,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
             // 친구에게 방 초대 메시지 전송 (수락 필요)
             chatClient.SendPrivateMessage(friendName, $"Invitation: {roomName}");
             Debug.Log($"Invite sent to {friendName} for room: {roomName}");
+        }
+    }
+
+    // 친구 요청
+    public void SendFriendRequest(string username)
+    {
+        if (chatClient != null)
+        {
+            chatClient.SendPrivateMessage(username, $"FriendRequest: {username}");
+            Debug.Log($"Friend Request sent to {username}");
         }
     }
 
