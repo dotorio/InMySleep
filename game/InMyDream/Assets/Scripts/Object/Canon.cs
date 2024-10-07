@@ -13,7 +13,7 @@ public class Canon : MonoBehaviourPunCallbacks
     public AudioSource loadSource; // 소리 재생기 (장전)
     public AudioSource fireSource; // 소리 재생기 (발사)
 
-    public ParticleSystem fireEffect; // 발사 이펙트
+    public GameObject fireEffect; // 발사 이펙트
 
     public GameObject fireObject; // 현재 폭탄 객체
 
@@ -103,15 +103,19 @@ public class Canon : MonoBehaviourPunCallbacks
         fireSource.Play();
 
         // 발사 이펙트 재생
-        if (fireEffect != null)
-        {
-            fireEffect.Play();
-        }
+        StartCoroutine(SpawnAndDestroyObject());
 
         isLoaded = false; // 발사 후 장전 해제
         Debug.Log("대포가 발사되었습니다.");
 
         // 장전된 포탄 제거
         fireObject.SetActive(false);
+    }
+
+    IEnumerator SpawnAndDestroyObject()
+    {
+        GameObject spawnedObject = Instantiate(fireEffect, firePoint.position, firePoint.rotation); // firePoint 위치에 오브젝트 생성
+        yield return new WaitForSeconds(1f); // 1초 대기
+        Destroy(spawnedObject); // 1초 후에 오브젝트 제거
     }
 }
