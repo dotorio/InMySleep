@@ -74,8 +74,13 @@ public class EasterEggData : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(AddEasterEgg());
-            Debug.Log("이스터 에그 획득 성공");
+            PhotonView player = other.GetComponent<PhotonView>();
+
+            if (player.IsMine)
+            {
+                StartCoroutine(AddEasterEgg());
+                Debug.Log("이스터 에그 획득 성공");
+            }
         }
     }
 
