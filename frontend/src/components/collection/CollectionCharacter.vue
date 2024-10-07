@@ -14,7 +14,7 @@ const nStore = useNftStore();
 // const choice = ref("bear");
 // const equippedBear = ref(0);
 // const equippedRabbit = ref(0);
-const defaultUrl = "ipfs://QmPSSpmQgaHKdiuYnNU8oohNARSLpWpwaaZ4kGKKxSuut6";
+const defaultUrl = "none";
 const bear = ref({
   nft: [
     {
