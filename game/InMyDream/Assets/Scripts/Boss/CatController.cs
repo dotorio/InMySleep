@@ -461,17 +461,15 @@ public class CatController : MonoBehaviourPunCallbacks
                 BombController bombController = projectile.GetComponent<BombController>();
                 Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
+                Transform redTarget = players[0];
+
                 // 발사 방향 계산
-                if (cnt % 2 == 0)
+                if (players[1].gameObject.name.Contains("Player2"))
                 {
-                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[1].position, 20f);
-                    rb.velocity = launchDirection;
+                    redTarget = players[1];
                 }
-                else
-                {
-                    Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, players[0].position, 20f);
+                Vector3 launchDirection = CalculateLaunchDirection(leftHand.position, redTarget.position, 20f);
                     rb.velocity = launchDirection;
-                }
 
                 cnt++;
 
