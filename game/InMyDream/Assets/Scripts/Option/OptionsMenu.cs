@@ -6,97 +6,163 @@ using UnityEngine.Audio;
 
 public class OptionsMenu : MonoBehaviour
 {
-    public Slider volumeSlider; // 볼륨 슬라이더
-    public AudioMixer audioMixer; // 오디오 믹서
+    public Slider masterVolumeSlider;
+    public Slider bgmVolumeSlider;
+    public Slider sfxVolumeSlider;
 
-    private const string VolumeKey = "MasterVolume"; // PlayerPrefs에 사용할 키
-    private const float minVolume = -40f; // 믹서에 적용할 최소 볼륨 (음소거 직전 볼륨)
-    private const float maxVolume = 0f;   // 믹서에 적용할 최대 볼륨
-    private const float muteVolume = -80f; // 완전 음소거 상태 (-80dB)
+    public GameObject masterVolumeIcon;   // 마스터 볼륨 아이콘 (일반)
+    public GameObject masterMuteIcon;     // 마스터 음소거 아이콘
+    public GameObject bgmVolumeIcon;      // BGM 볼륨 아이콘 (일반)
+    public GameObject bgmMuteIcon;        // BGM 음소거 아이콘
+    public GameObject sfxVolumeIcon;      // SFX 볼륨 아이콘 (일반)
+    public GameObject sfxMuteIcon;        // SFX 음소거 아이콘
+
+    public AudioMixer audioMixer;   // 마스터 오디오 믹서
+
+    private const string masterVolumeKey = "MasterVolume";
+    private const string bgmVolumeKey = "BGMVolume";
+    private const string sfxVolumeKey = "SFXVolume";
+
+    private const float minVolume = -40f;
+    private const float maxVolume = 0f;
+    private const float muteVolume = -80f;
+
+    private float lastMasterVolume = 0f;
+    private float lastBgmVolume = 0f;
+    private float lastSfxVolume = 0f;
 
     void Start()
     {
-        // 자식 Canvas의 Sorting Order를 조정하여 다른 UI보다 앞에 오게 설정
-        Canvas childCanvas = GetComponentInChildren<Canvas>();
-        if (childCanvas != null)
-        {
-            childCanvas.sortingOrder = 10;
-        }
+        // 볼륨 값 로드 및 슬라이더 값 적용
+        LoadVolume(masterVolumeSlider, masterVolumeKey, "Master", ref lastMasterVolume);
+        LoadVolume(bgmVolumeSlider, bgmVolumeKey, "BGM", ref lastBgmVolume);
+        LoadVolume(sfxVolumeSlider, sfxVolumeKey, "SFX", ref lastSfxVolume);
 
-        // PlayerPrefs에 저장된 볼륨 값이 있는지 확인
-        if (PlayerPrefs.HasKey(VolumeKey))
+        // 슬라이더 값 변경시마다 볼륨 설정
+        masterVolumeSlider.onValueChanged.AddListener(delegate { SetVolume(masterVolumeSlider, masterVolumeKey, "Master", ref lastMasterVolume); });
+        bgmVolumeSlider.onValueChanged.AddListener(delegate { SetVolume(bgmVolumeSlider, bgmVolumeKey, "BGM", ref lastBgmVolume); });
+        sfxVolumeSlider.onValueChanged.AddListener(delegate { SetVolume(sfxVolumeSlider, sfxVolumeKey, "SFX", ref lastSfxVolume); });
+
+        // 아이콘 초기화
+        UpdateMuteIcons(masterVolumeSlider, masterVolumeIcon, masterMuteIcon);
+        UpdateMuteIcons(bgmVolumeSlider, bgmVolumeIcon, bgmMuteIcon);
+        UpdateMuteIcons(sfxVolumeSlider, sfxVolumeIcon, sfxMuteIcon);
+
+        // 음소거 버튼 클릭 리스너 추가
+        masterVolumeIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(masterVolumeSlider, masterVolumeKey, "Master", masterVolumeIcon, masterMuteIcon, ref lastMasterVolume); });
+        masterMuteIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(masterVolumeSlider, masterVolumeKey, "Master", masterVolumeIcon, masterMuteIcon, ref lastMasterVolume); });
+
+        bgmVolumeIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(bgmVolumeSlider, bgmVolumeKey, "BGM", bgmVolumeIcon, bgmMuteIcon, ref lastBgmVolume); });
+        bgmMuteIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(bgmVolumeSlider, bgmVolumeKey, "BGM", bgmVolumeIcon, bgmMuteIcon, ref lastBgmVolume); });
+
+        sfxVolumeIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(sfxVolumeSlider, sfxVolumeKey, "SFX", sfxVolumeIcon, sfxMuteIcon, ref lastSfxVolume); });
+        sfxMuteIcon.GetComponent<Button>().onClick.AddListener(delegate { ToggleMute(sfxVolumeSlider, sfxVolumeKey, "SFX", sfxVolumeIcon, sfxMuteIcon, ref lastSfxVolume); });
+    }
+
+    // 볼륨 로드 및 슬라이더 값 설정
+    void LoadVolume(Slider slider, string key, string mixerParam, ref float lastVolume)
+    {
+        if (PlayerPrefs.HasKey(key))
         {
-            // 저장된 볼륨 값을 불러와 슬라이더와 오디오 믹서에 적용
-            float savedVolume = PlayerPrefs.GetFloat(VolumeKey);
-            volumeSlider.value = ConvertToLinear(savedVolume);
-            SetVolume();
-            Debug.Log("Saved volume loaded: " + savedVolume);
+            float savedVolume = PlayerPrefs.GetFloat(key);
+            slider.value = ConvertToLinear(savedVolume);
+            SetVolume(slider, key, mixerParam, ref lastVolume);
         }
         else
         {
-            // 저장된 값이 없으면 현재 오디오 믹서의 볼륨 값을 슬라이더에 적용
-            if (volumeSlider != null && audioMixer != null)
-            {
-                float currentVolume;
-                audioMixer.GetFloat("Master", out currentVolume);
-                volumeSlider.value = ConvertToLinear(currentVolume);
-                Debug.Log("Default volume loaded: " + currentVolume);
-            }
-        }
-
-        // 볼륨 슬라이더의 값이 변경될 때마다 SetVolume 함수를 호출하도록 리스너 추가
-        if (volumeSlider != null)
-        {
-            volumeSlider.onValueChanged.AddListener(delegate { SetVolume(); });
+            float currentVolume;
+            audioMixer.GetFloat(mixerParam, out currentVolume);
+            slider.value = ConvertToLinear(currentVolume);
+            lastVolume = currentVolume;
         }
     }
 
-    // 볼륨 변경 함수
-    public void SetVolume()
+    // 볼륨 설정 함수
+    void SetVolume(Slider slider, string key, string mixerParam, ref float lastVolume)
     {
-        if (audioMixer != null && volumeSlider != null)
-        {
-            float sliderValue = volumeSlider.value;
-            float volume = ConvertToLogarithmic(sliderValue); // 로그 변환된 값 사용
-            Debug.Log("SetVolume: " + volume);
-            audioMixer.SetFloat("Master", volume);
+        float volume = ConvertToLogarithmic(slider.value);
+        audioMixer.SetFloat(mixerParam, volume);
+        PlayerPrefs.SetFloat(key, volume);
+        PlayerPrefs.Save();
 
-            // 볼륨 값을 PlayerPrefs에 저장 (로그 변환된 값 저장)
-            PlayerPrefs.SetFloat(VolumeKey, volume);
-            PlayerPrefs.Save(); // 즉시 저장
-            Debug.Log("Volume saved: " + volume);
+        // 음소거 상태가 아니라면 마지막 볼륨을 저장
+        if (volume != muteVolume)
+        {
+            lastVolume = volume;
+        }
+
+        // 아이콘 업데이트
+        UpdateMuteIcons(slider, GetVolumeIconByParam(mixerParam), GetMuteIconByParam(mixerParam));
+    }
+
+    // 음소거 상태 전환 함수
+    void ToggleMute(Slider slider, string key, string mixerParam, GameObject volumeIcon, GameObject muteIcon, ref float lastVolume)
+    {
+        if (slider.value > 0f)
+        {
+            // 현재 볼륨이 0이 아니면 음소거 (볼륨을 0으로 설정)
+            audioMixer.SetFloat(mixerParam, muteVolume);
+            slider.value = 0f;
+        }
+        else
+        {
+            // 음소거 해제 (이전 볼륨으로 복원)
+            slider.value = ConvertToLinear(lastVolume);
+            audioMixer.SetFloat(mixerParam, lastVolume);
+        }
+
+        // 아이콘 업데이트
+        UpdateMuteIcons(slider, volumeIcon, muteIcon);
+
+        // 변경 사항 저장
+        SetVolume(slider, key, mixerParam, ref lastVolume);
+    }
+
+    // 음소거 상태에 따라 아이콘 업데이트 (두 개의 아이콘을 활성화/비활성화)
+    void UpdateMuteIcons(Slider slider, GameObject volumeIcon, GameObject muteIcon)
+    {
+        if (slider.value == 0f)
+        {
+            volumeIcon.SetActive(false);
+            muteIcon.SetActive(true);
+        }
+        else
+        {
+            volumeIcon.SetActive(true);
+            muteIcon.SetActive(false);
         }
     }
 
-    // 슬라이더 값(0~1 범위)을 로그 스케일로 변환하여 AudioMixer에 전달할 값으로 변환
+    // 믹서 파라미터에 따른 볼륨 아이콘 가져오기
+    GameObject GetVolumeIconByParam(string mixerParam)
+    {
+        if (mixerParam == "Master")
+            return masterVolumeIcon;
+        else if (mixerParam == "BGM")
+            return bgmVolumeIcon;
+        else
+            return sfxVolumeIcon;
+    }
+
+    // 믹서 파라미터에 따른 음소거 아이콘 가져오기
+    GameObject GetMuteIconByParam(string mixerParam)
+    {
+        if (mixerParam == "Master")
+            return masterMuteIcon;
+        else if (mixerParam == "BGM")
+            return bgmMuteIcon;
+        else
+            return sfxMuteIcon;
+    }
+
+    // 로그 변환 함수
     private float ConvertToLogarithmic(float linearValue)
     {
-        if (linearValue <= 0.0001f)
-        {
-            // 슬라이더 값이 0에 가까우면 음소거 (-80dB)
-            return muteVolume;
-        }
-        else
-        {
-            // 0이 아닌 경우는 minVolume ~ maxVolume 사이에서 로그 변환 적용
-            return Mathf.Lerp(minVolume, maxVolume, linearValue);
-        }
+        return linearValue <= 0.0001f ? muteVolume : Mathf.Lerp(minVolume, maxVolume, linearValue);
     }
 
-    // AudioMixer에 저장된 값을 슬라이더의 선형 값(0~1 범위)으로 변환
     private float ConvertToLinear(float mixerValue)
     {
-        // minVolume과 maxVolume 사이의 값을 슬라이더 0~1로 변환
-        if (mixerValue <= muteVolume)
-        {
-            return 0f; // 음소거된 상태면 슬라이더는 0으로
-        }
-        return Mathf.InverseLerp(minVolume, maxVolume, mixerValue);
-    }
-
-    // 옵션 메뉴가 비활성화될 때 PlayerPrefs를 저장
-    void OnDisable()
-    {
-        PlayerPrefs.Save();
+        return mixerValue <= muteVolume ? 0f : Mathf.InverseLerp(minVolume, maxVolume, mixerValue);
     }
 }

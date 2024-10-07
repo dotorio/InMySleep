@@ -5,15 +5,17 @@ using UnityEngine.Audio;
 
 public class AssignAudioMixer : MonoBehaviour
 {
-    public AudioMixerGroup targetMixerGroup; // 할당할 AudioMixerGroup
-    public float defaultVolume = 0.7f;  // 통일할 기본 볼륨 값
-    public float defaultPitch = 1.0f;   // 통일할 기본 피치 값
+    public AudioMixerGroup masterMixerGroup; // Master 오디오 믹서 그룹
+    public AudioMixerGroup bgmMixerGroup;    // BGM 오디오 믹서 그룹
+    public AudioMixerGroup sfxMixerGroup;    // SFX 오디오 믹서 그룹
+    public float defaultVolume = 0.7f;       // 통일할 기본 볼륨 값
+    public float defaultPitch = 1.0f;        // 통일할 기본 피치 값
 
     void Start()
     {
-        if (targetMixerGroup == null)
+        if (masterMixerGroup == null || bgmMixerGroup == null || sfxMixerGroup == null)
         {
-            Debug.LogError("타겟 AudioMixerGroup이 지정되지 않았습니다!");
+            Debug.LogError("오디오 믹서 그룹이 지정되지 않았습니다!");
             return;
         }
 
@@ -25,11 +27,23 @@ public class AssignAudioMixer : MonoBehaviour
             AudioSource audioSource = obj.GetComponent<AudioSource>();
             if (audioSource != null)
             {
-                // AudioMixerGroup 할당
-                if (audioSource.outputAudioMixerGroup != targetMixerGroup)
+                // BGM 태그를 가진 오브젝트에는 BGM 오디오 믹서 그룹 할당
+                if (obj.CompareTag("BGM"))
                 {
-                    audioSource.outputAudioMixerGroup = targetMixerGroup;
-                    Debug.Log($"AudioSource '{audioSource.gameObject.name}'에 AudioMixerGroup이 할당되었습니다.");
+                    if (audioSource.outputAudioMixerGroup != bgmMixerGroup)
+                    {
+                        audioSource.outputAudioMixerGroup = bgmMixerGroup;
+                        Debug.Log($"AudioSource '{audioSource.gameObject.name}'에 BGM 그룹이 할당되었습니다.");
+                    }
+                }
+                // 그 외의 오브젝트에는 SFX 오디오 믹서 그룹 할당
+                else
+                {
+                    if (audioSource.outputAudioMixerGroup != sfxMixerGroup)
+                    {
+                        audioSource.outputAudioMixerGroup = sfxMixerGroup;
+                        Debug.Log($"AudioSource '{audioSource.gameObject.name}'에 SFX 그룹이 할당되었습니다.");
+                    }
                 }
 
                 // 기본 볼륨 및 피치 통일 (spatialBlend는 유지)
