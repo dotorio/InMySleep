@@ -3,6 +3,7 @@ import HomeView from "@/views/HomeView.vue";
 import CollectionView from "@/views/CollectionView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LoginView from "@/views/LoginView.vue";
+import GuideView from "@/views/GuideView.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import ChangePasswordView from "@/views/ChangePasswordView.vue";
@@ -50,6 +51,11 @@ const router = createRouter({
       path: "/chgpwd",
       name: "change-password",
       component: ChangePasswordView,
+    },
+    {
+      path: "/guide",
+      name: "guide",
+      component: GuideView,
     },
   ],
 });

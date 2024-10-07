@@ -20,7 +20,7 @@ const linkInfo = ref([
     id: 3,
     header: "가이드",
     content: "[가이드] 이건 가이드입니다.",
-    linkName: "guied",
+    linkName: "guide",
   },
 ]);
 
@@ -38,18 +38,18 @@ const downloadFile = async () => {
   if (isDownloading.value) return;
 
   isDownloading.value = true; // 다운로드 시작
-  const url = 'https://j11e107.p.ssafy.io/download/InMySleep.exe';
+  const url = "https://j11e107.p.ssafy.io/download/InMySleep.exe";
   const response = await fetch(url);
 
   if (!response.ok) {
-    console.error('Download failed');
+    console.error("Download failed");
     isDownloading.value = false;
     return;
   }
 
-  const contentLength = response.headers.get('content-length');
+  const contentLength = response.headers.get("content-length");
   if (!contentLength) {
-    console.error('Cannot determine file size');
+    console.error("Cannot determine file size");
     isDownloading.value = false;
     return;
   }
@@ -70,14 +70,14 @@ const downloadFile = async () => {
         downloadProgress.value = (loaded / total) * 100;
         controller.enqueue(value);
       }
-    }
+    },
   });
 
   const blob = await new Response(stream).blob();
 
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = window.URL.createObjectURL(blob);
-  link.download = 'InMySleep.exe';
+  link.download = "InMySleep.exe";
   link.click();
 
   window.URL.revokeObjectURL(link.href);
@@ -106,9 +106,11 @@ onUnmounted(() => {
         :disabled="isDownloading"
       >
         <!-- 점 개수에 따라 다운로드 중 텍스트를 표시 -->
-        {{ isDownloading ? `다운로드 중${'.'.repeat(dotCount)}` : "게임 다운로드" }}
+        {{
+          isDownloading ? `다운로드 중${".".repeat(dotCount)}` : "게임 다운로드"
+        }}
         <div v-if="downloadProgress > 0 && isDownloading">
-          <p style="font-size: medium;">{{ downloadProgress.toFixed(2) }}%</p>
+          <p style="font-size: medium">{{ downloadProgress.toFixed(2) }}%</p>
           <progress :value="downloadProgress" max="100"></progress>
         </div>
       </button>
@@ -138,7 +140,7 @@ onUnmounted(() => {
   border-radius: 10px;
   border-width: 5px;
   font-size: 30px;
-  border-color: #1B4F72;
+  border-color: #1b4f72;
   background-color: #2980b9;
   color: white;
   cursor: pointer;

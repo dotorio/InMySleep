@@ -2,7 +2,6 @@
 
 <template>
   <div class="header-con">
-    <!-- <img src="@/assets/home/ezgif-5-46a1ef93e3.gif" class="bg-img"> -->
     <img src="@/assets/home/homeback.gif" class="bg-img" />
     <div class="overlay"></div>
   </div>
