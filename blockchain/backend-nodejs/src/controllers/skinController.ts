@@ -24,9 +24,9 @@ export const getSkinList = async (req: Request, res: Response) => {
 }
 
 export const putEquipSkin = async (req: Request, res: Response) => {
-    const { userId, character, color } = req.body;
+    const { userId, character, metadataId } = req.body;
     try {
-        const result = await updateEquipSkin(userId, character, color);
+        const result = await updateEquipSkin(userId, character, metadataId);
         res.status(200).json(result.changedRows);
     } catch (error) {
         console.error('Error equipping skin:', error);
