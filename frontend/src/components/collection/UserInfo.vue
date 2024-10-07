@@ -15,10 +15,8 @@ function getSkinSrc(character, metadata) {
   if (sStore.userBearSkin.length === 0 || sStore.userRabbitSkin.length === 0) {
     return "";
   }
-  console.log(metadata)
   if (character === "bear") {
     sStore.userBearSkin.forEach((skin) => {
-      console.log(skin.id, metadata)
       if (skin.id == metadata) {
         url = skin.imageUrl;
       }
@@ -52,7 +50,6 @@ async function equipSkin() {
   }
   try {
     const response = await putEquipSkin(uStore.user.data.userId, choice, selectedMetadata);
-    console.log(JSON.stringify(response));
     if (response.status === 200) {
       if (choice === "bear") {
         sStore.userSkin.bearMetadata = sStore.userSkin.selectedBearMetadata;
@@ -123,7 +120,7 @@ function hasNFTCheck() {
 
 <template>
   <div class="user-con box-col">
-    <div class="nickname bit-t">{{ sStore.userSkin.nickname }}</div>
+    <div class="nickname bit-t">{{ uStore.user.data.username }}</div>
     <img v-if="sStore.userSkin.choice === 'bear'" :src="getSkinSrc('bear', sStore.userSkin.selectedBearMetadata)"
       alt="곰" />
     <img v-else-if="sStore.userSkin.choice === 'rabbit'"

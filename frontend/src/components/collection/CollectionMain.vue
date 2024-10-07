@@ -42,7 +42,6 @@ onBeforeMount(async () => {
       sStore.userSkin.selectedRabbitMetadata = sStore.userSkin.rabbitMetadata = response.data[0].id;
       sStore.userSkin.selectedBearMetadata = sStore.userSkin.bearMetadata = response.data[1].id;
     }
-    console.log(response.data)
   } catch (error) {
     console.error(error);
   }
