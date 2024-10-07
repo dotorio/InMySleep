@@ -83,13 +83,13 @@ public class GuideNext1 : MonoBehaviourPunCallbacks
             ShowTextImmediately(texts[currentIndex]);   // 다음 텍스트를 즉시 나타내기
             shownImageCount++; // 표시된 이미지 개수 증가
 
-            if (currentIndex >= 2)
+            if (currentIndex >= 3)
             {
                 isNext = true;
             }
 
             // 캐릭터가 이미지 2번째(인덱스 0)일 때만 나타나도록 설정
-            if (currentIndex == 0)
+            if (currentIndex == 1)
             {
                 Allow1.SetActive(true); // 화살표1 활성화
             }
@@ -99,7 +99,7 @@ public class GuideNext1 : MonoBehaviourPunCallbacks
             }
 
             // 캐릭터가 이미지 2번째(인덱스 1)일 때만 나타나도록 설정
-            if (currentIndex == 1)
+            if (currentIndex == 2)
             {
                 Allow21.SetActive(true); // 화살표2 활성화
                 Allow22.SetActive(true); // 화살표2 활성화
