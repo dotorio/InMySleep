@@ -2,6 +2,7 @@ using Photon.Pun.Demo.SlotRacer.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,28 +12,194 @@ public class SkinGenerator : MonoBehaviour
     public string savePath = "Screenshots";
     public int width;
     public int height;
-    public Camera camera;
+
     private Material[] bearMaterials;
     private Material[] bunnyMaterials;
+    private Material[] faces;
+
+    private GameObject[] Character;
+    private GameObject[] BackPack;
+    private GameObject[] CrossBag;
+    private GameObject[] Scarf;
+
+    private GameObject[] Glasses;
+    private GameObject[] Hat;
+    private GameObject[] Mustache;
+
+    private GameObject[] instantiatedPrefabs = new GameObject[100];
+    private int instantiatedIndex = 0;
+    
     private Color baseColor;
-    private int[] grade = { 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 };
+    //private int[] grade = { 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 };
+
     private int captureIndex = 0;
 
     void Start()
     {
-        camera.aspect = (float)width / (float)height;
+        //camera.aspect = (float)width / (float)height;
+        
         LoadMaterials();
+        LoadPrefabs();
+        //LoadGrade();
 
-        StartCoroutine(CaptureScreenshots());
+        StartCoroutine(StartCapture());
+        Debug.Log("모든 스크린샷 촬영 완료");
     }
 
     void LoadMaterials()
     {
-        bearMaterials = Resources.LoadAll<Material>("Bear");
-        bunnyMaterials = Resources.LoadAll<Material>("Bunny");
+        bearMaterials = Resources.LoadAll<Material>("Skin/Bear");
+        bunnyMaterials = Resources.LoadAll<Material>("Skin/Bunny");
+        faces = Resources.LoadAll<Material>("Skin/Face");
 
         Debug.Log($"Bear Materials Loaded: {bearMaterials.Length}");
         Debug.Log($"Bunny Materials Loaded: {bunnyMaterials.Length}");
+        Debug.Log($"Face Materials Loaded: {faces.Length}");
+    }
+
+    void LoadPrefabs()
+    {
+        Character = Resources.LoadAll<GameObject>("Skin/Character");
+        BackPack = Resources.LoadAll<GameObject>("Skin/BackPack");
+        CrossBag = Resources.LoadAll<GameObject>("Skin/CrossBag");
+        Glasses = Resources.LoadAll<GameObject>("Skin/Glasses");
+        Hat = Resources.LoadAll<GameObject>("Skin/Hat");
+        Mustache = Resources.LoadAll<GameObject>("Skin/Mustache");
+        Scarf = Resources.LoadAll<GameObject>("Skin/Scarf");
+
+        Debug.Log($"Character Prefabs Loaded: {Character.Length}");
+        Debug.Log($"BackPack Prefabs Loaded: {BackPack.Length}");
+        Debug.Log($"CrossBag Prefabs Loaded: {CrossBag.Length}");
+        Debug.Log($"Glasses Prefabs Loaded: {Glasses.Length}");
+        Debug.Log($"Hat Prefabs Loaded: {Hat.Length}");
+        Debug.Log($"Mustache Prefabs Loaded: {Mustache.Length}");
+        Debug.Log($"Scarf Prefabs Loaded: {Scarf.Length}");
+    }
+
+    IEnumerator StartCapture()
+    {
+
+/*        Instantiate(Character[0], GameObject.Find("Character").transform);
+        List<System.Array> categories = new List<System.Array>{
+            bearMaterials,
+            faces,
+            AddNoneOption(BackPack),
+            // AddNoneOption(CrossBag),
+            // AddNoneOption(Scarf),
+            AddNoneOption(Glasses),
+            AddNoneOption(Hat),
+            // AddNoneOption(Mustache),
+        };
+        yield return StartCoroutine(captureCombinations(0, categories));
+        Destroy(GameObject.Find("Bear"));*/
+
+        Instantiate(Character[1], GameObject.Find("Character").transform);
+        List<System.Array>  categories = new List<System.Array>{
+            bunnyMaterials,
+            faces,
+            AddNoneOption(BackPack),
+            // AddNoneOption(CrossBag),
+            // AddNoneOption(Scarf),
+            AddNoneOption(Glasses),
+            AddNoneOption(Hat),
+            // AddNoneOption(Mustache),
+        };
+        yield return StartCoroutine(captureCombinations(0, categories));
+        Destroy(GameObject.Find("Bunny"));
+    }
+
+    System.Array AddNoneOption(System.Array originalArray)
+    {
+        // 기존 배열에 null을 추가하여 새로운 배열을 만듦
+        List<System.Object> extendedList = new List<System.Object>(originalArray.Cast<System.Object>());
+        extendedList.Insert(0, null); // 맨 앞에 null 추가 (적용 안 함을 표현)
+        return extendedList.ToArray();
+    }
+
+    IEnumerator captureCombinations(int index, List<System.Array> categories)
+    {
+
+        if (index >= categories.Count)
+        {
+            BgColorPicker();
+            yield return new WaitForEndOfFrame();
+            Screenshot();
+            yield break;
+        }
+
+        var currentCategory = categories[index];
+        foreach (var item in currentCategory)
+        {
+            Boolean isPrefab = false;
+            isPrefab = ApplyCombination(item, index);
+            yield return captureCombinations(index + 1, categories);
+            if (isPrefab) {
+                Destroy(instantiatedPrefabs[instantiatedIndex - 1]);
+                instantiatedIndex--;
+            }
+        }
+    }
+
+    Boolean ApplyCombination(System.Object item, int index)
+    {
+
+        if (index == 0 && item is Material material) {
+            ApplyMaterial(material);
+            return false;
+        }
+
+        if (index == 1 && item is Material face) {
+            ApplyFace(face);
+            return false;
+        }
+
+        if (item is GameObject accessory)
+        {
+            ApplyAccessory(accessory, index);
+            return true;
+        }
+
+        return false;
+    }
+
+    void ApplyMaterial(Material material)
+    {
+        Renderer skinRenderer = GameObject.Find($"Skin").GetComponent<Renderer>();
+        skinRenderer.material = material;
+    }
+
+    void ApplyFace(Material face)
+    {
+        Renderer faceRenderer = GameObject.Find($"Face01").GetComponent<Renderer>();
+        faceRenderer.material = face;
+    }
+
+    void ApplyAccessory(GameObject accessory, int index)
+    {
+        string locatorName = GetLocatorName(index);
+        Transform locator = GameObject.Find($"{locatorName}").transform;
+        instantiatedPrefabs[instantiatedIndex] = Instantiate(accessory, locator);
+        instantiatedIndex++;
+    }
+
+    string GetLocatorName(int index) {
+        switch (index)
+        {
+            case 2:
+                return "Accessories_locator";
+/*            case 3:
+                return "Accessories_locator";
+            case 4:
+                return "Accessories_locator";*/
+            case 3:
+                return "Head_Accessories_locator";
+            case 4:
+                return "Head_Accessories_locator";
+/*            case 7:
+                return "Head_Accessories_locator";*/
+            default:
+                return "Head_Accessories_locator";
+        }
     }
 
     void BgColorPicker()
@@ -85,73 +252,11 @@ public class SkinGenerator : MonoBehaviour
         line4.color = generatedColors[2];
     }
 
-    IEnumerator CaptureScreenshots()
+
+
+    void Screenshot()
     {
-        GameObject character = GameObject.Find("Character");
-        Transform bearTransform = character.transform.Find("Bear");
-        GameObject bearObject = bearTransform.gameObject;
-        bearObject.SetActive(true);
-        foreach (var material in bearMaterials)
-        {
-            yield return CaptureForMaterial(material, "Bear");
-            captureIndex++;
-        }
-        bearObject.SetActive(false);
-
-        Transform bunnyTransform = character.transform.Find("Bunny");
-        GameObject bunnyObject = bunnyTransform.gameObject;
-        bunnyObject.SetActive(true);
-        foreach (var material in bunnyMaterials)
-        {
-            yield return CaptureForMaterial(material, "Bunny");
-            captureIndex++;
-        }
-        bunnyObject.SetActive(false);
-        Debug.Log("모든 스크린샷 촬영 완료");
-    }
-
-    IEnumerator CaptureForMaterial(Material material, string character)
-    {
-        Renderer skinRenderer = GameObject.Find($"{character}Skin").GetComponent<Renderer>();
-
-        skinRenderer.material = material;
-        yield return new WaitForEndOfFrame();
-
-        BgColorPicker();
-
-        SetGradeImage();
-
-        Screenshot(material.name);
-
-        yield return null;
-    }
-
-    void SetGradeImage()
-    {
-        Image gradeImage = GameObject.Find("Grade").GetComponent<Image>();
-        string gradeFilePath = "";
-        if (grade[captureIndex] == 1)
-        {
-            gradeFilePath = "grade/figma_star1";
-        }
-        else if (grade[captureIndex] == 2)
-        {
-            gradeFilePath = "grade/figma_star2";
-        }
-        else if (grade[captureIndex] == 3)
-        {
-            gradeFilePath = "grade/figma_star3";
-        }
-
-        Sprite gradeSprite = Resources.Load<Sprite>(gradeFilePath);
-        if (gradeSprite != null)
-        {
-            gradeImage.sprite = gradeSprite;
-        }
-    }
-
-    void Screenshot(string materialName)
-    {
+        Camera camera = Camera.main;
         RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
         camera.targetTexture = rt;
         Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGBA32, false);
@@ -168,7 +273,7 @@ public class SkinGenerator : MonoBehaviour
             System.IO.Directory.CreateDirectory(directoryPath);
         }
         string rgb = $"{(int)(baseColor.r * 255)}_{(int)(baseColor.g * 255)}_{(int)(baseColor.b * 255)}";
-        string filePath = $"{directoryPath}/{materialName}_RGB{rgb}_Grade{grade[captureIndex]}.png";
+        string filePath = $"{directoryPath}/_RGB{rgb}.png";
 
         byte[] bytes = screenShot.EncodeToPNG();
         System.IO.File.WriteAllBytes(filePath, bytes);
@@ -179,4 +284,29 @@ public class SkinGenerator : MonoBehaviour
 
         Debug.Log($"Screenshot saved to: {filePath}");
     }
+
+
+    //void SetGradeImage()
+    //{
+    //    Image gradeImage = GameObject.Find("Skin/Grade").GetComponent<Image>();
+    //    string gradeFilePath = "";
+    //    if (grade[captureIndex] == 1)
+    //    {
+    //        gradeFilePath = "grade/figma_star1";
+    //    }
+    //    else if (grade[captureIndex] == 2)
+    //    {
+    //        gradeFilePath = "grade/figma_star2";
+    //    }
+    //    else if (grade[captureIndex] == 3)
+    //    {
+    //        gradeFilePath = "grade/figma_star3";
+    //    }
+
+    //    Sprite gradeSprite = Resources.Load<Sprite>(gradeFilePath);
+    //    if (gradeSprite != null)
+    //    {
+    //        gradeImage.sprite = gradeSprite;
+    //    }
+    //}
 }

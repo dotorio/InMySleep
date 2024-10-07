@@ -74,8 +74,13 @@ public class EasterEggData : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(AddEasterEgg());
-            Debug.Log("이스터 에그 획득 성공");
+            PhotonView player = other.GetComponent<PhotonView>();
+
+            if (player.IsMine)
+            {
+                StartCoroutine(AddEasterEgg());
+                Debug.Log("이스터 에그 획득 성공");
+            }
         }
     }
 
@@ -115,7 +120,15 @@ public class EasterEggData : MonoBehaviour
             if (response.success)
             {
                 acquireChk = true;
-                GetComponent<Renderer>().enabled = false;
+                Debug.Log(gameObject.GetComponent<BoxCollider>());
+                Debug.Log(gameObject.GetComponent<ParticleSystem>());
+                // gameObject.GetComponent<BoxCollider>().isTrigger = false;
+                Destroy(gameObject.GetComponent<ParticleSystem>());
+                transform.Find("Sparks").gameObject.SetActive(false);
+                transform.Find("Frame").gameObject.SetActive(false);
+                transform.Find("Window").gameObject.SetActive(false);
+                
+
                 Debug.Log("이스터에그 획득 성공");
                 Debug.Log("skinImgUrl: " + response.data.skinImgUrl);
                 Debug.Log("description: " + response.data.description);
