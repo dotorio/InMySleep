@@ -50,58 +50,58 @@ function guideBookFun(categoryIdx, page) {
     case 1:
       switch (page) {
         case 1:
-          return new URL("/assets/guide/1/1.png", import.meta.url).href;
+          return new URL("/src/assets/guide/1/1.png", import.meta.url).href;
         case 2:
-          return new URL("/assets/guide/1/2.png", import.meta.url).href;
+          return new URL("/src/assets/guide/1/2.png", import.meta.url).href;
       }
     case 2:
       switch (page) {
         case 1:
-          return new URL("@/assets/guide/2/1.png", import.meta.url).href;
+          return new URL("/src/assets/guide/2/1.png", import.meta.url).href;
         case 2:
-          return new URL("@/assets/guide/2/2.png", import.meta.url).href;
+          return new URL("/src/assets/guide/2/2.png", import.meta.url).href;
         case 3:
-          return new URL("@/assets/guide/2/3.png", import.meta.url).href;
+          return new URL("/src/assets/guide/2/3.png", import.meta.url).href;
         case 4:
-          return new URL("@/assets/guide/2/4.png", import.meta.url).href;
+          return new URL("/src/assets/guide/2/4.png", import.meta.url).href;
       }
     case 3:
       switch (page) {
         case 1:
-          return new URL("@/assets/guide/3/1.png", import.meta.url).href;
+          return new URL("/src/assets/guide/3/1.png", import.meta.url).href;
         case 2:
-          return new URL("@/assets/guide/3/2.png", import.meta.url).href;
+          return new URL("/src/assets/guide/3/2.png", import.meta.url).href;
         case 3:
-          return new URL("@/assets/guide/3/3.png", import.meta.url).href;
+          return new URL("/src/assets/guide/3/3.png", import.meta.url).href;
         case 4:
-          return new URL("@/assets/guide/3/4.png", import.meta.url).href;
+          return new URL("/src/assets/guide/3/4.png", import.meta.url).href;
         case 5:
-          return new URL("@/assets/guide/3/5.png", import.meta.url).href;
+          return new URL("/src/assets/guide/3/5.png", import.meta.url).href;
       }
     case 41:
       switch (page) {
         case 1:
-          return new URL("@/assets/guide/41/1.png", import.meta.url).href;
+          return new URL("/src/assets/guide/41/1.png", import.meta.url).href;
         case 2:
-          return new URL("@/assets/guide/41/2.png", import.meta.url).href;
+          return new URL("/src/assets/guide/41/2.png", import.meta.url).href;
         case 3:
-          return new URL("@/assets/guide/41/3.png", import.meta.url).href;
+          return new URL("/src/assets/guide/41/3.png", import.meta.url).href;
         case 4:
-          return new URL("@/assets/guide/41/4.png", import.meta.url).href;
+          return new URL("/src/assets/guide/41/4.png", import.meta.url).href;
       }
     case 42:
       switch (page) {
         case 1:
-          return new URL("@/assets/guide/42/1.png", import.meta.url).href;
+          return new URL("/src/assets/guide/42/1.png", import.meta.url).href;
         case 2:
-          return new URL("@/assets/guide/42/2.png", import.meta.url).href;
+          return new URL("/src/assets/guide/42/2.png", import.meta.url).href;
         case 3:
-          return new URL("@/assets/guide/42/3.png", import.meta.url).href;
+          return new URL("/src/assets/guide/42/3.png", import.meta.url).href;
         case 4:
-          return new URL("@/assets/guide/42/4.png", import.meta.url).href;
+          return new URL("/src/assets/guide/42/4.png", import.meta.url).href;
       }
     default:
-      return new URL("@/assets/guide/1/1.png", import.meta.url).href;
+      return new URL("/src/assets/guide/1/1.png", import.meta.url).href;
   }
 }
 </script>
