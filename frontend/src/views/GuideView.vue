@@ -50,9 +50,9 @@ function guideBookFun(categoryIdx, page) {
     case 1:
       switch (page) {
         case 1:
-          return new URL("/guide/1/1.png", import.meta.url).href;
+          return new URL("/assets/guide/1/1.png", import.meta.url).href;
         case 2:
-          return new URL("/guide/1/2.png", import.meta.url).href;
+          return new URL("/assets/guide/1/2.png", import.meta.url).href;
       }
     case 2:
       switch (page) {
