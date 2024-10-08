@@ -4,7 +4,7 @@ import CollectionView from "@/views/CollectionView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LoginView from "@/views/LoginView.vue";
 import GuideView from "@/views/GuideView.vue";
-import TestView from "@/views/TestView.vue";
+import SkinView from "@/views/SkinView.vue";
 
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -60,9 +60,10 @@ const router = createRouter({
       component: GuideView,
     },
     {
-      path: "/test",
-      name: "test",
-      component: TestView,
+      path: "/skin",
+      name: "skin",
+      component: SkinView,
+      beforeEnter: onlyAuthUser,
     },
   ],
 });
