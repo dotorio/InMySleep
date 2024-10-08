@@ -88,7 +88,10 @@ function positionCalc(idx) {
         </div>
         <button class="skin-btn btn bitbit" @click="nextBtn">></button>
       </div>
-      <button class="select-btn btn bitbit">선택하기</button>
+      <div class="btn-con">
+        <button class="nft-btn btn bitbit">NFT 발행</button>
+        <button class="select-btn btn bitbit">선택하기</button>
+      </div>
     </div>
     <Footer />
   </div>
@@ -103,15 +106,22 @@ function positionCalc(idx) {
   justify-content: space-around;
 }
 
-.select-btn {
+.select-btn,
+.nft-btn {
   position: absolute;
   bottom: -130px;
   transition: all 0.2s ease-in;
 
   padding: 10px 20px;
 }
-
-.select-btn:hover {
+.btn-con {
+  width: 300px;
+  position: absolute;
+  bottom: 10px;
+  background-color: white;
+}
+.select-btn:hover,
+.nft-btn:hover {
   box-shadow: 0px 0px 0px 5px #aba4f7;
 }
 
@@ -177,7 +187,13 @@ function positionCalc(idx) {
   width: 50px;
   height: 50px;
 }
-.select-btn {
+
+.select-btn,
+.nft-btn {
   border-width: 1px;
+}
+
+.select-btn {
+  right: 0px;
 }
 </style>
