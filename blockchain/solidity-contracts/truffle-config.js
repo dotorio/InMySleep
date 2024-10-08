@@ -41,8 +41,9 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// require('dotenv').config();
-// const { MNEMONIC, PROJECT_ID } = process.env;
+require("dotenv").config();
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const { MNEMONIC } = process.env;
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 
@@ -64,11 +65,11 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    development: {
-      host: "127.0.0.1", // Localhost (default: none)
-      port: 7545, // Standard Ethereum port (default: none)
-      network_id: "*", // Any network (default: none)
-    },
+    // development: {
+    //   host: "127.0.0.1", // Localhost (default: none)
+    //   port: 7545, // Standard Ethereum port (default: none)
+    //   network_id: "*", // Any network (default: none)
+    // },
     //
     // An additional network, but with some advanced options…
     // advanced: {
@@ -96,6 +97,16 @@ module.exports = {
     //   network_id: 2111,   // This network is yours, in the cloud.
     //   production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    amoyTestnet: {
+      provider: () =>
+        new HDWalletProvider(MNEMONIC, `https://rpc.testnet.amoy.network`, 1),
+      network_id: 80002,
+      gas: 5500000,
+      gasPrice: 1000000000,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+    },
   },
 
   // Set default mocha options here, use special reporters, etc.
