@@ -127,7 +127,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
     }
 
     // 친구 추가
-    public IEnumerator AddFriend(int userId)
+    public IEnumerator AddFriend(int userId, string username)
     {
         Debug.Log(userId);
         FriendRequestDto friendRequest = new FriendRequestDto(myUserId, userId);
@@ -155,6 +155,7 @@ public class FriendManager : MonoBehaviourPunCallbacks
             if (response.success)
             {
                 Debug.Log("친구 요청 성공");
+                SendFriendRequest(username);
             }
             else
             {
@@ -310,6 +311,12 @@ public class FriendManager : MonoBehaviourPunCallbacks
         Debug.Log($"Accepted invitation and joining room: {roomName}");
 
 
+    }
+
+    // 친구 요청
+    public void SendFriendRequest(string friendName)
+    {
+        photonManager.SendFriendRequest(friendName);
     }
 }
 
