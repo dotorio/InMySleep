@@ -5,28 +5,31 @@ import skinData from "@/assets/data/skin.json";
 import { ref, onBeforeMount } from "vue";
 import { myNFTs } from "@/api/nft";
 import { putEquipSkin, getEquippedSkin, getSkinList } from "@/api/skin";
+import { postMint } from "@/api/contract";
 import { useSkinStore } from "@/stores/skin";
 import { useUserStore } from "@/stores/user";
+import { useNftStore } from "@/stores/nft";
 
 const sStore = useSkinStore();
 const uStore = useUserStore();
+const nStore = useNftStore();
 
 const currentSkin = ref(3);
 const spacing = ref(0);
 
 
 const defaultUrl = "none";
-const defaultName = "잠금"
+const defaultDescription = "잠금"
 const bear = ref({
   nft: Array.from({ length: 15 }, () => ({
     imageUrl: defaultUrl,
-    name: defaultName,
+    description: defaultDescription,
   })),
 });
 const rabbit = ref({
   nft: Array.from({ length: 15 }, () => ({
     imageUrl: defaultUrl,
-    name: defaultName,
+    description: defaultDescription,
   })),
 });
 const nftData = ref([
@@ -233,9 +236,36 @@ async function equipSkin() {
   }
 }
 
+async function mint() {
+  let tokenURI = "";
+  if (sStore.userSkin.choice === "bear") {
+    tokenURI = sStore.userBearSkin.filter((skin) => skin.attributes && skin.id == sStore.userSkin.selectedBearMetadata)[0].metadataUri;
+  } else if (sStore.userSkin.choice === "rabbit") {
+    tokenURI = sStore.userRabbitSkin.filter((skin) => skin.attributes && skin.id == sStore.userSkin.selectedRabbitMetadata)[0].metadataUri;
+  }
+  try {
+    const response = await postMint(uStore.user.data.userId, uStore.user.data.address, tokenURI);
+    if (response.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "성공",
+        text: "NFT가 발행되었습니다",
+      });
+      window.location.reload();
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "실패",
+      text: "NFT 발행에 실패했습니다",
+    });
+    console.error(error);
+  }
+}
+
 function equipSkinCheck() {
   if (sStore.userSkin.choice === "bear") {
-    if (sStore.userBearSkin[currentSkin.value].name === "잠금") {
+    if (sStore.userBearSkin[currentSkin.value].description === "잠금") {
       return false;
     }
   } else if (sStore.userSkin.choice === "rabbit") {
@@ -247,6 +277,17 @@ function equipSkinCheck() {
     return sStore.userSkin.selectedBearMetadata !== sStore.userSkin.bearMetadata;
   } else if (sStore.userSkin.choice === "rabbit") {
     return sStore.userSkin.selectedRabbitMetadata !== sStore.userSkin.rabbitMetadata;
+  }
+}
+
+function hasNFTCheck() {
+  if (!uStore.user.data.metamaskToken || nStore.userNft.length === 0) {
+    return
+  }
+  if (sStore.userSkin.choice === "bear") {
+    return nStore.userNft.some((nft) => nft.attributes.character === 'bear' && nft.id == sStore.userSkin.selectedBearMetadata)
+  } else if (sStore.userSkin.choice === "rabbit") {
+    return nStore.userNft.some((nft) => nft.attributes.character === 'rabbit' && nft.id == sStore.userSkin.selectedRabbitMetadata)
   }
 }
 </script>
@@ -265,10 +306,10 @@ function equipSkinCheck() {
           <img :src="imgUrl(sStore.userRabbitSkin[currentSkin])" alt="토끼1" class="main-skin" />
         </div>
         <div v-if="sStore.userSkin.choice === 'bear'" class="skin-name box-md bitbit">
-          {{ sStore.userBearSkin[currentSkin].name }}
+          {{ sStore.userBearSkin[currentSkin].description }}
         </div>
         <div v-else-if="sStore.userSkin.choice === 'rabbit'" class="skin-name box-md bitbit">
-          {{ sStore.userRabbitSkin[currentSkin].name }}
+          {{ sStore.userRabbitSkin[currentSkin].description }}
         </div>
       </div>
       <div class="skin-list flex-align">
@@ -287,7 +328,9 @@ function equipSkinCheck() {
         <button class="skin-btn btn bitbit" @click="nextBtn">></button>
       </div>
       <div class="btn-con">
-        <button class="nft-btn btn bitbit">NFT 발행</button>
+        <button v-if="uStore.user.data.metamaskToken && !hasNFTCheck()" class="nft-btn btn bitbit" @click="mint()">NFT
+          발행</button>
+        <button v-else class="nft-btn btn bitbit disable">NFT 보유</button>
         <button v-if="equipSkinCheck()" class="select-btn btn bitbit" @click="equipSkin()">선택하기</button>
         <button v-else class="select-btn btn bitbit disable">선택하기</button>
       </div>
