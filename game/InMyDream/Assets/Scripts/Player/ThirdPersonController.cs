@@ -26,6 +26,9 @@ public class ThirdPersonController : MonoBehaviourPun
     public GameObject respawnPopup;
     public CanvasGroup screenDarkness; // 화면 어둡게 하기위한 canvas
 
+    public AudioSource playerDown;
+    public AudioSource downScreen;
+
     public Animator animator;
     public bool isInteracting = false; // 상호작용 중인지 여부 확인
 
@@ -154,6 +157,7 @@ public class ThirdPersonController : MonoBehaviourPun
             PhotonView batteryPhotonView = other.GetComponent<PhotonView>();
             if (batteryPhotonView != null)
             {
+                GrabBGM.Play();
                 StageManager_1_2 stage1Manager = (StageManager_1_2)stageManager;
 
                 stage1Manager.CollectBattery(batteryPhotonView.ViewID);
@@ -437,6 +441,11 @@ public class ThirdPersonController : MonoBehaviourPun
     // 리스폰 메소드
     IEnumerator HandleRespawn()
     {
+        if(playerDown != null)
+        {
+            playerDown.Play();
+        }
+
         yield return new WaitForSeconds(1.5f);
 
         if (screenDarkness != null)
@@ -451,6 +460,12 @@ public class ThirdPersonController : MonoBehaviourPun
                 yield return null;
             }
         }
+        
+        if(downScreen != null)
+        {
+            downScreen.Play();
+        }
+
         respawnPopup.SetActive(true);
         yield return new WaitForSeconds(respawnDelay);
 

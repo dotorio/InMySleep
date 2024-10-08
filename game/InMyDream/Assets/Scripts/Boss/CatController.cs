@@ -22,6 +22,7 @@ public class CatController : MonoBehaviourPunCallbacks
     public GameObject player1;  // 플레이어 참조
     public GameObject player2;  // 플레이어 참조
     public AudioSource jumpSound;
+    public AudioSource throwSound;
 
     // 쓰러질 때 생성할 목적지
     public GameObject Goal;
@@ -348,6 +349,11 @@ public class CatController : MonoBehaviourPunCallbacks
         // 게임 코드
         else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            if (throwSound != null)
+            {
+                throwSound.Play();
+            }
+
             if (dir == "left")
             {
                 // 발사체 생성
@@ -462,6 +468,11 @@ public class CatController : MonoBehaviourPunCallbacks
         // 게임용 코드
         else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            if (throwSound != null)
+            {
+                throwSound.Play();
+            }
+
             if (dir == "left")
             {
                 // 발사체 생성
@@ -564,6 +575,11 @@ public class CatController : MonoBehaviourPunCallbacks
         // 게임용 코드
         else if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            if (throwSound != null)
+            {
+                throwSound.Play();
+            }
+
             if (dir == "left")
             {
                 // 발사체 생성
@@ -616,13 +632,19 @@ public class CatController : MonoBehaviourPunCallbacks
         }
     }
 
+    void Jump()
+    {
+        if(SceneManager.GetActiveScene().name != "CutScene4")
+        {
+            if (jumpSound != null)
+            {
+                jumpSound.Play();
+            }
+        }
+    }
+
     void BigThrow()
     {
-        if (jumpSound != null)
-        {
-
-            jumpSound.Play();
-        }
         // 컷신용 코드
         if (SceneManager.GetActiveScene().name == "CutScene4")
         {
@@ -673,6 +695,11 @@ public class CatController : MonoBehaviourPunCallbacks
                 {
                     rb.velocity *= 1.1f;
                 }
+            }
+
+            if(throwSound != null)
+            {
+                throwSound.Play();
             }
 
             cnt++;

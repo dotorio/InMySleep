@@ -9,6 +9,8 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class EasterEggData : MonoBehaviour
 {
+    public AudioSource sound;
+
     private string character;
     private int skin;
     private string addEasterUrl = "https://j11e107.p.ssafy.io:8000/api/v1/easter/add-skin";
@@ -80,6 +82,8 @@ public class EasterEggData : MonoBehaviour
             {
                 StartCoroutine(AddEasterEgg());
                 Debug.Log("이스터 에그 획득 성공");
+
+                sound.Play();
             }
         }
     }

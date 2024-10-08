@@ -23,6 +23,9 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
     public GameObject BossUI;
     public GameObject BossSound;
 
+    public AudioSource Stage41BGM;
+    public AudioSource Stage42BGM;
+
     public GameObject Mission1;
     public GameObject Mission2;
 
@@ -43,6 +46,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
 
         if (stage == 4)
         {
+            Stage41BGM.Play();
             
             Mission1.SetActive(true);
             Mission2.SetActive(false);
@@ -58,6 +62,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
         }
         else
         {
+            Stage42BGM.Play();
 
             // 점프맵 생성
             JumpMap.SetActive(true);
@@ -80,7 +85,7 @@ public class StageManager_4 : MonoBehaviourPun, StageManager
 
                 if (easterStage == 4)
                 {
-                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate(characterName, EasterEgg.transform.position, EasterEgg.transform.rotation, 0);
+                    GameObject instantiatedEasterEgg = PhotonNetwork.Instantiate("EasterEgg", EasterEgg.transform.position, EasterEgg.transform.rotation, 0);
 
                     if (instantiatedEasterEgg == null)
                     {

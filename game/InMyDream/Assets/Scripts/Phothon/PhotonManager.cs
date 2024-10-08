@@ -82,6 +82,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
             startController.buttonUpdate();
             roomExitController.roomExitButtonUpdate();
         }
+        if(!Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     public override void OnConnectedToMaster()

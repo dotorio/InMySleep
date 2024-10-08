@@ -669,6 +669,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0
+        functionName: Jump
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: cdd2898f30110e542a9910d44128e89c, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.5371287
         functionName: BigThrow
         data: 

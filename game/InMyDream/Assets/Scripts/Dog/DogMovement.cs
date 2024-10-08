@@ -73,7 +73,6 @@ public class DogMovement : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        BarkSound = GetComponent<AudioSource>();
         // Rigidbody가 있을 경우 물리 간섭을 피하기 위해 키네마틱으로 설정
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
