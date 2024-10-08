@@ -251,6 +251,7 @@ async function mint() {
         title: "성공",
         text: "NFT가 발행되었습니다",
       });
+      window.location.reload();
     }
   } catch (error) {
     Swal.fire({
