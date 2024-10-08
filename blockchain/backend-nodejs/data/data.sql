@@ -38,13 +38,13 @@ CREATE TABLE `metadata` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `nfts`
+-- Table structure for table `nft`
 --
 
-DROP TABLE IF EXISTS `nfts`;
+DROP TABLE IF EXISTS `nft`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `nfts` (
+CREATE TABLE `nft` (
   `id` int NOT NULL AUTO_INCREMENT,
   `token_id` int NOT NULL,
   `contract_address` varchar(255) NOT NULL,
@@ -55,8 +55,8 @@ CREATE TABLE `nfts` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `token_id_UNIQUE` (`token_id`),
-  KEY `nfts_ibfk_1` (`metadata_id`),
-  CONSTRAINT `nfts_ibfk_1` FOREIGN KEY (`metadata_id`) REFERENCES `metadata` (`id`) ON DELETE RESTRICT
+  KEY `nft_ibfk_1` (`metadata_id`),
+  CONSTRAINT `nft_ibfk_1` FOREIGN KEY (`metadata_id`) REFERENCES `metadata` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

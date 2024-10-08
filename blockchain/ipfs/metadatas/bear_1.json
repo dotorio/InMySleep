@@ -1,0 +1,11 @@
+{
+    "name": "Bear Skin #1",
+    "description": "Bear Skin #1",
+    "image": "ipfs://QmZHnCCsJAPAJXQ2Ef8tugZosGkXUdZutZ248JzTCmeU9h",
+    "attributes": [
+        {
+            "character": "bear",
+            "color": 1
+        }
+    ]
+}

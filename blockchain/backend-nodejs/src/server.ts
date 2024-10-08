@@ -2,7 +2,8 @@ import app from './app';
 import https from 'https';
 import fs from 'fs';
 import path from 'path';
-import { connectDB } from './db/dbConnection';
+// import { connectDB } from './db/dbConnection';
+import pool from './db/dbConnection';
 import { port, sslKey, sslCert, sslChain } from './config';
 
 const options = {
@@ -13,8 +14,6 @@ const options = {
 
 const startServer = async () => {
   try {
-    await connectDB();
-
     https.createServer(options, app).listen(port, () => {
       console.log('https')
       console.log(`Server is running on port ${port}`);

@@ -4,6 +4,7 @@ import contractRoutes from './routes/contractRoutes';
 // // import ipfsRoutes from './routes/ipfsRoutes';
 import nftRoutes from './routes/nftRoutes';
 import walletRoutes from './routes/walletRoutes';
+import skinRoutes from './routes/skinRoutes';
 
 const app = express();
 
@@ -22,13 +23,10 @@ app.use((req, res, next) => {
     });
     next();
 });
+app.use(`${BASE_URL}/skins`, skinRoutes);
 app.use(`${BASE_URL}/contracts`, contractRoutes);
 // app.use('/ipfs', ipfsRoutes);
 app.use(`${BASE_URL}/nfts`, nftRoutes);
 app.use(`${BASE_URL}/wallet`, walletRoutes);
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
 
 export default app;

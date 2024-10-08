@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import KYSNFT from '../KYSNFT.json';
-import { saveMintedNFTToDB, saveBurnedNFTToDB, saveMetadataToDB } from '../db/nftRepository';
+import { saveBurnedNFTToDB, saveMetadataToDB } from '../db/nftRepository';
 import { contractAddress } from '../config';
 import { web3Provider } from '../config';
 
@@ -28,7 +28,6 @@ export const mintNFT = async (to: string, tokenURI: string, privateKey: string) 
         const signedTx = await web3.eth.accounts.signTransaction(txData, privateKey);
         const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction || '').on('receipt', async (receipt) => {
             console.log('Minted NFT:', receipt);
-            await saveMintedNFTToDB(receipt, to, tokenURI);
         }).on('error', (error) => {
             console.error('Error minting NFT:', error);
         });
