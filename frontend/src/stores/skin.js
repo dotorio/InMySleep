@@ -5,7 +5,6 @@ export const useSkinStore = defineStore(
   "skin",
   () => {
     const userSkin = ref({
-      nickname: "김종덕 만렙",
       choice: "bear",
       bearMetadata: "0",
       selectedBearMetadata: "0",

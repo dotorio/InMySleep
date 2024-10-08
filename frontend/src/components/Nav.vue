@@ -11,8 +11,8 @@ const uStore = useUserStore();
 function logoutFun() {
   logout()
     .then((res) => {
-      console.log(res.data);
       uStore.userLogout();
+      router.push({ name: "home" });
     })
     .catch((err) => {
       console.log(err);

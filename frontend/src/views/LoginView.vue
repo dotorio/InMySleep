@@ -17,7 +17,6 @@ function loginFun() {
     password: password.value,
   })
     .then((res) => {
-      console.log(res.data);
       uStore.userLogin(res.data);
       router.replace({ name: "home" });
     })
