@@ -14,7 +14,7 @@ const linkInfo = ref([
     id: 2,
     header: "NFT 전시관",
     content: "[전시관] 이건 전시관입니다.",
-    linkName: "collection",
+    linkName: "skin",
   },
   {
     id: 3,
@@ -100,11 +100,7 @@ onUnmounted(() => {
   <div class="main-con">
     <MainHeader />
     <div class="download-button-container">
-      <button
-        class="bit-t btn-download"
-        @click="downloadFile"
-        :disabled="isDownloading"
-      >
+      <button class="bit-t btn-download" @click="downloadFile" :disabled="isDownloading">
         <!-- 점 개수에 따라 다운로드 중 텍스트를 표시 -->
         {{
           isDownloading ? `다운로드 중${".".repeat(dotCount)}` : "게임 다운로드"
@@ -125,6 +121,7 @@ onUnmounted(() => {
 .main-con {
   position: relative;
 }
+
 .links {
   width: 100%;
   position: absolute;
@@ -134,7 +131,8 @@ onUnmounted(() => {
 
 .btn-download {
   height: 100%;
-  width: 300px; /* 고정된 버튼의 가로 크기 */
+  width: 300px;
+  /* 고정된 버튼의 가로 크기 */
   padding: 10px 20px;
   margin-top: 20px;
   border-radius: 10px;

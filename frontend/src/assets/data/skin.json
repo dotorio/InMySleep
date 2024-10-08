@@ -1,0 +1,65 @@
+{
+  "bear": {
+    "1": {
+      "name": "테디",
+      "img": "src/assets/collection/skin-p/bear1.svg"
+    },
+    "2": {
+      "name": "동굴에서 탈출한 불곰 테디",
+      "img": "src/assets/collection/skin-p/bear2.svg"
+    },
+    "3": {
+      "name": "100년 동안 죽순만 먹은 판다 테디",
+      "img": "src/assets/collection/skin-p/bear3.svg"
+    },
+
+    "4": {
+      "name": "선물 포장 실패한 산타 테디",
+      "img": "src/assets/collection/skin-p/bear4.svg"
+    },
+    "5": {
+      "name": "여행을 좋아하는 노랑 테디",
+      "img": "src/assets/collection/skin-p/bear5.svg"
+    },
+    "6": {
+      "name": "미끄럼틀이 시시한 레인보우 테디",
+      "img": "src/assets/collection/skin-p/bear6.svg"
+    },
+    "7": {
+      "name": "부끄러움이 많은 코알라 테디",
+      "img": "src/assets/collection/skin-p/bear7.svg"
+    },
+    "8": {
+      "name": "낮보다 밤이 좋아 테디",
+      "img": "src/assets/collection/skin-p/bear8.svg"
+    },
+    "9": {
+      "name": "잠만 자 테디",
+      "img": "src/assets/collection/skin-p/bear9.svg"
+    },
+    "10": {
+      "name": "분위기 잡기 좋아하는 테디",
+      "img": "src/assets/collection/skin-p/bear10.svg"
+    },
+    "11": {
+      "name": "실로폰 싫어 내맘대로 테디",
+      "img": "src/assets/collection/skin-p/bear11.svg"
+    },
+    "12": {
+      "name": "사랑에 빠진 하트 테디",
+      "img": "src/assets/collection/skin-p/bear12.svg"
+    },
+    "13": {
+      "name": "돈이 좋아 백만장자 테디",
+      "img": "src/assets/collection/skin-p/bear13.svg"
+    },
+    "14": {
+      "name": "하늘 테디",
+      "img": "src/assets/collection/skin-p/bear14.svg"
+    },
+    "15": {
+      "name": "동굴에서 탈출한 불곰 테디",
+      "img": "src/assets/collection/skin-p/bear2.svg"
+    }
+  }
+}
