@@ -100,13 +100,13 @@ module.exports = {
     amoyTestnet: {
       provider: () =>
         new HDWalletProvider({
-          privateKeys: MNEMONIC,
-          providerOrUrl: `https://rpc.testnet.amoy.network`,
+          privateKeys: [MNEMONIC],
+          providerOrUrl: `https://rpc-amoy.polygon.technology`,
           numberOfAddresses: 1,
         }),
       network_id: 80002,
-      gas: 5500000,
-      gasPrice: 1000000000,
+      gas: 6000000,
+      gasPrice: 30000000000,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: true,

@@ -9,7 +9,7 @@ export const saveMintedNFTToDB = async (receipt: any, userId: string, address: s
     try {
       const [metadata_id]: [any[], FieldPacket[]] = await connection.query('SELECT id FROM metadata WHERE metadata_uri = ?', [tokenURI]);
       const token_id = web3.utils.hexToNumber(receipt.logs[1].data);
-      const [rows] = await connection.query('INSERT INTO nft (token_id, contract_address, owner_address, metadata_id, user_id) VALUES (?, ?, ?, ?, ?)', [token_id, contractAddress, address, metadata_id[0].id, userId]);
+      const [rows] = await connection.query('INSERT INTO nft (token_id, contract_address, owner_address, transaction_hash, metadata_id, user_id) VALUES (?, ?, ?, ?, ?, ?)', [token_id, contractAddress, address, receipt.transactionHash, metadata_id[0].id, userId]);
       console.log('Saved minted NFT to DB:', rows);
     } catch (error) {
       console.error('Error saving minted NFT to DB:', error);

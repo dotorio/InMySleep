@@ -21,8 +21,8 @@ export const mintNFT = async (to: string, tokenURI: string, privateKey: string) 
             from: account.address,
             to: contractAddress,
             data: tx.encodeABI(),
-            gas,
-            gasPrice
+            gas: 6000000,
+            gasPrice: 30000000000
         };
 
         const signedTx = await web3.eth.accounts.signTransaction(txData, privateKey);

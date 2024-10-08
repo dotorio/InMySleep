@@ -7,7 +7,6 @@ import { privateKey } from '../config';
 export const mint = async (req: Request, res: Response) => {
   const { userId, address, tokenUri } = req.body;
   try {
-    console.log('Minting NFT:', userId, address, tokenUri);
     const receipt = await mintNFT(address, tokenUri, privateKey);
     await saveMintedNFT(receipt, userId, address, tokenUri);
     res.status(200).json(jsonBigIntStringify(receipt));
