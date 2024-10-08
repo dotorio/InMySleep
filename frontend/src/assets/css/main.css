@@ -24,6 +24,10 @@
   font-family: "Galmuri11";
 }
 
+.bitbit {
+  font-family: "DNFBitBitv2";
+}
+
 @font-face {
   font-family: "DNFBitBitv2";
   font-style: normal;
@@ -34,7 +38,7 @@
 
 @font-face {
   font-family: "Galmuri11";
-  src: url('@/assets/fonts/Galmuri11-Bold.woff2') format('woff2');
+  src: url("@/assets/fonts/Galmuri11-Bold.woff2") format("woff2");
   font-weight: bold;
   font-style: normal;
 }
