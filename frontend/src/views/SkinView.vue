@@ -298,7 +298,7 @@ function equipSkinCheck() {
 
 <style scoped>
 .main-con {
-  height: 850px;
+  height: 950px;
   background-color: black;
   padding-top: 50px;
   flex-direction: column;
@@ -317,7 +317,7 @@ function equipSkinCheck() {
 .btn-con {
   width: 300px;
   position: absolute;
-  bottom: 10px;
+  bottom: -90px;
   background-color: white;
 }
 
