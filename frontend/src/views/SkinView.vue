@@ -4,7 +4,7 @@ import Footer from "@/components/Footer.vue";
 import skinData from "@/assets/data/skin.json";
 import { ref, onBeforeMount } from "vue";
 import { myNFTs } from "@/api/nft";
-import { getEquippedSkin, getSkinList } from "@/api/skin";
+import { putEquipSkin, getEquippedSkin, getSkinList } from "@/api/skin";
 import { useSkinStore } from "@/stores/skin";
 import { useUserStore } from "@/stores/user";
 
@@ -61,6 +61,7 @@ onBeforeMount(async () => {
     filterNftData(nftData);
     sStore.userBearSkin = bear.value.nft;
     sStore.userRabbitSkin = rabbit.value.nft;
+    sStore.userSkin.selectedBearMetadata = sStore.userBearSkin[currentSkin.value].id;
   } catch (error) {
     console.error(error);
   }
@@ -100,14 +101,14 @@ function skinScale(idx) {
 
 function nextBtn() {
   currentSkin.value += 1;
-
   if (currentSkin.value === 15) {
     currentSkin.value = 14;
+
   } else {
     spacing.value -= 150;
   }
-
-  console.log(spacing.value);
+  sStore.userSkin.selectedBearMetadata = sStore.userBearSkin[currentSkin.value].id;
+  sStore.userSkin.selectedRabbitMetadata = sStore.userRabbitSkin[currentSkin.value].id;
 }
 
 function prevBtn() {
@@ -118,6 +119,8 @@ function prevBtn() {
   } else {
     spacing.value += 150;
   }
+  sStore.userSkin.selectedBearMetadata = sStore.userBearSkin[currentSkin.value].id;
+  sStore.userSkin.selectedRabbitMetadata = sStore.userRabbitSkin[currentSkin.value].id;
 }
 
 function positionCalc(idx) {
@@ -192,6 +195,60 @@ function changeSkin(selectedSkin) {
     sStore.userSkin.selectedRabbitMetadata = selectedSkin.id;
   }
 }
+
+async function equipSkin() {
+  let choice = "";
+  let selectedMetadata = "";
+
+  console.log("inner equipSkin")
+
+  if (sStore.userSkin.choice === "bear") {
+    choice = "bear";
+    selectedMetadata = sStore.userSkin.selectedBearMetadata;
+  } else if (sStore.userSkin.choice === "rabbit") {
+    choice = "rabbit";
+    selectedMetadata = sStore.userSkin.selectedRabbitMetadata;
+  }
+  try {
+    const response = await putEquipSkin(uStore.user.data.userId, choice, selectedMetadata);
+    if (response.status === 200) {
+      if (choice === "bear") {
+        sStore.userSkin.bearMetadata = sStore.userSkin.selectedBearMetadata;
+      } else if (choice === "rabbit") {
+        sStore.userSkin.rabbitMetadata = sStore.userSkin.selectedRabbitMetadata;
+      }
+      Swal.fire({
+        icon: "success",
+        title: "성공",
+        text: "스킨이 변경되었습니다",
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "실패",
+      text: "스킨 변경에 실패했습니다",
+    })
+    console.error(error);
+  }
+}
+
+function equipSkinCheck() {
+  if (sStore.userSkin.choice === "bear") {
+    if (sStore.userBearSkin[currentSkin.value].name === "잠금") {
+      return false;
+    }
+  } else if (sStore.userSkin.choice === "rabbit") {
+    if (sStore.userRabbitSkin[currentSkin.value].id === "잠금") {
+      return false;
+    }
+  }
+  if (sStore.userSkin.choice === "bear") {
+    return sStore.userSkin.selectedBearMetadata !== sStore.userSkin.bearMetadata;
+  } else if (sStore.userSkin.choice === "rabbit") {
+    return sStore.userSkin.selectedRabbitMetadata !== sStore.userSkin.rabbitMetadata;
+  }
+}
 </script>
 
 <template>
@@ -231,7 +288,8 @@ function changeSkin(selectedSkin) {
       </div>
       <div class="btn-con">
         <button class="nft-btn btn bitbit">NFT 발행</button>
-        <button class="select-btn btn bitbit">선택하기</button>
+        <button v-if="equipSkinCheck()" class="select-btn btn bitbit" @click="equipSkin()">선택하기</button>
+        <button v-else class="select-btn btn bitbit disable">선택하기</button>
       </div>
     </div>
     <Footer />
@@ -269,7 +327,7 @@ function changeSkin(selectedSkin) {
 }
 
 .skin {
-  transition: all 1s ease-in-out;
+  transition: all 0.5s ease-in-out;
   width: 12%;
   position: absolute;
 }
@@ -341,5 +399,12 @@ function changeSkin(selectedSkin) {
 
 .select-btn {
   right: 0px;
+}
+
+.disable {
+  transform: scale(1) !important;
+  cursor: not-allowed !important;
+  filter: brightness(0.7);
+  opacity: 0.7 !important;
 }
 </style>
