@@ -233,8 +233,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IChatClientListener
             // 친구 요청 메시지 처리
             Debug.Log($"Received friend request from {sender}");
 
-            // 알림 아이콘 표시
-            friendListToggle.ShowNotiListLight();
+            // 메시지 본인 여부 확인
+            if (sender != userName)
+            {
+                // 알림 아이콘 표시
+                friendListToggle.ShowNotiListLight();
+            }
         }
     }
 
