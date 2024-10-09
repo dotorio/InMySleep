@@ -305,8 +305,12 @@ function hasNFTCheck2(id) {
     <Nav />
     <div class="main-con box-md">
       <div class="character-con">
-        <button class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
-        <button class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
+        <button v-if="sStore.userSkin.choice === 'bear'" class="character-btn bitbit selected"
+          @click="choiceCharacter('bear')">곰</button>
+        <button v-else class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
+        <button v-if="sStore.userSkin.choice === 'rabbit'" class="character-btn bitbit selected"
+          @click="choiceCharacter('rabbit')">토끼</button>
+        <button v-else class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
       </div>
       <div class="skin-con box-col">
         <div v-if="sStore.userSkin.choice === 'bear'" class="skin-con">
@@ -534,5 +538,10 @@ function hasNFTCheck2(id) {
   border-width: 5px;
   border-color: hsl(235, 61%, 34%);
   border-width: 3px;
+}
+
+.selected {
+  background-color: hsl(235, 55%, 25%);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5)
 }
 </style>
