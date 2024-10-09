@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        // Vue 프로젝트의 경로와 빌드 경로를 지정
+        VUE_PROJECT_DIR = "frontend"
+        VUE_BUILD_DIR = "${VUE_PROJECT_DIR}/dist"
+        // 호스트의 NGINX에 배포할 디렉토리 경로
+        NGINX_DEPLOY_DIR = "/home/ubuntu/html"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Git 저장소에서 Vue 프로젝트를 체크아웃
+                git branch: 'develop/fe', url: 'https://lab.ssafy.com/s11-metaverse-game-sub1/S11P21E107.git', credentialsId: '50260a88-a40f-401c-99d2-66cc373c5769'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Vue 프로젝트의 의존성을 설치 (컨테이너 내에서 실행)
+                sh '''
+                    cd $WORKSPACE/${VUE_PROJECT_DIR} &&
+                    npm install
+                '''
+            }
+        }
+
+        stage('Build Vue Project') {
+            steps {
+                // Vue 프로젝트를 빌드 
+                sh '''
+                    cd $WORKSPACE/${VUE_PROJECT_DIR} &&
+                    npm run build
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Vue project successfully built and deployed to NGINX"
+        }
+        failure {
+            echo "Build or deployment failed"
+        }
+    }
+}

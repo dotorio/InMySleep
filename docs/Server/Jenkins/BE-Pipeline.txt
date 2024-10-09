@@ -1,0 +1,97 @@
+pipeline {
+    agent any
+    
+    environment {
+        DB_URL = 'jdbc:mysql://j11e107.p.ssafy.io:3306/e107?serverTimezone=Asia/Seoul&characterEncoding=UTF-8'
+        DB_USER = 'root'
+        DB_PASSWORD = 'j11e107-root'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'develop/be', url: 'https://lab.ssafy.com/s11-metaverse-game-sub1/S11P21E107.git', credentialsId: '50260a88-a40f-401c-99d2-66cc373c5769'
+            }
+            post {
+                success { 
+                    sh 'echo "Successfully Cloned Repository"'
+                }
+                failure {
+                    sh 'echo "Fail Cloned Repository"'
+                }
+            } 
+        }
+        
+        stage('Build') {
+            steps {
+                sh '''
+                    cd $WORKSPACE/backend/in-my-sleep &&
+                    ls -al &&
+                    chmod +x gradlew &&
+                    ./gradlew clean build -x test &&
+                    cp ./build/libs/in-my-sleep-0.0.1-SNAPSHOT.jar $WORKSPACE/backend/in-my-sleep/app.jar
+                '''
+            }
+            post {
+                success {
+                    echo 'gradle build success'
+                }
+                failure {
+                    echo 'gradle build failed'
+                }
+            }
+        }
+        
+        stage('Docker Rm') {
+            steps {
+                script {
+                    def imageName = 'in-my-sleep-be'
+                    def imageTag = "${env.BUILD_ID}"  // Jenkins 빌드 번호로 이미지 태그 지정
+                    
+                    sh '''
+                        docker stop ''' + imageName + ''' || true
+                        docker rm ''' + imageName + ''' || true
+                        docker rmi -f ''' + imageName + ''':''' + imageTag + ''' || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    sh 'echo "Docker Rm Success"'
+                }
+                failure {
+                    sh 'echo "Docker Rm Fail"'
+                }
+            }
+        }
+        
+        stage('Dockerizing') {
+            steps {
+                script {
+                    // 이미지 이름과 태그를 지정
+                    def imageName = 'in-my-sleep-be'
+                    def imageTag = "${env.BUILD_ID}"  // Jenkins 빌드 번호를 태그로 사용
+        
+                    sh '''
+                        # Docker 이미지를 빌드 (JAR 파일은 이미 빌드된 결과물 사용)
+                        docker build -t ''' + imageName + ''':''' + imageTag + ''' $WORKSPACE/backend/in-my-sleep
+        
+                        # Docker 컨테이너 실행 시 환경 변수 전달
+                        docker run -d --name ''' + imageName + ''' -p 8000:8080 \
+                        --env-file $WORKSPACE/backend/in-my-sleep/.env \
+                        ''' + imageName + ''':''' + imageTag + '''
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Dockerizing success'
+                }
+                failure {
+                    echo 'Dockerizing failed'
+                }
+            }
+        }
+    }
+}

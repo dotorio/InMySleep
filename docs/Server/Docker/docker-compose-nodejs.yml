@@ -1,0 +1,15 @@
+services:
+  node:
+    image: node:20
+    ports:
+      - "3113:3113"
+    volumes:
+      - /home/ubuntu/volumes/node:/app
+    command: bash
+    networks:
+      - ubuntu_default
+    tty: true
+
+networks:
+  ubuntu_default:
+    external: true
