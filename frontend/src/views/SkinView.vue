@@ -291,6 +291,13 @@ function hasNFTCheck() {
     return nStore.userNft.some((nft) => nft.attributes.character === 'rabbit' && nft.id == sStore.userSkin.selectedRabbitMetadata)
   }
 }
+
+function hasNFTCheck2(id) {
+  if (!uStore.user.data.metamaskToken || nStore.userNft.length === 0) {
+    return false
+  }
+  return nStore.userNft.some((nft) => nft.id == id)
+}
 </script>
 
 <template>
@@ -318,12 +325,26 @@ function hasNFTCheck() {
         </button>
         <div class="skins flex-align">
           <div v-if="sStore.userSkin.choice === 'bear'" class="skin-list">
-            <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userBearSkin" :key="num" class="skin"
-              :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
+            <div class="image-con">
+              <div v-for="(skin, num) in sStore.userBearSkin" :key="num">
+                <img :src="imgUrl(skin)" :alt="skin.name" class="skin" :class="skinScale(num)"
+                  :style="{ left: positionCalc(num) }">
+                </img>
+                <div v-if="sStore.userBearSkin[num].id == sStore.userSkin.bearMetadata" class="skin-badge"
+                  :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
+                <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userBearSkin[num].id)"
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                </div>
+              </div>
+            </div>
           </div>
           <div v-else-if="sStore.userSkin.choice === 'rabbit'" class="skin-list">
-            <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userRabbitSkin" :key="num"
-              class="skin" :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
+            <div class="image-con">
+              <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userRabbitSkin" :key="num"
+                class="skin" :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
+              <!-- <div class="skin-badge">⭐</div>
+              <div class="nft-badge">NFT</div> -->
+            </div>
           </div>
         </div>
         <button class="skin-btn btn bitbit" @click="nextBtn">></button>
@@ -378,12 +399,6 @@ function hasNFTCheck() {
   box-shadow: 0px 0px 0px 5px #aba4f7;
 }
 
-.skin {
-  transition: all 0.5s ease-in-out;
-  width: 12%;
-  position: absolute;
-}
-
 .skin-con {
   width: 600px;
   height: 450px;
@@ -427,6 +442,35 @@ function hasNFTCheck() {
 .skin-left,
 .skin-right {
   scale: 1.2;
+}
+
+.skin {
+  transition: all 0.5s ease-in-out;
+  width: 12%;
+  position: absolute;
+}
+
+.skin-badge {
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  top: 36%;
+  font-size: 18px;
+  /* background-color: gold; */
+  color: white;
+  /* border-radius: 50%; */
+  /* font-size: 12px; */
+}
+
+.nft-badge {
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  top: 34%;
+  left: 56.5%;
+  background-color: #4caf50;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 10px;
 }
 
 .btn {
