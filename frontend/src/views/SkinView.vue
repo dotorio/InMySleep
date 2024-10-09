@@ -304,8 +304,10 @@ function hasNFTCheck2(id) {
   <div>
     <Nav />
     <div class="main-con box-md">
-      <button @click="choiceCharacter('bear')">곰</button>
-      <button @click="choiceCharacter('rabbit')">토끼</button>
+      <div class="character-con">
+        <button class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
+        <button class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
+      </div>
       <div class="skin-con box-col">
         <div v-if="sStore.userSkin.choice === 'bear'" class="skin-con">
           <img :src="imgUrl(sStore.userBearSkin[currentSkin])" alt="곰1" class="main-skin" />
@@ -340,10 +342,16 @@ function hasNFTCheck2(id) {
           </div>
           <div v-else-if="sStore.userSkin.choice === 'rabbit'" class="skin-list">
             <div class="image-con">
-              <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userRabbitSkin" :key="num"
-                class="skin" :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
-              <!-- <div class="skin-badge">⭐</div>
-              <div class="nft-badge">NFT</div> -->
+              <div v-for="(skin, num) in sStore.userRabbitSkin" :key="num">
+                <img :src="imgUrl(skin)" :alt="skin.name" class="skin" :class="skinScale(num)"
+                  :style="{ left: positionCalc(num) }">
+                </img>
+                <div v-if="sStore.userRabbitSkin[num].id == sStore.userSkin.rabbitMetadata" class="skin-badge"
+                  :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
+                <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userRabbitSkin[num].id)"
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -507,5 +515,24 @@ function hasNFTCheck2(id) {
 .tooltip {
   position: relative;
   /* display: inline-block; */
+}
+
+.character-con {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.character-btn {
+  width: 100px;
+  margin-left: 10px;
+  background-color: hsl(235, 55%, 35%);
+  color: white;
+  font-size: 25px;
+  text-align: center;
+  border-radius: 10px;
+  border-width: 5px;
+  border-color: hsl(235, 61%, 34%);
+  border-width: 3px;
 }
 </style>
