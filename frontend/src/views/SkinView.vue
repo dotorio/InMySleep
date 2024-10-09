@@ -1,6 +1,7 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
 import Footer from "@/components/Footer.vue";
+import Tooltip from "@/components/common/Tooltip.vue";
 import skinData from "@/assets/data/skin.json";
 import { ref, onBeforeMount } from "vue";
 import { myNFTs } from "@/api/nft";
@@ -328,9 +329,17 @@ function hasNFTCheck() {
         <button class="skin-btn btn bitbit" @click="nextBtn">></button>
       </div>
       <div class="btn-con">
-        <button v-if="uStore.user.data.metamaskToken && !hasNFTCheck()" class="nft-btn btn bitbit" @click="mint()">NFT
-          발행</button>
-        <button v-else class="nft-btn btn bitbit disable">NFT 보유</button>
+        <div class="tooltip">
+          <div v-if="uStore.user.data.metamaskToken && !hasNFTCheck()">
+            <button class="nft-btn btn bitbit" @click="mint()">NFT
+              발행</button>
+          </div>
+          <div v-else>
+            <button class="nft-btn btn bitbit disable">NFT 발행</button>
+            <Tooltip v-if="!uStore.user.data.metamaskToken" message="MetaMask를 연동해주세요." />
+            <Tooltip v-else message="이미 발행한 NFT입니다." />
+          </div>
+        </div>
         <button v-if="equipSkinCheck()" class="select-btn btn bitbit" @click="equipSkin()">선택하기</button>
         <button v-else class="select-btn btn bitbit disable">선택하기</button>
       </div>
@@ -449,5 +458,10 @@ function hasNFTCheck() {
   cursor: not-allowed !important;
   filter: brightness(0.7);
   opacity: 0.7 !important;
+}
+
+.tooltip {
+  position: relative;
+  /* display: inline-block; */
 }
 </style>
