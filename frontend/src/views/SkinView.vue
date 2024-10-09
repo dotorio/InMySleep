@@ -1,6 +1,7 @@
 <script setup>
 import Nav from "@/components/Nav.vue";
 import Footer from "@/components/Footer.vue";
+import Tooltip from "@/components/common/Tooltip.vue";
 import skinData from "@/assets/data/skin.json";
 import { ref, onBeforeMount } from "vue";
 import { myNFTs } from "@/api/nft";
@@ -290,14 +291,23 @@ function hasNFTCheck() {
     return nStore.userNft.some((nft) => nft.attributes.character === 'rabbit' && nft.id == sStore.userSkin.selectedRabbitMetadata)
   }
 }
+
+function hasNFTCheck2(id) {
+  if (!uStore.user.data.metamaskToken || nStore.userNft.length === 0) {
+    return false
+  }
+  return nStore.userNft.some((nft) => nft.id == id)
+}
 </script>
 
 <template>
   <div>
     <Nav />
     <div class="main-con box-md">
-      <button @click="choiceCharacter('bear')">곰</button>
-      <button @click="choiceCharacter('rabbit')">토끼</button>
+      <div class="character-con">
+        <button class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
+        <button class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
+      </div>
       <div class="skin-con box-col">
         <div v-if="sStore.userSkin.choice === 'bear'" class="skin-con">
           <img :src="imgUrl(sStore.userBearSkin[currentSkin])" alt="곰1" class="main-skin" />
@@ -317,20 +327,48 @@ function hasNFTCheck() {
         </button>
         <div class="skins flex-align">
           <div v-if="sStore.userSkin.choice === 'bear'" class="skin-list">
-            <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userBearSkin" :key="num" class="skin"
-              :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
+            <div class="image-con">
+              <div v-for="(skin, num) in sStore.userBearSkin" :key="num">
+                <img :src="imgUrl(skin)" :alt="skin.name" class="skin" :class="skinScale(num)"
+                  :style="{ left: positionCalc(num) }">
+                </img>
+                <div v-if="sStore.userBearSkin[num].id == sStore.userSkin.bearMetadata" class="skin-badge"
+                  :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
+                <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userBearSkin[num].id)"
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                </div>
+              </div>
+            </div>
           </div>
           <div v-else-if="sStore.userSkin.choice === 'rabbit'" class="skin-list">
-            <img :src="imgUrl(skin)" :alt="skin.name" v-for="(skin, num) in sStore.userRabbitSkin" :key="num"
-              class="skin" :class="skinScale(num)" :style="{ left: positionCalc(num) }" />
+            <div class="image-con">
+              <div v-for="(skin, num) in sStore.userRabbitSkin" :key="num">
+                <img :src="imgUrl(skin)" :alt="skin.name" class="skin" :class="skinScale(num)"
+                  :style="{ left: positionCalc(num) }">
+                </img>
+                <div v-if="sStore.userRabbitSkin[num].id == sStore.userSkin.rabbitMetadata" class="skin-badge"
+                  :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
+                <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userRabbitSkin[num].id)"
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <button class="skin-btn btn bitbit" @click="nextBtn">></button>
       </div>
       <div class="btn-con">
-        <button v-if="uStore.user.data.metamaskToken && !hasNFTCheck()" class="nft-btn btn bitbit" @click="mint()">NFT
-          발행</button>
-        <button v-else class="nft-btn btn bitbit disable">NFT 보유</button>
+        <div class="tooltip">
+          <div v-if="uStore.user.data.metamaskToken && !hasNFTCheck()">
+            <button class="nft-btn btn bitbit" @click="mint()">NFT
+              발행</button>
+          </div>
+          <div v-else>
+            <button class="nft-btn btn bitbit disable">NFT 발행</button>
+            <Tooltip v-if="!uStore.user.data.metamaskToken" message="MetaMask를 연동해주세요." />
+            <Tooltip v-else message="이미 발행한 NFT입니다." />
+          </div>
+        </div>
         <button v-if="equipSkinCheck()" class="select-btn btn bitbit" @click="equipSkin()">선택하기</button>
         <button v-else class="select-btn btn bitbit disable">선택하기</button>
       </div>
@@ -367,12 +405,6 @@ function hasNFTCheck() {
 .select-btn:hover,
 .nft-btn:hover {
   box-shadow: 0px 0px 0px 5px #aba4f7;
-}
-
-.skin {
-  transition: all 0.5s ease-in-out;
-  width: 12%;
-  position: absolute;
 }
 
 .skin-con {
@@ -420,6 +452,35 @@ function hasNFTCheck() {
   scale: 1.2;
 }
 
+.skin {
+  transition: all 0.5s ease-in-out;
+  width: 12%;
+  position: absolute;
+}
+
+.skin-badge {
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  top: 36%;
+  font-size: 18px;
+  /* background-color: gold; */
+  color: white;
+  /* border-radius: 50%; */
+  /* font-size: 12px; */
+}
+
+.nft-badge {
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  top: 34%;
+  left: 56.5%;
+  background-color: #4caf50;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 10px;
+}
+
 .btn {
   background-color: #1f1a59;
   color: white;
@@ -449,5 +510,29 @@ function hasNFTCheck() {
   cursor: not-allowed !important;
   filter: brightness(0.7);
   opacity: 0.7 !important;
+}
+
+.tooltip {
+  position: relative;
+  /* display: inline-block; */
+}
+
+.character-con {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.character-btn {
+  width: 100px;
+  margin-left: 10px;
+  background-color: hsl(235, 55%, 35%);
+  color: white;
+  font-size: 25px;
+  text-align: center;
+  border-radius: 10px;
+  border-width: 5px;
+  border-color: hsl(235, 61%, 34%);
+  border-width: 3px;
 }
 </style>
