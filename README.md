@@ -53,6 +53,12 @@
 
 |                                                  |                                         |
 | ------------------------------------------------ | -------------------------------------------------- |
+| <img src="./docs/Image/web-main.png"> | <img src="./docs/Image/web-download.png"> |
+| `웹 페이지` 웹 페이지 메인 화면 | `게임 다운로드` 웹 페이지 게임 다운로드 |
+| <img src="./docs/Image/web-register.png"> | <img src="./docs/Image/web-login.png"> |
+| `회원가입` 회원가입 페이지 | `로그인` 로그인 페이지 |
+| <img src="./docs/Image/web-guide.png"> | <img src="./docs/Image/web-nft.png"> |
+| `가이드` 가이드 페이지 | `NFT` NFT 스킨 페이지 |
 | <img src=""> | <img src=""> |
 | `메인 화면` 게임 메인 화면 | `로그인 화면` 로그인 화면 |
 | <img src=""> | <img src=""> |
@@ -71,13 +77,22 @@
 ![CSS3](https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
 ### **BE**
-
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=Spring%20Security&logoColor=white)
 ![JPA](https://img.shields.io/badge/JPA-%23323330.svg?style=for-the-badge&logo=hibernate&logoColor=%235C95F7)
 ![JWT](https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+### **Block Chain**
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![MetaMask](https://img.shields.io/badge/MetaMask-E2761B?style=for-the-badge&logo=metamask&logoColor=white)
+![Polygon](https://img.shields.io/badge/Polygon-8247E5?style=for-the-badge&logo=polygon&logoColor=white)
+![Truffle](https://img.shields.io/badge/Truffle-5E473B?style=for-the-badge&logo=truffle&logoColor=white)
+![IPFS](https://img.shields.io/badge/IPFS-65C2CB?style=for-the-badge&logo=ipfs&logoColor=white)
+![Ganache](https://img.shields.io/badge/Ganache-744828?style=for-the-badge&logo=ethereum&logoColor=white)
+
 
 ### **INFRA**
 
@@ -116,6 +131,12 @@
 
 
 <br/>
+
+## 🗄️ ERD
+![ERD다이어그램](./docs/Image/erd.png)
+
+<br>
+<br>
 
 ## 📒 프로젝트 기록
 
