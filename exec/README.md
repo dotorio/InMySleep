@@ -67,6 +67,23 @@ npm install
 npm run build
 ```
 
+## Blockchain
+
+### Version
+
+- Express.js: '4.20.0'
+- ethers: 6.13.2
+- web3: 4.12.1
+- MetaMask
+- Polygon
+- Truffle 5.11.5
+- IPFS 0.30.0
+
+### 실행 방법
+```
+npm run dev
+```
+
 ## Photon Server Setting
 
 1. https://www.photonengine.com/
