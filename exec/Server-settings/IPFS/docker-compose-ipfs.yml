@@ -1,0 +1,95 @@
+services:
+  ipfs-node1:
+    image: ipfs/kubo:latest
+    container_name: ipfs-node1
+    volumes:
+      - /home/ubuntu/volumes/ipfs-data1:/data/ipfs
+    environment:
+      IPFS_PROFILE: server
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8081:8080"
+    networks:
+      - ipfs-network
+    restart: always
+
+  ipfs-cluster1:
+    container_name: ipfs-cluster1
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs-node1
+    environment:
+      CLUSTER_PEERNAME: ipfs-cluster1
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs-node1/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: "*"
+      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094
+      CLUSTER_MONITORPINGINTERVAL: 2s
+    ports:
+      - "9094:9094"
+    volumes:
+      - /home/ubuntu/volumes/ipfs-cluster1:/data/ipfs-cluster
+    networks:
+      - ipfs-network
+    restart: always
+
+  ipfs-node2:
+    image: ipfs/kubo:latest
+    container_name: ipfs-node2
+    volumes:
+      - /home/ubuntu/volumes/ipfs-data2:/data/ipfs
+    environment:
+      IPFS_PROFILE: server
+    networks:
+      - ipfs-network
+    restart: always
+
+  ipfs-cluster2:
+    container_name: ipfs-cluster2
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs-node2
+    environment:
+      CLUSTER_PEERNAME: ipfs-cluster2
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs-node2/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: "*"
+      CLUSTER_MONITORPINGINTERVAL: 2s
+    volumes:
+      - /home/ubuntu/volumes/ipfs-cluster2:/data/ipfs-cluster
+    networks:
+      - ipfs-network
+    restart: always
+
+  ipfs-node3:
+    image: ipfs/kubo:latest
+    container_name: ipfs-node3
+    volumes:
+      - /home/ubuntu/volumes/ipfs-data3:/data/ipfs
+    environment:
+      IPFS_PROFILE: server
+    networks:
+      - ipfs-network
+    restart: always
+
+  ipfs-cluster3:
+    container_name: ipfs-cluster3
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs-node3
+    environment:
+      CLUSTER_PEERNAME: ipfs-cluster3
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs-node3/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: "*"
+      CLUSTER_MONITORPINGINTERVAL: 2s
+    volumes:
+      - /home/ubuntu/volumes/ipfs-cluster3:/data/ipfs-cluster
+    networks:
+      - ipfs-network
+    restart: always
+
+networks:
+  ipfs-network:
+    driver: bridge
