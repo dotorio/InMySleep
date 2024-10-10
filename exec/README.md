@@ -76,29 +76,43 @@ npm run build
 
 ## 시연 시나리오
 
-1. 로그인 및 회원가입
-![image.png](./img/02_GameStart.png)
+1. 게임시작화면
+![02_GameStart.png](./img/02_GameStart.png)
 
 
-2. 게임시작 화면
-![image.png](./img/02_GameStart.png)
+2. 로그인화면
+![2.png](./img/2.png)
 
 
 3. 로비 화면
-![image-1.png](./img/02_GameStart.png)
+![11.png](./img/11.png)
 
 
 4. 친구 요청 및 수락
-![image-2.png](./img/02_GameStart.png)
+![12.png](./img/12.png)
+![13.png](./img/13.png)
 
 
-5. 게임 시작
-![image-3.png](./img/02_GameStart.png)
+5. 친구 초대 및 게임 시작
+![15.png](./img/15.png)
+![16.png](./img/16.png)
 
 
-6. 스테이지 진행
-![image-4.png](./img/02_GameStart.png)
+6. 스테이지 진행 방식
+   1. 스테이지 스토리
+   ![18.png](./img/18.png)
 
+   2. 스테이지 가이드
+   ![19.png](./img/19.png)
 
-7. 엔딩
-![image-5.png](./img/02_GameStart.png)
+   3. 인게임
+   ![23.png](./img/23.png)
+
+   4. 목표지점
+   ![27.png](./img/27.png)
+   ![30.png](./img/30.png)
+   ![53.png](./img/53.png)
+    
+
+7. 게임 클리어
+![58.png](./img/58.png)
