@@ -5,6 +5,7 @@ import SignUpView from "@/views/SignUpView.vue";
 import LoginView from "@/views/LoginView.vue";
 import GuideView from "@/views/GuideView.vue";
 import SkinView from "@/views/SkinView.vue";
+import Nft from "@/views/Nft.vue";
 
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -64,6 +65,11 @@ const router = createRouter({
       name: "skin",
       component: SkinView,
       beforeEnter: onlyAuthUser,
+    },
+    {
+      path: "/nft",
+      name: "nft",
+      component: Nft,
     },
   ],
 });
