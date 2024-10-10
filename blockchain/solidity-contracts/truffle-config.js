@@ -99,7 +99,11 @@ module.exports = {
     // }
     amoyTestnet: {
       provider: () =>
-        new HDWalletProvider(MNEMONIC, `https://rpc.testnet.amoy.network`, 1),
+        new HDWalletProvider({
+          privateKeys: [MNEMONIC],
+          providerOrUrl: `https://rpc.testnet.amoy.network`,
+          numberOfAddresses: 1,
+        }),
       network_id: 80002,
       gas: 6000000,
       gasPrice: 30000000000,
@@ -109,11 +113,11 @@ module.exports = {
     },
     polygon: {
       provider: () =>
-        new HDWalletProvider(
-          MNEMONIC,
-          `https://polygon-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-          1
-        ),
+        new HDWalletProvider({
+          privateKeys: [MNEMONIC],
+          providerOrUrl: `https://polygon-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          numberOfAddresses: 1,
+        }),
       network_id: 137,
       gas: 6000000,
       gasPrice: 30000000000,
