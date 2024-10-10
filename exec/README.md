@@ -71,18 +71,59 @@ npm run build
 
 ### Version
 
-- Express.js: '4.20.0'
-- ethers: 6.13.2
-- web3: 4.12.1
+- Express.js: `4.20.0`
+- ethers: `6.13.2`
+- web3: `4.12.1`
 - MetaMask
 - Polygon
-- Truffle 5.11.5
-- IPFS 0.30.0
+- Truffle `5.11.5`
+- IPFS `0.30.0`
 
-### 실행 방법
+### Express.js 실행
 ```
+# Server
+PORT=
+SSL_KEY=
+SSL_CERT=
+SSL_CHAIN=
+# Database
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+# Blockchain
+WEB3_PROVIDER=
+CONTRACT_ADDRESS=
+PRIVATE_KEY=
+# Wallet
+JWT_SECRET=
+```
+```
+npm i
 npm run dev
 ```
+
+### Truffle 배포 방법
+- docker-compose-nodejs.yml 파일 실행
+```
+docker compose -f docker-compose-nodejs.yml up -d
+docker exec -it ubuntu-node-1 /bin/sh
+npm i -g truffle
+```
+- 스마트 컨트랙트 배포
+```
+truffle compile
+truffle migrate --network <Network Name>
+```
+
+### IPFS 구성
+- CORS 설정 파일 구성
+- docker-compose-ipfs.yml 파일 실행
+```
+docker compose -f docker-compose-ipfe.yml up -d
+```
+- images에 이미지 파일 추가 후 upload_image.sh 스크립트 실행
+- metadatas에 메타데이터 파일 추가 후 upload_metadata.sh 스크립트 실행
 
 ## Photon Server Setting
 
