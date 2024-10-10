@@ -43,7 +43,7 @@
 
 require("dotenv").config();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const { MNEMONIC } = process.env;
+const { MNEMONIC, INFURA_PROJECT_ID } = process.env;
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 
@@ -101,8 +101,22 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(MNEMONIC, `https://rpc.testnet.amoy.network`, 1),
       network_id: 80002,
-      gas: 5500000,
-      gasPrice: 1000000000,
+      gas: 6000000,
+      gasPrice: 30000000000,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+    },
+    polygon: {
+      provider: () =>
+        new HDWalletProvider(
+          MNEMONIC,
+          `https://polygon-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          1
+        ),
+      network_id: 137,
+      gas: 6000000,
+      gasPrice: 30000000000,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: true,
