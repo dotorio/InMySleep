@@ -55,7 +55,21 @@ export const saveMintedNFTToDB = async (receipt: any, userId: string, address: s
   
   export const getNFTsFromDB = async (address: string): Promise<string[]> => {
     try {
-      const [rows]: [any[], FieldPacket[]] = await pool.query('SELECT * FROM metadata WHERE id IN (SELECT metadata_id FROM nft WHERE owner_address = ?)', [address]);
+      const query = `
+      SELECT
+        metadata.*,
+        nft.token_id,
+        nft.transaction_hash
+      FROM
+        metadata
+      JOIN
+        nft
+      ON
+        metadata.id = nft.metadata_id
+      WHERE
+        nft.owner_address = ?;
+      `
+      const [rows]: [any[], FieldPacket[]] = await pool.query(query, [address]);
       return rows
     } catch (error) {
       console.error('Error getting NFTs from DB:', error);
