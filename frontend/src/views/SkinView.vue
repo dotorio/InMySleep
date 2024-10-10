@@ -245,16 +245,30 @@ async function mint() {
     tokenURI = sStore.userRabbitSkin.filter((skin) => skin.attributes && skin.id == sStore.userSkin.selectedRabbitMetadata)[0].metadataUri;
   }
   try {
+    Swal.fire({
+      title: "NFT 발행 중",
+      text: "잠시만 기다려주세요. 네트워크 상태에 따라 시간이 걸릴 수 있습니다.",
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      showCloseButton: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
     const response = await postMint(uStore.user.data.userId, uStore.user.data.address, tokenURI);
     if (response.status === 200) {
+      Swal.close();
       Swal.fire({
         icon: "success",
         title: "성공",
         text: "NFT가 발행되었습니다",
       });
-      window.location.reload();
+      // window.location.reload();
     }
   } catch (error) {
+    Swal.close();
     Swal.fire({
       icon: "error",
       title: "실패",
@@ -298,6 +312,21 @@ function hasNFTCheck2(id) {
   }
   return nStore.userNft.some((nft) => nft.id == id)
 }
+
+function openNftInfo(id) {
+  Swal.fire({
+    title: "NFT 정보",
+    text: "NFT 정보를 확인하시겠습니까?",
+    showCancelButton: true,
+    confirmButtonText: "확인",
+    cancelButtonText: "취소",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const url = `/nft?metadataId=${id}`;
+      window.open(url, "_blank", `width=400, height=300`);
+    }
+  });
+}
 </script>
 
 <template>
@@ -305,8 +334,12 @@ function hasNFTCheck2(id) {
     <Nav />
     <div class="main-con box-md">
       <div class="character-con">
-        <button class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
-        <button class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
+        <button v-if="sStore.userSkin.choice === 'bear'" class="character-btn bitbit selected"
+          @click="choiceCharacter('bear')">곰</button>
+        <button v-else class="character-btn bitbit" @click="choiceCharacter('bear')">곰</button>
+        <button v-if="sStore.userSkin.choice === 'rabbit'" class="character-btn bitbit selected"
+          @click="choiceCharacter('rabbit')">토끼</button>
+        <button v-else class="character-btn bitbit" @click="choiceCharacter('rabbit')">토끼</button>
       </div>
       <div class="skin-con box-col">
         <div v-if="sStore.userSkin.choice === 'bear'" class="skin-con">
@@ -335,7 +368,8 @@ function hasNFTCheck2(id) {
                 <div v-if="sStore.userBearSkin[num].id == sStore.userSkin.bearMetadata" class="skin-badge"
                   :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
                 <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userBearSkin[num].id)"
-                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }"
+                  @click="openNftInfo(skin.id)">NFT
                 </div>
               </div>
             </div>
@@ -349,7 +383,8 @@ function hasNFTCheck2(id) {
                 <div v-if="sStore.userRabbitSkin[num].id == sStore.userSkin.rabbitMetadata" class="skin-badge"
                   :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} - 3%)` }">⭐</div>
                 <div v-if="uStore.user.data.metamaskToken && hasNFTCheck2(sStore.userRabbitSkin[num].id)"
-                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }">NFT
+                  class="nft-badge" :class="skinScale(num)" :style="{ left: `calc(${positionCalc(num)} + 10.5%)` }"
+                  @click="openNftInfo(skin.id)">NFT
                 </div>
               </div>
             </div>
@@ -534,5 +569,10 @@ function hasNFTCheck2(id) {
   border-width: 5px;
   border-color: hsl(235, 61%, 34%);
   border-width: 3px;
+}
+
+.selected {
+  background-color: hsl(235, 55%, 25%);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5)
 }
 </style>
