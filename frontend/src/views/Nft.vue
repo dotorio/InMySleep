@@ -1,7 +1,9 @@
 <script setup>
+import { ref } from 'vue';
 import { useNftStore } from '@/stores/nft';
 
 const nStore = useNftStore();
+const copied = ref(false);
 
 const urlParams = new URLSearchParams(window.location.search);
 const metadataId = urlParams.get('metadataId');
@@ -11,16 +13,36 @@ const currentNft = nStore.userNft.find(nft => nft.id == metadataId);
 function polyscanLink(hash) {
     return `https://polygonscan.com/tx/${hash}`;
 }
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        copied.value = true;
+        setTimeout(() => {
+            copied.value = false;
+        }, 1500)
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
 </script>
 
 <template>
     <div class="nft-container">
-        <h1>NFT INFO</h1>
+        <h1>NFT</h1>
         <div v-if="currentNft" class="nft-card">
             <div class="nft-details">
-                <h2>토큰 번호: {{ currentNft.token_id }}</h2>
-                <a :href="polyscanLink(currentNft.transaction_hash)" target="_blank">트랜잭션 조회: {{
-                    currentNft.transaction_hash.slice(0, 4) }}</a>
+                <h2>{{ currentNft.token_id }}</h2>
+                <a :href="polyscanLink(currentNft.transaction_hash)" target="_blank">
+                    {{ currentNft.transaction_hash.slice(0, 4) }}
+                </a>
+                <div class="contract-address">
+                    <span>Contract:</span>
+                    <span @click="copyToClipboard(currentNft.contract_address)" class="copy-address">
+                        {{ currentNft.contract_address }}
+                    </span>
+                    <br />
+                </div>
+                <span v-if="copied" class="copied-text">Copied!</span>
             </div>
         </div>
     </div>
@@ -68,6 +90,31 @@ function polyscanLink(hash) {
 
 .nft-card a:hover {
     text-decoration: underline;
+}
+
+.contract-address {
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.contract-address span {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.copy-address:hover {
+    text-decoration: underline;
+    color: #3498db;
+}
+
+.copied-text {
+    font-size: 0.9em;
+    color: green;
+    margin-left: 10px;
 }
 
 h1 {
