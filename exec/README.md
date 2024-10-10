@@ -117,6 +117,7 @@ truffle migrate --network <Network Name>
 ```
 
 ### IPFS 구성
+- gen_secret.sh로 클러스터 키 발급
 - CORS 설정 파일 구성
 - docker-compose-ipfs.yml 파일 실행
 ```
