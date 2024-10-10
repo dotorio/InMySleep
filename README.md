@@ -139,7 +139,7 @@ MetaMask 지갑을 연동하면 NFT로 발행할 수 있어요!<br>
 
 ## 🛠️ 서비스 아키텍쳐
 
-![배포아키텍쳐](./docs/Architecture.png)
+![서비스아키텍쳐](./docs/Image/Architecture.png)
 <br/>
 
 
