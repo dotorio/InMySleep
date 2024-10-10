@@ -165,11 +165,11 @@ docker compose -f docker-compose-ipfe.yml up -d
 
    3. 인게임
    ![23.png](./img/23.png)
-
-   4. 목표지점
-   ![27.png](./img/27.png)
    ![30.png](./img/30.png)
    ![53.png](./img/53.png)
+   4. 목표지점
+   ![27.png](./img/27.png)
+
     
 
 7. 게임 클리어
