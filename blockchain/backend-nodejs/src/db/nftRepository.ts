@@ -59,7 +59,8 @@ export const saveMintedNFTToDB = async (receipt: any, userId: string, address: s
       SELECT
         metadata.*,
         nft.token_id,
-        nft.transaction_hash
+        nft.transaction_hash,
+        nft.contract_address
       FROM
         metadata
       JOIN
