@@ -1,0 +1,11 @@
+{
+    "name": "Rabbit #5",
+    "description": "아수라 백작 버니",
+    "image": "https://j11e107.p.ssafy.io/ipfs/QmTtYtZNRzYXBYcJuzPRi4aXEc4mi1bjcs4HSHqjdA7i2z",
+    "attributes": [
+        {
+            "character": "rabbit",
+            "color": 5
+        }
+    ]
+}
