@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: cdd2898f30110e542a9910d44128e89c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - bomb: {fileID: 8238724293073172860, guid: fb63969ccb645954da2a2d88d94f3519, type: 3}
+  - cube: {fileID: 2246137472794582137, guid: ce99455a28cf61c4d8744a077430b8bd, type: 3}
+  - big: {fileID: 2794982536795645504, guid: ba7880bea6d708749986b96261a81645, type: 3}
+  - hand: {instanceID: 0}
+  - hand2: {instanceID: 0}
+  - hand3: {instanceID: 0}
+  - player1: {instanceID: 0}
+  - player2: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

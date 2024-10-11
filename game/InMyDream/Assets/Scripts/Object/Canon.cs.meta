@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 57271aa9861cd6b4ab40fb9d302e4a5d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - loadedObject: {fileID: 1145317116343723565, guid: 4b518fdb609f0e442be4fbeb5459da38, type: 3}
+  - breakablePrefab: {fileID: 451563190566913212, guid: e6f6d18234364984494a06ad2efc86e9, type: 3}
+  - boss: {instanceID: 0}
+  - breakableSpawnPoint: {instanceID: 0}
+  - firePoint: {instanceID: 0}
+  - BombLocator: {instanceID: 0}
+  - loadSource: {instanceID: 0}
+  - fireSource: {instanceID: 0}
+  - fireEffect: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

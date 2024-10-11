@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Interactable
+  - Breakable
+  - Ground
+  - PlayerBody
+  - Shelf
+  - Boss
+  - Stone
+  - Bomb
+  - Grabable
+  - Obstacle
+  - Battery
+  - Slide
+  - Jump
+  - Button
+  - TileObject
+  - BGM
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Player2UI
+  - Player1UI
+  - obstacles
+  - Dog
+  - Wall
+  - Bomb
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
