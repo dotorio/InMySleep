@@ -1,0 +1,65 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name j11e107.p.ssafy.io;
+
+    # HTTP 요청을 HTTPS로 리다이렉트
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name j11e107.p.ssafy.io;
+
+    ssl_certificate /etc/letsencrypt/live/j11e107.p.ssafy.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/j11e107.p.ssafy.io/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Jenkins 프록시 설정
+    location /jenkins/ {
+        proxy_pass http://localhost:8080/jenkins/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ipfs/ {
+        proxy_pass http://localhost:8081/ipfs/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # 기본 root 설정 (optional)
+    location / {
+        root /home/ubuntu/volumes/jenkins/workspace/FrontEnd-DEV/frontend/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /download/ {
+        alias /home/ubuntu/uploads/;
+        autoindex on;  # 파일 목록을 표시
+        autoindex_exact_size off;  # 파일 크기를 KB, MB 단위로 표시
+        autoindex_localtime on;  # 파일의 로컬 시간 표시
+
+        # CORS 헤더 추가
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept, Authorization';
+
+        # CORS 사전 요청(OPTIONS) 허용
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept, Authorization';
+            return 204;
+        }
+    }
+}
+

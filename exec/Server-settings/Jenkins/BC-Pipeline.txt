@@ -1,0 +1,118 @@
+pipeline {
+    agent any
+
+    stages {
+        // 1. Git Repository Checkout
+        stage('Checkout') {
+            steps {
+                git branch: 'develop/bc', url: 'https://lab.ssafy.com/s11-metaverse-game-sub1/S11P21E107.git', credentialsId: '50260a88-a40f-401c-99d2-66cc373c5769'
+            }
+            post {
+                success { 
+                    sh 'echo "Successfully Cloned Repository"'
+                }
+                failure {
+                    sh 'echo "Failed to Clone Repository"'
+                }
+            }
+        }
+        
+        // 2. Install Dependencies (npm install)
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    cd $WORKSPACE/blockchain/backend-nodejs &&
+                    ls -al &&
+                    npm install
+                '''
+            }
+            post {
+                success {
+                    echo 'Dependencies Installed Successfully'
+                }
+                failure {
+                    echo 'Dependencies Installation Failed'
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh '''
+                    cd $WORKSPACE/blockchain/backend-nodejs &&
+                    npx tsc
+                '''
+            }
+            post {
+                success {
+                    echo 'Build Successfully'
+                }
+                failure {
+                    echo 'Build Failed'
+                }
+            }
+        }
+        
+        stage('Docker Rm') {
+            steps {
+                script {
+                    def imageName = 'nft'
+                    def currentImageTag = "${env.BUILD_ID}"  // 현재 빌드 번호로 이미지 태그 설정
+                    
+                    // 현재 컨테이너 중지 및 삭제 (강제로 중지 시도)
+                    sh '''
+                        if [ $(docker ps -aq -f name=''' + imageName + ''') ]; then
+                          docker stop ''' + imageName + '''
+                          docker rm -f ''' + imageName + '''
+                        else
+                          echo "No running container found with name ''' + imageName + '''"
+                        fi
+                    '''
+                    
+                    // 현재 빌드된 이미지 외의 모든 이전 태그 이미지 삭제
+                    sh '''
+                        docker images --filter=reference="''' + imageName + ''':*" --format "{{.Repository}}:{{.Tag}}" | grep -v ''' + currentImageTag + ''' | xargs -r docker rmi -f || true
+                    '''
+                }
+            }
+            post {
+                success {
+                    sh 'echo "Docker Clean-up Success"'
+                }
+                failure {
+                    sh 'echo "Docker Clean-up Failed"'
+                }
+            }
+        }
+
+
+        // 4. Dockerizing and Running New Container
+        stage('Dockerizing') {
+            steps {
+                script {
+                    def imageName = 'nft'
+                    def imageTag = "${env.BUILD_ID}"  // 현재 빌드 번호로 이미지 태그 설정
+
+                    // Docker 이미지 빌드 및 컨테이너 실행
+                    sh '''
+                        # Docker 이미지를 빌드
+                        docker build -t ''' + imageName + ''':''' + imageTag + ''' $WORKSPACE/blockchain/backend-nodejs
+
+                        # Docker 컨테이너 실행
+                        docker run -d --name ''' + imageName + ''' -p 3030:3000 \
+                        --env-file $WORKSPACE/blockchain/backend-nodejs/.env \
+                        ''' + imageName + ''':''' + imageTag + '''
+                    '''
+                }
+            }
+            post {
+                success {
+                    echo 'Dockerizing Success'
+                }
+                failure {
+                    echo 'Dockerizing Failed'
+                }
+            }
+        }
+    }
+}

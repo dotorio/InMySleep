@@ -1,0 +1,13 @@
+services:
+  ganache:
+    image: trufflesuite/ganache
+    ports:
+      - "8545:8545"
+    command: -a 20 -e 1000 -b 5
+    networks:
+      - ubuntu_default
+    restart: always
+
+networks:
+  ubuntu_default:
+    external: true
