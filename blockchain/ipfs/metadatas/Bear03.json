@@ -1,0 +1,11 @@
+{
+    "name": "Bear #3",
+    "description": "동굴에서 탈출한 불곰 테디",
+    "image": "https://j11e107.p.ssafy.io/ipfs/QmeLBktEKR1Wm7xzaesKb8m7tdjPs7DZNqcPBng4Q2tzBC",
+    "attributes": [
+        {
+            "character": "bear",
+            "color": 3
+        }
+    ]
+}

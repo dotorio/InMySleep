@@ -1,0 +1,14 @@
+# settings
+.vscode
+
+# blockchain solidity
+blockchain/solidity-contracts/build/contracts/
+
+# blockchain ipfs
+# blockchain/ipfs/
+ipfs-*/
+
+# blockchain backend
+node_modules
+# .env
+dist
