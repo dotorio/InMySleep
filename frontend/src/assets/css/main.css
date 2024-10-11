@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.flex-align {
+  display: flex;
+  align-items: center;
+}
+
+.box-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.box-md {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bit-t {
+  font-family: "Galmuri11";
+}
+
+.bitbit {
+  font-family: "DNFBitBitv2";
+}
+
+@font-face {
+  font-family: "DNFBitBitv2";
+  font-style: normal;
+  font-weight: 400;
+  src: url("//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf")
+    format("opentype");
+}
+
+@font-face {
+  font-family: "Galmuri11";
+  src: url("@/assets/fonts/Galmuri11-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
