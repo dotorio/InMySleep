@@ -216,10 +216,6 @@ MetaMask 지갑을 연동하면 NFT로 발행할 수 있어요!<br>
 <br>
 <br>
 
-## 📒 프로젝트 기록
-
-[Notion 협업링크](https://fanatical-calendula-c14.notion.site/d176a2b5fe0a4187844946738e4f7c92?v=df6606e6f693460996b4a8685dab77e24)
-
 ## 🎨 와이어 프레임
 
 [Figma 링크](https://www.figma.com/design/BMOvdKcM3o4la1leCPI5AK/%ED%8A%B9%ED%99%94-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=0-1&node-type=canvas)
